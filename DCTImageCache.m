@@ -14,6 +14,7 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 
 @implementation DCTImageCache {
 	__strong NSString *_path;
+	__strong NSMutableDictionary *_cache;
 }
 @synthesize name = _name;
 @synthesize imageDownloader = _imageDownloader;
@@ -71,10 +72,14 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
 	
-	NSString *imagePath = [self imagePathForKey:key size:size];
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSData *data = [fileManager contentsAtPath:imagePath];
-	UIImage *image = [UIImage imageWithData:data];
+	UIImage *image = [[self cacheForKey:key] objectForKey:NSStringFromCGSize(size)];
+	
+	if (!image) {
+		NSString *imagePath = [self imagePathForKey:key size:size];
+		NSFileManager *fileManager = [NSFileManager defaultManager];
+		NSData *data = [fileManager contentsAtPath:imagePath];
+			image = [UIImage imageWithData:data];
+	}
 	
 	if (!image && !CGSizeEqualToSize(size, CGSizeZero)) {
 		UIImage *originalImage = [self imageForKey:key];
@@ -143,7 +148,18 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 	return path;
 }
 
+- (NSMutableDictionary *)cacheForKey:(NSString *)key {
+	NSMutableDictionary *keyCache = [_cache objectForKey:key];
+	if (!keyCache) {
+		keyCache = [NSMutableDictionary new];
+		[_cache setObject:keyCache forKey:key];
+	}
+	return keyCache;
+}
+
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+	
+	[[self cacheForKey:key] setObject:image forKey:NSStringFromCGSize(size)];
 	
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *directoryPath = [self directoryForKey:key];
