@@ -15,6 +15,8 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 @implementation DCTImageCache {
 	__strong NSString *_path;
 }
+@synthesize name = _name;
+@synthesize imageDownloader = _imageDownloader;
 
 + (void)load {
 	
