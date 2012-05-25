@@ -106,8 +106,29 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 
 #pragma mark - Internal
 
+- (void)storeKey:(NSString *)key forHash:(NSString *)hash {
+	NSString *hashKeyPath = [_path stringByAppendingPathComponent:@".hashes"];
+	NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithContentsOfFile:hashKeyPath];
+	if (!dictionary) dictionary = [NSMutableDictionary new];
+	
+	if (key) [dictionary setObject:key forKey:hash];
+	else [dictionary removeObjectForKey:hash];
+	
+	[dictionary writeToFile:hashKeyPath atomically:YES];
+}
+
+- (NSString *)keyForHash:(NSString *)hash {
+	NSString *hashKeyPath = [_path stringByAppendingPathComponent:@".hashes"];
+	NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfFile:hashKeyPath];
+	return [dictionary objectForKey:hash];
+}
+
+- (NSString *)hashForKey:(NSString *)key {
+	return [NSString stringWithFormat:@"%u", [key hash]];
+}
+
 - (NSString *)directoryForKey:(NSString *)key {
-	return [_path stringByAppendingPathComponent:key];
+	return [_path stringByAppendingPathComponent:[self hashForKey:key]];
 }
 
 - (NSString *)imagePathForKey:(NSString *)key size:(CGSize)size {
@@ -128,6 +149,8 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 	
 	if (!CGSizeEqualToSize(size, CGSizeZero))
 		imagePath = [directoryPath stringByAppendingPathComponent:NSStringFromCGSize(size)];
+	else
+		[self storeKey:key forHash:[self hashForKey:key]];
 	
 	if (![fileManager fileExistsAtPath:directoryPath])
 		[fileManager createDirectoryAtPath:directoryPath withIntermediateDirectories:YES attributes:nil error:nil];
@@ -166,10 +189,11 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSArray *keys = [[fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
+	NSArray *filenames = [[fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
 	
-	[keys enumerateObjectsUsingBlock:^(NSString *name, NSUInteger i, BOOL *stop) {
-		block(name, stop);
+	[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
+		NSString *key = [self keyForHash:filename];
+		block(key, stop);
 	}];
 }
 
@@ -178,6 +202,7 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 	return [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
 }
 - (void)deleteImagesForKey:(NSString *)key {
+	[self storeKey:nil forHash:[self hashForKey:key]];
 	NSString *directoryPath = [self directoryForKey:key];
 	[[NSFileManager defaultManager] removeItemAtPath:directoryPath error:nil];
 }
