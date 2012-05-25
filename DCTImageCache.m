@@ -20,36 +20,25 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 	
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 		
-		NSFileManager *fileManager = [NSFileManager new];
-		NSString *cachePath = [[self class] defaultCachePath];
-		NSArray *caches = [[fileManager contentsOfDirectoryAtPath:cachePath error:nil] copy];
 		NSDate *now = [NSDate date];
 		
-		[caches enumerateObjectsUsingBlock:^(NSString *imageCacheName, NSUInteger i, BOOL *stop) {
+		[self enumerateImageCachesUsingBlock:^(DCTImageCache *imageCache, BOOL *stop) {
 			
-			NSString *imageCachePath = [cachePath stringByAppendingPathComponent:imageCacheName];
 			
-			NSArray *imagePaths = [[fileManager contentsOfDirectoryAtPath:cachePath error:nil] copy];
-			
-			[imagePaths enumerateObjectsUsingBlock:^(NSString *key, NSUInteger i, BOOL *stop) {
+			[imageCache enumerateKeysUsingBlock:^(NSString *key, BOOL *stop) {
 				
-				NSString *imagePath = [imageCachePath stringByAppendingPathComponent:key];
-				NSString *originalImagePath = [imagePath stringByAppendingPathComponent:DCTImageCacheOriginalImageName];
+				NSDictionary *attributes = [imageCache attributesForImageWithKey:key];
 				
-				if (![fileManager fileExistsAtPath:originalImagePath]) {
-					[fileManager removeItemAtPath:imagePath error:nil];
+				if (!attributes) {
+					[imageCache deleteImagesForKey:key];
 					return;
 				}
 				
-				NSDictionary *attributes = [fileManager attributesOfItemAtPath:originalImagePath error:nil];
 				NSDate *creationDate = [attributes objectForKey:NSFileCreationDate];
-				
 				NSTimeInterval timeInterval = [now timeIntervalSinceDate:creationDate];
 				
-				if (timeInterval > 604800) { // 7 days
-					[fileManager removeItemAtPath:imagePath error:nil];
-					return;
-				}
+				if (timeInterval > 604800) // 7 days
+					[imageCache deleteImagesForKey:key];
 			}];
 		}];
 	});
@@ -74,41 +63,21 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 	return self;
 }
 
-- (NSString *)directoryForKey:(NSString *)key {
-	return [_path stringByAppendingPathComponent:key];
-}
-
 - (UIImage *)imageForKey:(NSString *)key {
-	
-	NSString *directoryPath = [self directoryForKey:key];
-	NSString *imagePath = [directoryPath stringByAppendingPathComponent:DCTImageCacheOriginalImageName];
-	
-	NSData *data = [[NSFileManager defaultManager] contentsAtPath:imagePath];
-	
-	if (data) return [UIImage imageWithData:data];
-	
-	return nil;
+	return [self imageForKey:key size:CGSizeZero];
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
 	
-	if (CGSizeEqualToSize(size, CGSizeZero)) return [self imageForKey:key];
-	
-	NSString *directoryPath = [self directoryForKey:key];
-	NSString *imagePath = [directoryPath stringByAppendingPathComponent:NSStringFromCGSize(size)];
-	
+	NSString *imagePath = [self imagePathForKey:key size:size];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSData *data = [fileManager contentsAtPath:imagePath];
+	UIImage *image = [UIImage imageWithData:data];
 	
-	if (data) return [UIImage imageWithData:data];
-	
-	UIImage *originalImage = [self imageForKey:key];
-	
-	if (!originalImage) return nil;
-	
-	UIImage *image = [originalImage dct_imageToFitSize:size];
-	
-	[self storeImage:image forKey:key size:size];
+	if (!image && !CGSizeEqualToSize(size, CGSizeZero)) {
+		UIImage *originalImage = [self imageForKey:key];
+		image = [self imageFromOriginalImage:originalImage key:key size:size];
+	}
 	
 	return image;
 }
@@ -129,10 +98,26 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 	if (self.imageDownloader == NULL) return;
 	
 	self.imageDownloader(key, ^(UIImage *image){
-		[self storeImage:image forKey:key size:CGSizeZero];
+		[self storeImage:image forKey:key size:CGSizeZero];		
 		image = [self imageFromOriginalImage:image key:key size:size];
 		if (block != NULL) block(image);
 	});
+}
+
+#pragma mark - Internal
+
+- (NSString *)directoryForKey:(NSString *)key {
+	return [_path stringByAppendingPathComponent:key];
+}
+
+- (NSString *)imagePathForKey:(NSString *)key size:(CGSize)size {
+	
+	NSString *sizeString = DCTImageCacheOriginalImageName;
+	if (!CGSizeEqualToSize(size, CGSizeZero)) sizeString = NSStringFromCGSize(size);
+	
+	NSString *path = [self directoryForKey:key];
+	path = [path stringByAppendingPathComponent:sizeString];
+	return path;
 }
 
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
@@ -166,6 +151,35 @@ NSString *const DCTImageCacheOriginalImageName = @"OriginalImage";
 + (NSString *)defaultCachePath {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	return [[paths objectAtIndex:0] stringByAppendingPathComponent:NSStringFromClass(self)];
+}
+
++ (void)enumerateImageCachesUsingBlock:(void (^)(DCTImageCache *imageCache, BOOL *stop))block {
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSString *cachePath = [[self class] defaultCachePath];
+	NSArray *caches = [[fileManager contentsOfDirectoryAtPath:cachePath error:nil] copy];
+	
+	[caches enumerateObjectsUsingBlock:^(NSString *name, NSUInteger i, BOOL *stop) {
+		DCTImageCache *imageCache = [[DCTImageCache alloc] initWithName:name];
+		block(imageCache, stop);
+	}];
+}
+
+- (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block {
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSArray *keys = [[fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
+	
+	[keys enumerateObjectsUsingBlock:^(NSString *name, NSUInteger i, BOOL *stop) {
+		block(name, stop);
+	}];
+}
+
+- (NSDictionary *)attributesForImageWithKey:(NSString *)key {
+	NSString *path = [self imagePathForKey:key size:CGSizeZero];
+	return [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
+}
+- (void)deleteImagesForKey:(NSString *)key {
+	NSString *directoryPath = [self directoryForKey:key];
+	[[NSFileManager defaultManager] removeItemAtPath:directoryPath error:nil];
 }
 
 @end
