@@ -9,22 +9,30 @@
 #import "DCTImageCache.h"
 #import "UIImage+DCTCropping.h"
 
-@interface DCTMemoryImageCache : NSObject
+@interface DCTInternalMemoryImageCache : NSObject
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
 @end
 
-@interface DCTDiskImageCache : NSObject
+@interface DCTInternalDiskImageCache : NSObject
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
+@end
+
+@interface DCTInternalImageCacheHashStore : NSObject
+- (id)initWithPath:(NSString *)path;
+- (NSString *)hashForKey:(NSString *)key;
+- (NSString *)keyForHash:(NSString *)hash;
+- (void)removeHashForKey:(NSString *)key;
+- (BOOL)containsHashForKey:(NSString *)key;
 @end
 
 @implementation DCTImageCache {
 	__strong NSString *_path;
 	__strong NSMutableDictionary *_memoryCache;
-	__strong NSMutableDictionary *_storedHashes;
+	__strong DCTInternalImageCacheHashStore *_hashStore;
 }
 @synthesize name = _name;
 @synthesize imageDownloader = _imageDownloader;
@@ -73,14 +81,12 @@
 	if (!(self = [super init])) return nil;
 	_name = [name copy];
 	_path = [[[self class] defaultCachePath] stringByAppendingPathComponent:name];
-	_storedHashes=  [NSMutableDictionary dictionaryWithContentsOfFile:[self hashesPath]];
-	if (!_storedHashes) _storedHashes = [NSMutableDictionary new];
-	
+	_hashStore = [[DCTInternalImageCacheHashStore alloc] initWithPath:[self hashesPath]];	
 	return self;
 }
 
 - (BOOL)hasImageForKey:(NSString *)key {
-	return [[_storedHashes allValues] containsObject:key];
+	return [_hashStore containsHashForKey:key];
 }
 
 - (UIImage *)imageForKey:(NSString *)key {
@@ -134,30 +140,9 @@
 	return [_path stringByAppendingPathComponent:@".hashes"];
 }
 
-- (void)storeKey:(NSString *)key forHash:(NSString *)hash {
-	
-	if (key  && [[_storedHashes allKeys] containsObject:hash]) return;
-	
-	if (key) [_storedHashes setObject:key forKey:hash];
-	else [_storedHashes removeObjectForKey:hash];
-	
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-		[_storedHashes writeToFile:[self hashesPath] atomically:YES];
-	});
-}
-
-- (NSString *)keyForHash:(NSString *)hash {
-	return [_storedHashes objectForKey:hash];
-}
-
-- (NSString *)hashForKey:(NSString *)key {	
-	NSString *hash = [NSString stringWithFormat:@"%u", [key hash]];
-	[self storeKey:key forHash:hash];
-	return hash;
-}
-
 - (NSString *)directoryForKey:(NSString *)key {
-	return [_path stringByAppendingPathComponent:[self hashForKey:key]];
+	NSString *hash = [_hashStore hashForKey:key];
+	return [_path stringByAppendingPathComponent:hash];
 }
 
 - (NSString *)imagePathForKey:(NSString *)key size:(CGSize)size {
@@ -183,9 +168,6 @@
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *directoryPath = [self directoryForKey:key];
 	NSString *imagePath = [directoryPath stringByAppendingPathComponent:NSStringFromCGSize(size)];
-	
-	
-		[self storeKey:key forHash:[self hashForKey:key]];
 	
 	if (![fileManager fileExistsAtPath:directoryPath])
 		[fileManager createDirectoryAtPath:directoryPath withIntermediateDirectories:YES attributes:nil error:nil];
@@ -227,7 +209,7 @@
 	NSArray *filenames = [[fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
 	
 	[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
-		NSString *key = [self keyForHash:filename];
+		NSString *key = [_hashStore keyForHash:filename];
 		block(key, stop);
 	}];
 }
@@ -237,9 +219,166 @@
 	return [[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil];
 }
 - (void)deleteImagesForKey:(NSString *)key {
-	[self storeKey:nil forHash:[self hashForKey:key]];
+	[_hashStore removeHashForKey:key];
 	NSString *directoryPath = [self directoryForKey:key];
 	[[NSFileManager defaultManager] removeItemAtPath:directoryPath error:nil];
 }
 
 @end
+
+
+
+
+
+@implementation DCTInternalImageCacheHashStore {
+	__strong NSMutableDictionary *_hashes;
+	__strong NSString *_path;
+}
+
+- (id)initWithPath:(NSString *)path {
+	if (!(self = [super init])) return nil;
+	_path = [path copy];
+	_hashes=  [NSMutableDictionary dictionaryWithContentsOfFile:_path];
+	if (!_hashes) _hashes = [NSMutableDictionary new];	
+	return self;
+}
+
+- (void)storeKey:(NSString *)key forHash:(NSString *)hash {
+	
+	if ([key length] == 0) return;
+	if ([[_hashes allKeys] containsObject:hash]) return;
+	
+	[_hashes setObject:key forKey:hash];
+	
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		[_hashes writeToFile:_path atomically:YES];
+	});
+}
+
+- (BOOL)containsHashForKey:(NSString *)key {
+	return [[_hashes allValues] containsObject:key];
+}
+
+- (NSString *)keyForHash:(NSString *)hash {
+	return [_hashes objectForKey:hash];
+}
+
+- (NSString *)hashForKey:(NSString *)key {	
+	NSString *hash = [NSString stringWithFormat:@"%u", [key hash]];
+	[self storeKey:key forHash:hash];
+	return hash;
+}
+
+- (void)removeHashForKey:(NSString *)key {
+	
+	if ([key length] == 0) return;
+	
+	NSString *hash = [NSString stringWithFormat:@"%u", [key hash]];
+	[_hashes removeObjectForKey:hash];
+	
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		[_hashes writeToFile:_path atomically:YES];
+	});
+}
+
+@end
+
+
+
+
+
+
+@implementation DCTInternalMemoryImageCache {
+	__strong NSMutableDictionary *_cache;
+}
+
+- (id)init {
+	if (!(self = [super init])) return nil;
+	_cache = [NSMutableDictionary new];
+	return self;
+}
+
+- (NSMutableDictionary *)imageCacheForKey:(NSString *)key {
+	NSMutableDictionary *dictionary = [_cache objectForKey:key];
+	if (!dictionary) dictionary = [NSMutableDictionary new];
+	return dictionary;
+}
+
+- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
+	NSDictionary *dictionary = [self imageCacheForKey:key];
+	return [[dictionary allKeys] containsObject:NSStringFromCGSize(size)];
+}
+
+- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
+	NSDictionary *dictionary = [self imageCacheForKey:key];
+	return [dictionary objectForKey:NSStringFromCGSize(size)];
+}
+
+- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+	NSMutableDictionary *dictionary = [self imageCacheForKey:key];
+	[dictionary setObject:image forKey:NSStringFromCGSize(size)];
+}
+
+@end
+
+
+
+
+
+
+@implementation DCTInternalDiskImageCache
+
+- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
+	
+}
+
+- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
+	
+}
+
+- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+	
+}
+
+@end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
