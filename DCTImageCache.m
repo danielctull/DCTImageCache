@@ -32,6 +32,8 @@
 @synthesize name = _name;
 @synthesize imageFetcher = _imageFetcher;
 
+#pragma mark - NSObject
+
 + (void)load {
 	
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -60,6 +62,8 @@
 	});
 }
 
+#pragma mark - DCTImageCache
+
 + (DCTImageCache *)defaultImageCache {
 	static DCTImageCache *sharedInstance = nil;
 	static dispatch_once_t sharedToken;
@@ -83,33 +87,6 @@
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
 	return ([_memoryCache hasImageForKey:key size:size] || [_diskCache hasImageForKey:key size:size]);
-}
-
-- (UIImage *)imageForKey:(NSString *)key {
-	return [self imageForKey:key size:CGSizeZero];
-}
-
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	
-	UIImage *image = [_memoryCache imageForKey:key size:size];
-	
-	if (!image) image = [_diskCache imageForKey:key size:size];
-	
-	if (!image && !CGSizeEqualToSize(size, CGSizeZero)) {
-		UIImage *originalImage = [self imageForKey:key size:CGSizeZero];
-		image = [originalImage dct_imageToFitSize:size];
-	}
-	
-	if (!image) return nil;
-	
-	[_memoryCache setImage:image forKey:key size:size];
-	[_diskCache setImage:image forKey:key size:size];
-	
-	return image;
-}
-
-- (void)fetchImageForKey:(NSString *)key imageBlock:(void (^)(UIImage *))block {
-	[self fetchImageForKey:key size:CGSizeZero handler:block];
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
@@ -136,6 +113,25 @@
 }
 
 #pragma mark - Internal
+
+- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
+	
+	UIImage *image = [_memoryCache imageForKey:key size:size];
+	
+	if (!image) image = [_diskCache imageForKey:key size:size];
+	
+	if (!image && !CGSizeEqualToSize(size, CGSizeZero)) {
+		UIImage *originalImage = [self imageForKey:key size:CGSizeZero];
+		image = [originalImage dct_imageToFitSize:size];
+	}
+	
+	if (!image) return nil;
+	
+	[_memoryCache setImage:image forKey:key size:size];
+	[_diskCache setImage:image forKey:key size:size];
+	
+	return image;
+}
 
 + (NSString *)defaultCachePath {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
