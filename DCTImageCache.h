@@ -15,6 +15,8 @@
 - (id)initWithName:(NSString *)name;
 @property (nonatomic, readonly) NSString *name;
 
+- (BOOL)hasImageForKey:(NSString *)key;
+
 - (UIImage *)imageForKey:(NSString *)key;
 - (void)fetchImageForKey:(NSString *)key imageBlock:(void (^)(UIImage *))block;
 
