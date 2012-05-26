@@ -31,7 +31,7 @@
 
 @implementation DCTImageCache {
 	__strong NSString *_path;
-	__strong NSMutableDictionary *_memoryCache;
+	__strong DCTInternalMemoryImageCache *_memoryCache;
 	__strong DCTInternalImageCacheHashStore *_hashStore;
 }
 @synthesize name = _name;
@@ -95,7 +95,7 @@
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
 	
-	UIImage *image = [[self cacheForKey:key] objectForKey:NSStringFromCGSize(size)];
+	UIImage *image = [_memoryCache imageForKey:key size:size];
 	
 	if (!image) {
 		NSString *imagePath = [self imagePathForKey:key size:size];
@@ -152,18 +152,9 @@
 	return path;
 }
 
-- (NSMutableDictionary *)cacheForKey:(NSString *)key {
-	NSMutableDictionary *keyCache = [_memoryCache objectForKey:key];
-	if (!keyCache) {
-		keyCache = [NSMutableDictionary new];
-		[_memoryCache setObject:keyCache forKey:key];
-	}
-	return keyCache;
-}
-
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
 	
-	[[self cacheForKey:key] setObject:image forKey:NSStringFromCGSize(size)];
+	[_memoryCache setImage:image forKey:key size:size];
 	
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *directoryPath = [self directoryForKey:key];
