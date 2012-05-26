@@ -15,14 +15,8 @@
 - (id)initWithName:(NSString *)name;
 @property (nonatomic, readonly) NSString *name;
 
-
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
-
-- (UIImage *)imageForKey:(NSString *)key;
-- (void)fetchImageForKey:(NSString *)key imageBlock:(void (^)(UIImage *))block;
-
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size imageBlock:(void(^)(UIImage *))block;
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))block;
 
 @property (nonatomic, copy) void(^imageDownloader)(NSString *key, void(^imageBlock)(UIImage *));
 

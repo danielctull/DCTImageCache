@@ -109,15 +109,15 @@
 }
 
 - (void)fetchImageForKey:(NSString *)key imageBlock:(void (^)(UIImage *))block {
-	[self fetchImageForKey:key size:CGSizeZero imageBlock:block];
+	[self fetchImageForKey:key size:CGSizeZero handler:block];
 }
 
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size imageBlock:(void (^)(UIImage *))block {
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 	
 	UIImage *image = [self imageForKey:key size:size];
 	
 	if (image) {
-		if (block != NULL) block(image);
+		if (handler != NULL) handler(image);
 		return;
 	}
 	
@@ -131,7 +131,7 @@
 		image = [image dct_imageToFitSize:size];
 		[_memoryCache setImage:image forKey:key size:size];
 		[_diskCache setImage:image forKey:key size:size];
-		if (block != NULL) block(image);
+		if (handler != NULL) handler(image);
 	});
 }
 
