@@ -222,45 +222,40 @@
 
 @implementation DCTInternalMemoryImageCache {
 	__strong NSMutableDictionary *_cache;
-	__strong NSMutableArray *_cacheAccess;
+	__strong NSMutableDictionary *_cacheAccessCount;
 }
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self
 													name:UIApplicationDidReceiveMemoryWarningNotification
-												  object:[UIApplication sharedApplication]];
+												  object:nil];
 }
 
 - (id)init {
 	if (!(self = [super init])) return nil;
 	_cache = [NSMutableDictionary new];
-	_cacheAccess = [NSMutableArray new];
-	
-	NSLog(@"%@:%@", self, NSStringFromSelector(_cmd));
-	
-	[NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(didReceiveMemoryWarning:) userInfo:nil repeats:YES];
+	_cacheAccessCount = [NSMutableDictionary new];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(didReceiveMemoryWarning:)
 												 name:UIApplicationDidReceiveMemoryWarningNotification
-											   object:[UIApplication sharedApplication]];
+											   object:nil];
 	
 	return self;
 }
 
 - (void)didReceiveMemoryWarning:(NSNotification *)notification {
-	
-	NSLog(@"%@:%@", self, NSStringFromSelector(_cmd));
-	
+		
 	dispatch_async(dispatch_get_main_queue(), ^{
 		
-		NSLog(@"%@:%@ %i %@", self, NSStringFromSelector(_cmd), [_cacheAccess count], _cacheAccess);
+		NSArray *counts = [[_cacheAccessCount allValues] sortedArrayUsingSelector:@selector(compare:)];
+		NSNumber *mediumCountNumber = [counts objectAtIndex:[counts count]/2];
+		NSInteger mediumCount = [mediumCountNumber integerValue];
 		
-		NSRange rangeToRemove = NSMakeRange(0, [_cacheAccess count]/2);
-		NSArray *toRemove = [_cacheAccess subarrayWithRange:rangeToRemove];
-		[_cacheAccess removeObjectsInRange:rangeToRemove];
-		
-		[toRemove enumerateObjectsUsingBlock:^(NSString *accessKey, NSUInteger i, BOOL *stop) {
+		[_cacheAccessCount enumerateKeysAndObjectsUsingBlock:^(NSString *accessKey, NSNumber *count, BOOL *stop) {
+			
+			if ([count integerValue] > mediumCount) return;
+			
 			NSArray *array = [accessKey componentsSeparatedByString:@"+"];
 			NSString *key = [array objectAtIndex:0];
 			NSString *sizeString = [array objectAtIndex:1];
@@ -268,21 +263,13 @@
 			[dictionary removeObjectForKey:sizeString];
 			if ([dictionary count] == 0) [_cache removeObjectForKey:key];
 		}];
-		
-		NSLog(@"%@:%@ %i %@", self, NSStringFromSelector(_cmd), [_cacheAccess count], _cacheAccess);
-		NSLog(@"%@", _cache);
-		
 	});
 }
 
 - (void)didAskForImageWithKey:(NSString *)key size:(CGSize)size {
-	
 	NSString *accessKey = [NSString stringWithFormat:@"%@+%@", key, NSStringFromCGSize(size)];
-	
-	if ([_cacheAccess containsObject:accessKey])
-		[_cacheAccess removeObject:accessKey];
-	
-	[_cacheAccess addObject:accessKey];
+	NSNumber *count = [_cacheAccessCount objectForKey:accessKey];
+	[_cacheAccessCount setObject:[NSNumber numberWithInteger:[count integerValue]+1] forKey:accessKey];
 }
 
 - (NSMutableDictionary *)imageCacheForKey:(NSString *)key {
