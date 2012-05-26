@@ -236,6 +236,10 @@
 	_cache = [NSMutableDictionary new];
 	_cacheAccess = [NSMutableArray new];
 	
+	NSLog(@"%@:%@", self, NSStringFromSelector(_cmd));
+	
+	[NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(didReceiveMemoryWarning:) userInfo:nil repeats:YES];
+	
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(didReceiveMemoryWarning:)
 												 name:UIApplicationDidReceiveMemoryWarningNotification
@@ -246,19 +250,27 @@
 
 - (void)didReceiveMemoryWarning:(NSNotification *)notification {
 	
+	NSLog(@"%@:%@", self, NSStringFromSelector(_cmd));
+	
 	dispatch_async(dispatch_get_main_queue(), ^{
 		
 		NSLog(@"%@:%@ %i %@", self, NSStringFromSelector(_cmd), [_cacheAccess count], _cacheAccess);
 		
-		NSArray *toRemove = [_cacheAccess subarrayWithRange:NSMakeRange(0, [_cacheAccess count]/2)];
+		NSRange rangeToRemove = NSMakeRange(0, [_cacheAccess count]/2);
+		NSArray *toRemove = [_cacheAccess subarrayWithRange:rangeToRemove];
+		[_cacheAccess removeObjectsInRange:rangeToRemove];
 		
 		[toRemove enumerateObjectsUsingBlock:^(NSString *accessKey, NSUInteger i, BOOL *stop) {
 			NSArray *array = [accessKey componentsSeparatedByString:@"+"];
-			NSMutableDictionary *dictionary = [self imageCacheForKey:[array objectAtIndex:0]];
-			[dictionary removeObjectForKey:[array objectAtIndex:1]];
+			NSString *key = [array objectAtIndex:0];
+			NSString *sizeString = [array objectAtIndex:1];
+			NSMutableDictionary *dictionary = [self imageCacheForKey:key];
+			[dictionary removeObjectForKey:sizeString];
+			if ([dictionary count] == 0) [_cache removeObjectForKey:key];
 		}];
 		
 		NSLog(@"%@:%@ %i %@", self, NSStringFromSelector(_cmd), [_cacheAccess count], _cacheAccess);
+		NSLog(@"%@", _cache);
 		
 	});
 }
