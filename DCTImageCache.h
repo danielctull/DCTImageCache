@@ -18,6 +18,6 @@
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))block;
 
-@property (nonatomic, copy) void(^imageDownloader)(NSString *key, CGSize size, void(^imageBlock)(UIImage *));
+@property (nonatomic, copy) void(^imageFetcher)(NSString *key, CGSize size, void(^imageBlock)(UIImage *));
 
 @end

@@ -30,7 +30,7 @@
 	__strong DCTInternalMemoryImageCache *_memoryCache;
 }
 @synthesize name = _name;
-@synthesize imageDownloader = _imageDownloader;
+@synthesize imageFetcher = _imageFetcher;
 
 + (void)load {
 	
@@ -121,9 +121,9 @@
 		return;
 	}
 	
-	if (self.imageDownloader == NULL) return;
+	if (self.imageFetcher == NULL) return;
 	
-	self.imageDownloader(key, size, ^(UIImage *image) {
+	self.imageFetcher(key, size, ^(UIImage *image) {
 		
 		if (!image) return;
 		
