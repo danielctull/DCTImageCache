@@ -98,14 +98,18 @@
 		if (handler != NULL) handler(image);
 		return;
 	}
-		
+	
 	dispatch_queue_t callingQueue = dispatch_get_current_queue();
 	
 	dispatch_async(_queue, ^{
 		
-		UIImage *image = [self imageForKey:key size:size];
+		UIImage *image = [_diskCache imageForKey:key size:size];
 		if (image) {
-			if (handler != NULL) dispatch_async(callingQueue, ^{handler(image);});
+			if (handler != NULL)
+				dispatch_async(callingQueue, ^{
+					[_memoryCache setImage:image forKey:key size:size];
+					handler(image);
+				});
 			return;
 		}
 	
@@ -118,9 +122,14 @@
 				if (!image) return;
 				
 				dispatch_async(_queue, ^{
+					
 					[_diskCache setImage:image forKey:key size:CGSizeZero];
 					UIImage *resizedImage = [image dct_imageToFitSize:size];
-					[_memoryCache setImage:resizedImage forKey:key size:size];					
+					
+					dispatch_async(callingQueue, ^{
+						[_memoryCache setImage:resizedImage forKey:key size:size];
+					});
+					
 					[_diskCache setImage:resizedImage forKey:key size:size];
 					if (handler != NULL) dispatch_async(callingQueue, ^{handler(resizedImage);});
 				});
@@ -130,25 +139,6 @@
 }
 
 #pragma mark - Internal
-
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	
-	UIImage *image = [_memoryCache imageForKey:key size:size];
-	
-	if (!image) image = [_diskCache imageForKey:key size:size];
-	
-	if (!image && !CGSizeEqualToSize(size, CGSizeZero)) {
-		UIImage *originalImage = [self imageForKey:key size:CGSizeZero];
-		image = [originalImage dct_imageToFitSize:size];
-	}
-	
-	if (!image) return nil;
-	
-	[_memoryCache setImage:image forKey:key size:size];
-	[_diskCache setImage:image forKey:key size:size];
-	
-	return image;
-}
 
 + (NSString *)defaultCachePath {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
@@ -232,12 +222,55 @@
 
 @implementation DCTInternalMemoryImageCache {
 	__strong NSMutableDictionary *_cache;
+	__strong NSMutableArray *_cacheAccess;
+}
+
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self
+													name:UIApplicationDidReceiveMemoryWarningNotification
+												  object:[UIApplication sharedApplication]];
 }
 
 - (id)init {
 	if (!(self = [super init])) return nil;
 	_cache = [NSMutableDictionary new];
+	_cacheAccess = [NSMutableArray new];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(didReceiveMemoryWarning:)
+												 name:UIApplicationDidReceiveMemoryWarningNotification
+											   object:[UIApplication sharedApplication]];
+	
 	return self;
+}
+
+- (void)didReceiveMemoryWarning:(NSNotification *)notification {
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		
+		NSLog(@"%@:%@ %i %@", self, NSStringFromSelector(_cmd), [_cacheAccess count], _cacheAccess);
+		
+		NSArray *toRemove = [_cacheAccess subarrayWithRange:NSMakeRange(0, [_cacheAccess count]/2)];
+		
+		[toRemove enumerateObjectsUsingBlock:^(NSString *accessKey, NSUInteger i, BOOL *stop) {
+			NSArray *array = [accessKey componentsSeparatedByString:@"+"];
+			NSMutableDictionary *dictionary = [self imageCacheForKey:[array objectAtIndex:0]];
+			[dictionary removeObjectForKey:[array objectAtIndex:1]];
+		}];
+		
+		NSLog(@"%@:%@ %i %@", self, NSStringFromSelector(_cmd), [_cacheAccess count], _cacheAccess);
+		
+	});
+}
+
+- (void)didAskForImageWithKey:(NSString *)key size:(CGSize)size {
+	
+	NSString *accessKey = [NSString stringWithFormat:@"%@+%@", key, NSStringFromCGSize(size)];
+	
+	if ([_cacheAccess containsObject:accessKey])
+		[_cacheAccess removeObject:accessKey];
+	
+	[_cacheAccess addObject:accessKey];
 }
 
 - (NSMutableDictionary *)imageCacheForKey:(NSString *)key {
@@ -255,6 +288,7 @@
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
+	[self didAskForImageWithKey:key size:size];
 	NSDictionary *dictionary = [self imageCacheForKey:key];
 	return [dictionary objectForKey:NSStringFromCGSize(size)];
 }
