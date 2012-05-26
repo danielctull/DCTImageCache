@@ -123,7 +123,7 @@
 	
 	if (self.imageDownloader == NULL) return;
 	
-	self.imageDownloader(key, ^(UIImage *image) {
+	self.imageDownloader(key, size, ^(UIImage *image) {
 		
 		if (!image) return;
 		
