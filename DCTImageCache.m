@@ -28,6 +28,7 @@
 @implementation DCTImageCache {
 	__strong DCTInternalDiskImageCache *_diskCache;
 	__strong DCTInternalMemoryImageCache *_memoryCache;
+	dispatch_queue_t _queue;
 }
 @synthesize name = _name;
 @synthesize imageFetcher = _imageFetcher;
@@ -80,35 +81,51 @@
 	if (!(self = [super init])) return nil;
 	_name = [name copy];
 	_memoryCache = [DCTInternalMemoryImageCache new];
+	_queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
 	NSString *path = [[[self class] defaultCachePath] stringByAppendingPathComponent:name];
 	_diskCache = [[DCTInternalDiskImageCache alloc] initWithPath:path];
 	return self;
 }
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
-	return ([_memoryCache hasImageForKey:key size:size] || [_diskCache hasImageForKey:key size:size]);
+	return [_memoryCache hasImageForKey:key size:size];
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 	
-	UIImage *image = [self imageForKey:key size:size];
-	
+	UIImage *image = [_memoryCache imageForKey:key size:size];
 	if (image) {
 		if (handler != NULL) handler(image);
 		return;
 	}
-	
-	if (self.imageFetcher == NULL) return;
-	
-	self.imageFetcher(key, size, ^(UIImage *image) {
 		
-		if (!image) return;
+	dispatch_queue_t callingQueue = dispatch_get_current_queue();
+	
+	dispatch_async(_queue, ^{
 		
-		[_diskCache setImage:image forKey:key size:CGSizeZero];
-		image = [image dct_imageToFitSize:size];
-		[_memoryCache setImage:image forKey:key size:size];
-		[_diskCache setImage:image forKey:key size:size];
-		if (handler != NULL) handler(image);
+		UIImage *image = [_diskCache imageForKey:key size:size];
+		if (image) {
+			if (handler != NULL) dispatch_async(callingQueue, ^{handler(image);});
+			return;
+		}
+	
+		if (self.imageFetcher == NULL) return;
+		
+		dispatch_async(callingQueue, ^{
+		
+			self.imageFetcher(key, size, ^(UIImage *image) {
+				
+				if (!image) return;
+				
+				dispatch_async(_queue, ^{
+					[_diskCache setImage:image forKey:key size:CGSizeZero];
+					UIImage *resizedImage = [image dct_imageToFitSize:size];
+					[_memoryCache setImage:resizedImage forKey:key size:size];					
+					[_diskCache setImage:resizedImage forKey:key size:size];
+					if (handler != NULL) dispatch_async(callingQueue, ^{handler(resizedImage);});
+				});
+			});
+		});
 	});
 }
 
@@ -225,7 +242,10 @@
 
 - (NSMutableDictionary *)imageCacheForKey:(NSString *)key {
 	NSMutableDictionary *dictionary = [_cache objectForKey:key];
-	if (!dictionary) dictionary = [NSMutableDictionary new];
+	if (!dictionary) {
+		dictionary = [NSMutableDictionary new];
+		[_cache setObject:dictionary forKey:key];
+	}
 	return dictionary;
 }
 
