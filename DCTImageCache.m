@@ -103,7 +103,7 @@
 	
 	dispatch_async(_queue, ^{
 		
-		UIImage *image = [_diskCache imageForKey:key size:size];
+		UIImage *image = [self imageForKey:key size:size];
 		if (image) {
 			if (handler != NULL) dispatch_async(callingQueue, ^{handler(image);});
 			return;
