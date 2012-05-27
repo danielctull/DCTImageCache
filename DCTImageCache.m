@@ -35,31 +35,28 @@
 
 + (void)load {
 	
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+	NSDate *now = [NSDate date];
+	
+	[self enumerateImageCachesUsingBlock:^(DCTImageCache *imageCache, BOOL *stop) {
 		
-		NSDate *now = [NSDate date];
+		DCTInternalDiskImageCache *diskCache = imageCache->_diskCache;
+		[diskCache enumerateKeysUsingBlock:^(NSString *key, BOOL *stop) {
 		
-		[self enumerateImageCachesUsingBlock:^(DCTImageCache *imageCache, BOOL *stop) {
+			[diskCache fetchAttributesForImageWithKey:key size:CGSizeZero handler:^(NSDictionary *attributes) {
 			
-			DCTInternalDiskImageCache *diskCache = imageCache->_diskCache;
-			[diskCache enumerateKeysUsingBlock:^(NSString *key, BOOL *stop) {
+				if (!attributes) {
+					[diskCache removeImagesForKey:key];
+					return;
+				}
+					
+				NSDate *creationDate = [attributes objectForKey:NSFileCreationDate];
+				NSTimeInterval timeInterval = [now timeIntervalSinceDate:creationDate];
 				
-				[diskCache fetchAttributesForImageWithKey:key size:CGSizeZero handler:^(NSDictionary *attributes) {
-					
-					if (!attributes) {
-						[diskCache removeImagesForKey:key];
-						return;
-					}
-					
-					NSDate *creationDate = [attributes objectForKey:NSFileCreationDate];
-					NSTimeInterval timeInterval = [now timeIntervalSinceDate:creationDate];
-					
-					if (timeInterval > 604800) // 7 days
-						[diskCache removeImagesForKey:key];
-				}];
+				if (timeInterval > 604800) // 7 days
+					[diskCache removeImagesForKey:key];
 			}];
 		}];
-	});
+	}];
 }
 
 #pragma mark - DCTImageCache
@@ -137,14 +134,17 @@
 }
 
 + (void)enumerateImageCachesUsingBlock:(void (^)(DCTImageCache *imageCache, BOOL *stop))block {
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *cachePath = [[self class] defaultCachePath];
-	NSArray *caches = [[fileManager contentsOfDirectoryAtPath:cachePath error:nil] copy];
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 	
-	[caches enumerateObjectsUsingBlock:^(NSString *name, NSUInteger i, BOOL *stop) {
-		DCTImageCache *imageCache = [[DCTImageCache alloc] initWithName:name];
-		block(imageCache, stop);
-	}];
+		NSFileManager *fileManager = [NSFileManager new];
+		NSString *cachePath = [[self class] defaultCachePath];
+		NSArray *caches = [[fileManager contentsOfDirectoryAtPath:cachePath error:nil] copy];
+	
+		[caches enumerateObjectsUsingBlock:^(NSString *name, NSUInteger i, BOOL *stop) {
+			DCTImageCache *imageCache = [[DCTImageCache alloc] initWithName:name];
+			block(imageCache, stop);
+		}];
+	});
 }
 
 @end
@@ -328,7 +328,7 @@
 	_queue = dispatch_queue_create("uk.co.danieltull.DCTInternalDiskImageCache", NULL);
 	dispatch_sync(_queue, ^{
 		_hashStore = [[DCTInternalImageCacheHashStore alloc] initWithPath:[self hashesPath]];
-		_fileManager = [NSFileManager defaultManager];
+		_fileManager = [NSFileManager new];
 	});
 	return self;
 }
