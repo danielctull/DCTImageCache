@@ -377,13 +377,13 @@
 }
 
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block {
-	dispatch_queue_t queue = dispatch_get_current_queue();
+	dispatch_queue_t callingQueue = dispatch_get_current_queue();
 	dispatch_async(_queue, ^{
 		NSArray *filenames = [[_fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
 		
 		[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
 			NSString *key = [_hashStore keyForHash:filename];
-			dispatch_async(queue, ^{
+			dispatch_async(callingQueue, ^{
 				block(key, stop);
 			});
 		}];
