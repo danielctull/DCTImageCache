@@ -159,52 +159,28 @@
 	__strong NSString *_path;
 }
 
-+ (dispatch_queue_t)queue {
-	static dispatch_queue_t sharedQueue = nil;
-	static dispatch_once_t sharedToken;
-	dispatch_once(&sharedToken, ^{
-		sharedQueue = dispatch_queue_create("uk.co.danieltull.DCTInternalImageCacheHashStore", NULL);
-	});
-	return sharedQueue;
-}
-- (dispatch_queue_t)queue {
-	return [[self class] queue];
-}
-
 - (id)initWithPath:(NSString *)path {
 	if (!(self = [super init])) return nil;
 	_path = [path copy];
-	dispatch_sync(self.queue, ^{
-		_hashes=  [NSMutableDictionary dictionaryWithContentsOfFile:_path];
-		if (!_hashes) _hashes = [NSMutableDictionary new];
-	});
+	_hashes=  [NSMutableDictionary dictionaryWithContentsOfFile:_path];
+	if (!_hashes) _hashes = [NSMutableDictionary new];
 	return self;
 }
 
 - (void)storeKey:(NSString *)key forHash:(NSString *)hash {
-	dispatch_async(self.queue, ^{
-		if ([key length] == 0) return;
-		if ([[_hashes allKeys] containsObject:hash]) return;
+	if ([key length] == 0) return;
+	if ([[_hashes allKeys] containsObject:hash]) return;
 		
-		[_hashes setObject:key forKey:hash];
-		[_hashes writeToFile:_path atomically:YES];
-	});
+	[_hashes setObject:key forKey:hash];
+	[_hashes writeToFile:_path atomically:YES];
 }
 
 - (BOOL)containsHashForKey:(NSString *)key {
-	__block BOOL contains = NO;
-	dispatch_sync(self.queue, ^{
-		contains = [[_hashes allValues] containsObject:key];
-	});
-	return contains;
+	return [[_hashes allValues] containsObject:key];
 }
 
 - (NSString *)keyForHash:(NSString *)hash {
-	__block NSString *key = nil;
-	dispatch_sync(self.queue, ^{
-		key = [_hashes objectForKey:hash];
-	});
-	return key;
+	return [_hashes objectForKey:hash];
 }
 
 - (NSString *)hashForKey:(NSString *)key {
@@ -214,13 +190,11 @@
 }
 
 - (void)removeHashForKey:(NSString *)key {
-	dispatch_async(self.queue, ^{
-		if ([key length] == 0) return;
+	if ([key length] == 0) return;
 	
-		NSString *hash = [NSString stringWithFormat:@"%u", [key hash]];
-		[_hashes removeObjectForKey:hash];
-		[_hashes writeToFile:_path atomically:YES];
-	});
+	NSString *hash = [NSString stringWithFormat:@"%u", [key hash]];
+	[_hashes removeObjectForKey:hash];
+	[_hashes writeToFile:_path atomically:YES];
 }
 
 @end
