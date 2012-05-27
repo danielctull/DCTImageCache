@@ -325,9 +325,9 @@
 - (id)initWithPath:(NSString *)path {
 	if (!(self = [super init])) return nil;
 	_path = [path copy];
-	_hashStore = [[DCTInternalImageCacheHashStore alloc] initWithPath:[self hashesPath]];
 	_queue = dispatch_queue_create("uk.co.danieltull.DCTInternalDiskImageCache", NULL);
 	dispatch_sync(_queue, ^{
+		_hashStore = [[DCTInternalImageCacheHashStore alloc] initWithPath:[self hashesPath]];
 		_fileManager = [NSFileManager defaultManager];
 	});
 	return self;
