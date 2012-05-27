@@ -86,11 +86,6 @@
 	return [_memoryCache hasImageForKey:key size:size];
 }
 
-- (void)sendImage:(UIImage *)image toHandler:(void (^)(UIImage *))handler {
-	if (handler == NULL) return;
-	handler(image);	
-}
-
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))theHandler {
 	
 	void (^handler)(UIImage *) = [theHandler copy];
@@ -119,9 +114,7 @@
 			[image dct_generateImageToFitSize:size handler:^(UIImage *image) {
 				
 				if (!image) return;
-				
-				NSLog(@"%@:%@ %@ %@ %@ %@", self, NSStringFromSelector(_cmd), key, NSStringFromCGSize(size), image, handler);
-				
+								
 				[_memoryCache setImage:image forKey:key size:size];
 				[_diskCache setImage:image forKey:key size:size];
 				[self sendImage:image toHandler:handler];
@@ -131,6 +124,11 @@
 }
 
 #pragma mark - Internal
+
+- (void)sendImage:(UIImage *)image toHandler:(void (^)(UIImage *))handler {
+	if (handler == NULL) return;
+	handler(image);	
+}
 
 + (NSString *)defaultCachePath {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
