@@ -19,7 +19,7 @@
 - (id)initWithPath:(NSString *)path;
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler;
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
-- (NSDictionary *)attributesForImageWithKey:(NSString *)key size:(CGSize)size;
+- (void)fetchAttributesForImageWithKey:(NSString *)key size:(CGSize)size handler:(void (^)(NSDictionary *))handler;
 - (void)removeImagesForKey:(NSString *)key;
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block;
 @end
@@ -44,18 +44,19 @@
 			DCTInternalDiskImageCache *diskCache = imageCache->_diskCache;
 			[diskCache enumerateKeysUsingBlock:^(NSString *key, BOOL *stop) {
 				
-				NSDictionary *attributes = [diskCache attributesForImageWithKey:key size:CGSizeZero];
-				
-				if (!attributes) {
-					[diskCache removeImagesForKey:key];
-					return;
-				}
-				
-				NSDate *creationDate = [attributes objectForKey:NSFileCreationDate];
-				NSTimeInterval timeInterval = [now timeIntervalSinceDate:creationDate];
-				
-				if (timeInterval > 604800) // 7 days
-					[diskCache removeImagesForKey:key];
+				[diskCache fetchAttributesForImageWithKey:key size:CGSizeZero handler:^(NSDictionary *attributes) {
+					
+					if (!attributes) {
+						[diskCache removeImagesForKey:key];
+						return;
+					}
+					
+					NSDate *creationDate = [attributes objectForKey:NSFileCreationDate];
+					NSTimeInterval timeInterval = [now timeIntervalSinceDate:creationDate];
+					
+					if (timeInterval > 604800) // 7 days
+						[diskCache removeImagesForKey:key];
+				}];
 			}];
 		}];
 	});
@@ -364,13 +365,15 @@
 	});
 }
 
-- (NSDictionary *)attributesForImageWithKey:(NSString *)key size:(CGSize)size {
-	__block NSDictionary *dictionary = nil;
-	dispatch_sync(_queue, ^{
+- (void)fetchAttributesForImageWithKey:(NSString *)key size:(CGSize)size handler:(void (^)(NSDictionary *))handler {
+	dispatch_queue_t callingQueue = dispatch_get_current_queue();
+	dispatch_async(_queue, ^{
 		NSString *path = [self pathForKey:key size:size];
-		dictionary = [_fileManager attributesOfItemAtPath:path error:nil];
+		NSDictionary *dictionary = [_fileManager attributesOfItemAtPath:path error:nil];
+		dispatch_async(callingQueue, ^{
+			handler(dictionary);
+		});
 	});
-	return dictionary;
 }
 
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block {
