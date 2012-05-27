@@ -77,11 +77,15 @@
 	return sharedInstance;
 }
 
+- (void)dealloc {
+	dispatch_release(_queue);
+}
+
 - (id)initWithName:(NSString *)name {
 	if (!(self = [super init])) return nil;
 	_name = [name copy];
 	_memoryCache = [DCTInternalMemoryImageCache new];
-	_queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+	_queue = dispatch_queue_create("uk.co.danieltull.DCTImageCache", NULL);
 	NSString *path = [[[self class] defaultCachePath] stringByAppendingPathComponent:name];
 	_diskCache = [[DCTInternalDiskImageCache alloc] initWithPath:path];
 	return self;
@@ -171,46 +175,64 @@
 @implementation DCTInternalImageCacheHashStore {
 	__strong NSMutableDictionary *_hashes;
 	__strong NSString *_path;
+	dispatch_queue_t _queue;
+}
+
+- (void)dealloc {
+	dispatch_release(_queue);
 }
 
 - (id)initWithPath:(NSString *)path {
 	if (!(self = [super init])) return nil;
+	_queue = dispatch_queue_create("uk.co.danieltull.DCTInternalImageCacheHashStore", NULL);
 	_path = [path copy];
-	_hashes=  [NSMutableDictionary dictionaryWithContentsOfFile:_path];
-	if (!_hashes) _hashes = [NSMutableDictionary new];	
+	dispatch_sync(_queue, ^{
+		_hashes=  [NSMutableDictionary dictionaryWithContentsOfFile:_path];
+		if (!_hashes) _hashes = [NSMutableDictionary new];
+	});
 	return self;
 }
 
 - (void)storeKey:(NSString *)key forHash:(NSString *)hash {
-	
-	if ([key length] == 0) return;
-	if ([[_hashes allKeys] containsObject:hash]) return;
-	
-	[_hashes setObject:key forKey:hash];
-	[_hashes writeToFile:_path atomically:YES];
+	dispatch_async(_queue, ^{
+		if ([key length] == 0) return;
+		if ([[_hashes allKeys] containsObject:hash]) return;
+		
+		[_hashes setObject:key forKey:hash];
+		[_hashes writeToFile:_path atomically:YES];
+	});
 }
 
 - (BOOL)containsHashForKey:(NSString *)key {
-	return [[_hashes allValues] containsObject:key];
+	__block BOOL contains = NO;
+	dispatch_sync(_queue, ^{
+		contains = [[_hashes allValues] containsObject:key];
+	});
+	return contains;
 }
 
 - (NSString *)keyForHash:(NSString *)hash {
-	return [_hashes objectForKey:hash];
+	__block NSString *key = nil;
+	dispatch_sync(_queue, ^{
+		key = [_hashes objectForKey:hash];
+	});
+	return key;
 }
 
-- (NSString *)hashForKey:(NSString *)key {	
+- (NSString *)hashForKey:(NSString *)key {
 	NSString *hash = [NSString stringWithFormat:@"%u", [key hash]];
 	[self storeKey:key forHash:hash];
 	return hash;
 }
 
 - (void)removeHashForKey:(NSString *)key {
+	dispatch_async(_queue, ^{
+		if ([key length] == 0) return;
 	
-	if ([key length] == 0) return;
-	
-	NSString *hash = [NSString stringWithFormat:@"%u", [key hash]];
-	[_hashes removeObjectForKey:hash];
-	[_hashes writeToFile:_path atomically:YES];
+		NSString *hash = [NSString stringWithFormat:@"%u", [key hash]];
+		[_hashes removeObjectForKey:hash];
+		[_hashes writeToFile:_path atomically:YES];
+	});
 }
 
 @end
@@ -306,43 +328,87 @@
 	__strong NSString *_path;
 	__strong DCTInternalImageCacheHashStore *_hashStore;
 	__strong NSFileManager *_fileManager;
+	dispatch_queue_t _queue;
+}
+
+- (void)dealloc {
+	dispatch_release(_queue);
 }
 
 - (id)initWithPath:(NSString *)path {
 	if (!(self = [super init])) return nil;
 	_path = [path copy];
 	_hashStore = [[DCTInternalImageCacheHashStore alloc] initWithPath:[self hashesPath]];
-	_fileManager = [NSFileManager defaultManager];
+	_queue = dispatch_queue_create("uk.co.danieltull.DCTInternalDiskImageCache", NULL);
+	dispatch_sync(_queue, ^{
+		_fileManager = [NSFileManager defaultManager];
+	});
 	return self;
 }
 
 - (void)removeImagesForKey:(NSString *)key {
-	[_hashStore removeHashForKey:key];
-	NSString *directoryPath = [self pathForKey:key];
-	[_fileManager removeItemAtPath:directoryPath error:nil];
+	dispatch_async(_queue, ^{
+		[_hashStore removeHashForKey:key];
+		NSString *directoryPath = [self pathForKey:key];
+		[_fileManager removeItemAtPath:directoryPath error:nil];
+	});
 }
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
-	NSString *imagePath = [self pathForKey:key size:size];
-	return [_fileManager fileExistsAtPath:imagePath];
+	__block BOOL contains = NO;
+	dispatch_sync(_queue, ^{
+		NSString *imagePath = [self pathForKey:key size:size];
+		contains = [_fileManager fileExistsAtPath:imagePath];
+	});
+	return contains;
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	NSString *imagePath = [self pathForKey:key size:size];
-	NSData *data = [_fileManager contentsAtPath:imagePath];
-	return [UIImage imageWithData:data];
+	__block UIImage *image = nil;
+	dispatch_sync(_queue, ^{
+		NSString *imagePath = [self pathForKey:key size:size];
+		NSData *data = [_fileManager contentsAtPath:imagePath];
+		image = [UIImage imageWithData:data];
+	});
+	return image;
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+	dispatch_async(_queue, ^{
+		NSString *path = [self pathForKey:key];
+		NSString *imagePath = [self pathForKey:key size:size];
 	
-	NSString *path = [self pathForKey:key];
-	NSString *imagePath = [self pathForKey:key size:size];
+		if (![_fileManager fileExistsAtPath:path])
+			[_fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
 	
-	if (![_fileManager fileExistsAtPath:path])
-		[_fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
-	
-	[_fileManager createFileAtPath:imagePath contents:UIImagePNGRepresentation(image) attributes:nil];
+		[_fileManager createFileAtPath:imagePath contents:UIImagePNGRepresentation(image) attributes:nil];
+	});
 }
+
+- (NSDictionary *)attributesForImageWithKey:(NSString *)key size:(CGSize)size {
+	__block NSDictionary *dictionary = nil;
+	dispatch_sync(_queue, ^{
+		NSString *path = [self pathForKey:key size:size];
+		dictionary = [_fileManager attributesOfItemAtPath:path error:nil];
+	});
+	return dictionary;
+}
+
+- (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block {
+	dispatch_queue_t queue = dispatch_get_current_queue();
+	dispatch_async(_queue, ^{
+		NSArray *filenames = [[_fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
+		
+		[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
+			NSString *key = [_hashStore keyForHash:filename];
+			dispatch_async(queue, ^{
+				block(key, stop);
+			});
+		}];
+	});
+}
+
+#pragma mark - Internal
 
 - (NSString *)pathForKey:(NSString *)key size:(CGSize)size {
 	NSString *path = [self pathForKey:key];
@@ -356,21 +422,6 @@
 
 - (NSString *)hashesPath {
 	return [_path stringByAppendingPathComponent:@".hashes"];
-}
-
-- (NSDictionary *)attributesForImageWithKey:(NSString *)key size:(CGSize)size {
-	NSString *path = [self pathForKey:key size:size];
-	return [_fileManager attributesOfItemAtPath:path error:nil];
-}
-
-- (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block {
-	
-	NSArray *filenames = [[_fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
-	
-	[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
-		NSString *key = [_hashStore keyForHash:filename];
-		block(key, stop);
-	}];
 }
 
 @end
