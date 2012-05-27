@@ -18,7 +18,7 @@
 @interface DCTInternalDiskImageCache : NSObject
 - (id)initWithPath:(NSString *)path;
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler;
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
 - (NSDictionary *)attributesForImageWithKey:(NSString *)key size:(CGSize)size;
 - (void)removeImagesForKey:(NSString *)key;
@@ -28,7 +28,6 @@
 @implementation DCTImageCache {
 	__strong DCTInternalDiskImageCache *_diskCache;
 	__strong DCTInternalMemoryImageCache *_memoryCache;
-	dispatch_queue_t _queue;
 }
 @synthesize name = _name;
 @synthesize imageFetcher = _imageFetcher;
@@ -77,15 +76,10 @@
 	return sharedInstance;
 }
 
-- (void)dealloc {
-	dispatch_release(_queue);
-}
-
 - (id)initWithName:(NSString *)name {
 	if (!(self = [super init])) return nil;
 	_name = [name copy];
 	_memoryCache = [DCTInternalMemoryImageCache new];
-	_queue = dispatch_queue_create("uk.co.danieltull.DCTImageCache", NULL);
 	NSString *path = [[[self class] defaultCachePath] stringByAppendingPathComponent:name];
 	_diskCache = [[DCTInternalDiskImageCache alloc] initWithPath:path];
 	return self;
@@ -95,51 +89,44 @@
 	return [_memoryCache hasImageForKey:key size:size];
 }
 
+- (void)sendImage:(UIImage *)image toHandler:(void (^)(UIImage *))handler {
+	if (handler == NULL) return;
+	handler(image);	
+}
+
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 	
 	UIImage *image = [_memoryCache imageForKey:key size:size];
 	if (image) {
-		if (handler != NULL) handler(image);
+		[self sendImage:image toHandler:handler];
 		return;
 	}
 	
-	dispatch_queue_t callingQueue = dispatch_get_current_queue();
-	
-	dispatch_async(_queue, ^{
+	[_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
 		
-		UIImage *image = [_diskCache imageForKey:key size:size];
 		if (image) {
-			if (handler != NULL)
-				dispatch_async(callingQueue, ^{
-					[_memoryCache setImage:image forKey:key size:size];
-					handler(image);
-				});
+			[_memoryCache setImage:image forKey:key size:size];
+			[self sendImage:image toHandler:handler];
 			return;
 		}
-	
+		
 		if (self.imageFetcher == NULL) return;
 		
-		dispatch_async(callingQueue, ^{
-		
-			self.imageFetcher(key, size, ^(UIImage *image) {
+		self.imageFetcher(key, size, ^(UIImage *image) {
+			
+			if (!image) return;
+			
+			[_diskCache setImage:image forKey:key size:CGSizeZero];
+			[image dct_generateImageToFitSize:size handler:^(UIImage *image) {
 				
 				if (!image) return;
 				
-				dispatch_async(_queue, ^{
-					
-					[_diskCache setImage:image forKey:key size:CGSizeZero];
-					UIImage *resizedImage = [image dct_imageToFitSize:size];
-					
-					dispatch_async(callingQueue, ^{
-						[_memoryCache setImage:resizedImage forKey:key size:size];
-					});
-					
-					[_diskCache setImage:resizedImage forKey:key size:size];
-					if (handler != NULL) dispatch_async(callingQueue, ^{handler(resizedImage);});
-				});
-			});
+				[_memoryCache setImage:image forKey:key size:size];
+				[_diskCache setImage:image forKey:key size:size];
+				[self sendImage:image toHandler:handler];
+			}];			
 		});
-	});
+	}];
 }
 
 #pragma mark - Internal
@@ -363,14 +350,16 @@
 	return contains;
 }
 
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	__block UIImage *image = nil;
-	dispatch_sync(_queue, ^{
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
+	dispatch_queue_t callingQueue = dispatch_get_current_queue();
+	dispatch_async(_queue, ^{
 		NSString *imagePath = [self pathForKey:key size:size];
 		NSData *data = [_fileManager contentsAtPath:imagePath];
-		image = [UIImage imageWithData:data];
+		UIImage *image = [UIImage imageWithData:data];
+		dispatch_async(callingQueue, ^{
+			handler(image);
+		});
 	});
-	return image;
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {

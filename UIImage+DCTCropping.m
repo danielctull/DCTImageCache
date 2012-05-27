@@ -49,4 +49,12 @@
 	return image;
 }
 
+- (void)dct_generateImageToFitSize:(CGSize)size handler:(void (^)(UIImage *))handler {
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		if (handler == NULL) return;
+		UIImage *image = [self dct_imageToFitSize:size];
+		handler(image);
+	});
+}
+
 @end

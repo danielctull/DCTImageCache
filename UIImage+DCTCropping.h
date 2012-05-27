@@ -10,4 +10,5 @@
 
 @interface UIImage (DCTCropping)
 - (UIImage *)dct_imageToFitSize:(CGSize)size;
+- (void)dct_generateImageToFitSize:(CGSize)size handler:(void (^)(UIImage *))handler;
 @end
