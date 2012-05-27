@@ -7,7 +7,6 @@
 //
 
 #import "DCTImageCache.h"
-#import "UIImage+DCTCropping.h"
 
 @interface DCTInternalMemoryImageCache : NSObject
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
@@ -110,15 +109,9 @@
 			
 			if (!image) return;
 			
-			[_diskCache setImage:image forKey:key size:CGSizeZero];
-			[image dct_generateImageToFitSize:size handler:^(UIImage *image) {
-				
-				if (!image) return;
-								
-				[_memoryCache setImage:image forKey:key size:size];
-				[_diskCache setImage:image forKey:key size:size];
-				[self sendImage:image toHandler:handler];
-			}];			
+			[_memoryCache setImage:image forKey:key size:size];
+			[_diskCache setImage:image forKey:key size:size];
+			[self sendImage:image toHandler:handler];
 		});
 	}];
 }
