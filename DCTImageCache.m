@@ -17,7 +17,6 @@
 
 @interface DCTInternalDiskImageCache : NSObject
 - (id)initWithPath:(NSString *)path;
-- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler;
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
 - (NSDictionary *)attributesForImageWithKey:(NSString *)key size:(CGSize)size;
@@ -339,15 +338,6 @@
 		NSString *directoryPath = [self pathForKey:key];
 		[_fileManager removeItemAtPath:directoryPath error:nil];
 	});
-}
-
-- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
-	__block BOOL contains = NO;
-	dispatch_sync(_queue, ^{
-		NSString *imagePath = [self pathForKey:key size:size];
-		contains = [_fileManager fileExistsAtPath:imagePath];
-	});
-	return contains;
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
