@@ -12,7 +12,7 @@
 
 + (DCTImageCache *)defaultImageCache;
 
-- (id)initWithName:(NSString *)name;
++ (DCTImageCache *)imageCacheWithName:(NSString *)name;
 @property (nonatomic, readonly) NSString *name;
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;

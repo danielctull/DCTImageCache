@@ -29,6 +29,7 @@
 	__strong DCTInternalDiskImageCache *_diskCache;
 	__strong DCTInternalMemoryImageCache *_memoryCache;
 	__strong NSMutableDictionary *_imageHandlers;
+	dispatch_queue_t _queue;
 }
 @synthesize name = _name;
 @synthesize imageFetcher = _imageFetcher;
@@ -63,36 +64,45 @@
 
 #pragma mark DCTImageCache
 
-+ (DCTImageCache *)defaultImageCache {
-	static DCTImageCache *sharedInstance = nil;
++ (NSMutableDictionary *)imageCaches {
+	static NSMutableDictionary *sharedInstance = nil;
 	static dispatch_once_t sharedToken;
 	dispatch_once(&sharedToken, ^{
-		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-		NSString *defaultPath = [[paths objectAtIndex:0] stringByAppendingPathComponent:NSStringFromClass(self)];
-		defaultPath = [defaultPath stringByAppendingPathComponent:@"DefaultCache"];
-		sharedInstance = [[self alloc] initWithPath:defaultPath];
+		sharedInstance = [NSMutableDictionary new];
 	});
 	return sharedInstance;
 }
-+ (dispatch_queue_t)queue {
-	static dispatch_queue_t sharedQueue = nil;
-	static dispatch_once_t sharedToken;
-	dispatch_once(&sharedToken, ^{
-		sharedQueue = dispatch_queue_create("uk.co.danieltull.DCTImageCache", NULL);
-	});
-	return sharedQueue;
-}
-- (dispatch_queue_t)queue {
-	return [[self class] queue];
+
++ (DCTImageCache *)defaultImageCache {
+	return [self imageCacheWithName:@"DCTDefaultImageCache"];
 }
 
-- (id)initWithName:(NSString *)name {
++ (DCTImageCache *)imageCacheWithName:(NSString *)name {
+	
+	NSMutableDictionary *imageCaches = [self imageCaches];
+	DCTImageCache *imageCache = [imageCaches objectForKey:name];
+	if (!imageCache) {
+		imageCache = [[self alloc] _initWithName:name];
+		[imageCaches setObject:imageCache forKey:name];
+	}
+	return imageCache;
+}
+
+- (void)dealloc {
+	dispatch_release(_queue);
+}
+
+- (id)_initWithName:(NSString *)name {
 	if (!(self = [super init])) return nil;
-	_name = [name copy];
-	_memoryCache = [DCTInternalMemoryImageCache new];
-	_imageHandlers = [NSMutableDictionary new];
-	NSString *path = [[[self class] _defaultCachePath] stringByAppendingPathComponent:name];
-	_diskCache = [[DCTInternalDiskImageCache alloc] initWithPath:path];
+	NSString *queueName = [NSString stringWithFormat:@"uk.co.danieltull.DCTImageCache.%@", name];
+	_queue = dispatch_queue_create([queueName cStringUsingEncoding:NSUTF8StringEncoding], NULL);
+	dispatch_sync(_queue, ^{
+		_name = [name copy];
+		_memoryCache = [DCTInternalMemoryImageCache new];
+		_imageHandlers = [NSMutableDictionary new];
+		NSString *path = [[[self class] _defaultCachePath] stringByAppendingPathComponent:name];
+		_diskCache = [[DCTInternalDiskImageCache alloc] initWithPath:path];
+	});
 	return self;
 }
 
@@ -112,7 +122,7 @@
 		return;
 	}
 	
-	dispatch_async(self.queue, ^{
+	dispatch_async(_queue, ^{
 		
 		void (^handler)(UIImage *) = ^(UIImage *image) {
 			
@@ -129,7 +139,7 @@
 		if ([handlers count] > 1) return;
 				
 		[_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
-			dispatch_async(self.queue, ^{
+			dispatch_async(_queue, ^{
 				if (image) {
 					[_memoryCache setImage:image forKey:key size:size];
 					[self _sendImage:image toHandlersForKey:key size:size];
@@ -140,7 +150,7 @@
 				
 				dispatch_async(queue, ^{
 					self.imageFetcher(key, size, ^(UIImage *image) {
-						dispatch_async(self.queue, ^{
+						dispatch_async(_queue, ^{
 							if (!image) return;
 							
 							[_memoryCache setImage:image forKey:key size:size];
@@ -180,17 +190,14 @@
 }
 
 + (void)_enumerateImageCachesUsingBlock:(void (^)(DCTImageCache *imageCache, BOOL *stop))block {
-	dispatch_async(self.queue, ^{
+	NSFileManager *fileManager = [NSFileManager new];
+	NSString *cachePath = [[self class] _defaultCachePath];
+	NSArray *caches = [[fileManager contentsOfDirectoryAtPath:cachePath error:nil] copy];
 	
-		NSFileManager *fileManager = [NSFileManager new];
-		NSString *cachePath = [[self class] _defaultCachePath];
-		NSArray *caches = [[fileManager contentsOfDirectoryAtPath:cachePath error:nil] copy];
-	
-		[caches enumerateObjectsUsingBlock:^(NSString *name, NSUInteger i, BOOL *stop) {
-			DCTImageCache *imageCache = [[DCTImageCache alloc] initWithName:name];
-			block(imageCache, stop);
-		}];
-	});
+	[caches enumerateObjectsUsingBlock:^(NSString *name, NSUInteger i, BOOL *stop) {
+		DCTImageCache *imageCache = [DCTImageCache imageCacheWithName:name];
+		block(imageCache, stop);
+	}];
 }
 
 @end
