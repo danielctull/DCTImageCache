@@ -23,20 +23,23 @@
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block;
 @end
 
+#pragma mark -
+
 @implementation DCTImageCache {
 	__strong DCTInternalDiskImageCache *_diskCache;
 	__strong DCTInternalMemoryImageCache *_memoryCache;
+	__strong NSMutableDictionary *_imageHandlers;
 }
 @synthesize name = _name;
 @synthesize imageFetcher = _imageFetcher;
 
-#pragma mark - NSObject
+#pragma mark NSObject
 
 + (void)load {
 	
 	NSDate *now = [NSDate date];
 	
-	[self enumerateImageCachesUsingBlock:^(DCTImageCache *imageCache, BOOL *stop) {
+	[self _enumerateImageCachesUsingBlock:^(DCTImageCache *imageCache, BOOL *stop) {
 		
 		DCTInternalDiskImageCache *diskCache = imageCache->_diskCache;
 		[diskCache enumerateKeysUsingBlock:^(NSString *key, BOOL *stop) {
@@ -58,7 +61,7 @@
 	}];
 }
 
-#pragma mark - DCTImageCache
+#pragma mark DCTImageCache
 
 + (DCTImageCache *)defaultImageCache {
 	static DCTImageCache *sharedInstance = nil;
@@ -71,12 +74,24 @@
 	});
 	return sharedInstance;
 }
++ (dispatch_queue_t)queue {
+	static dispatch_queue_t sharedQueue = nil;
+	static dispatch_once_t sharedToken;
+	dispatch_once(&sharedToken, ^{
+		sharedQueue = dispatch_queue_create("uk.co.danieltull.DCTImageCache", NULL);
+	});
+	return sharedQueue;
+}
+- (dispatch_queue_t)queue {
+	return [[self class] queue];
+}
 
 - (id)initWithName:(NSString *)name {
 	if (!(self = [super init])) return nil;
 	_name = [name copy];
 	_memoryCache = [DCTInternalMemoryImageCache new];
-	NSString *path = [[[self class] defaultCachePath] stringByAppendingPathComponent:name];
+	_imageHandlers = [NSMutableDictionary new];
+	NSString *path = [[[self class] _defaultCachePath] stringByAppendingPathComponent:name];
 	_diskCache = [[DCTInternalDiskImageCache alloc] initWithPath:path];
 	return self;
 }
@@ -85,54 +100,90 @@
 	return [_memoryCache hasImageForKey:key size:size];
 }
 
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))theHandler {
-	
-	void (^handler)(UIImage *) = [theHandler copy];
-	
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
+	[self fetchImageForKey:key size:size queue:dispatch_get_main_queue() handler:handler];
+}
+
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size queue:(dispatch_queue_t)queue handler:(void (^)(UIImage *))theHandler {
+		
 	UIImage *image = [_memoryCache imageForKey:key size:size];
 	if (image) {
-		[self sendImage:image toHandler:handler];
+		if (theHandler != NULL) theHandler(image);
 		return;
 	}
 	
-	[_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
+	dispatch_async(self.queue, ^{
 		
-		if (image) {
-			[_memoryCache setImage:image forKey:key size:size];
-			[self sendImage:image toHandler:handler];
-			return;
-		}
-		
-		if (self.imageFetcher == NULL) return;
-		
-		self.imageFetcher(key, size, ^(UIImage *image) {
+		void (^handler)(UIImage *) = ^(UIImage *image) {
 			
-			if (!image) return;
+			if (theHandler == NULL) return;
 			
-			[_memoryCache setImage:image forKey:key size:size];
-			[_diskCache setImage:image forKey:key size:size];
-			[self sendImage:image toHandler:handler];
-		});
+			dispatch_async(queue, ^{
+				theHandler(image);
+			});
+		};
+		
+		NSMutableArray *handlers = [self _imageHandlersForKey:key size:size];
+		[handlers addObject:handler];
+		
+		if ([handlers count] > 1) return;
+				
+		[_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
+			dispatch_async(self.queue, ^{
+				if (image) {
+					[_memoryCache setImage:image forKey:key size:size];
+					[self _sendImage:image toHandlersForKey:key size:size];
+					return;
+				}
+				
+				if (self.imageFetcher == NULL) return;
+				
+				dispatch_async(queue, ^{
+					self.imageFetcher(key, size, ^(UIImage *image) {
+						dispatch_async(self.queue, ^{
+							if (!image) return;
+							
+							[_memoryCache setImage:image forKey:key size:size];
+							[_diskCache setImage:image forKey:key size:size];
+							[self _sendImage:image toHandlersForKey:key size:size];
+						});
+					});
+				});
+			});
+		}];
+	});
+}
+
+#pragma mark Internal
+
+- (NSMutableArray *)_imageHandlersForKey:(NSString *)key size:(CGSize)size {
+	NSString *accessKey = [NSString stringWithFormat:@"%@+%@", key, NSStringFromCGSize(size)];
+	NSMutableArray *handlers = [_imageHandlers objectForKey:accessKey];
+	if (!handlers) {
+		handlers = [NSMutableArray new];
+		[_imageHandlers setObject:handlers forKey:accessKey];
+	}
+	return handlers;
+}
+
+- (void)_sendImage:(UIImage *)image toHandlersForKey:(NSString *)key size:(CGSize)size {
+	NSMutableArray *handlers = [self _imageHandlersForKey:key size:size];
+	[handlers enumerateObjectsUsingBlock:^(void(^handler)(UIImage *), NSUInteger idx, BOOL *stop) {
+		handler(image);
 	}];
+	[handlers removeAllObjects];
 }
 
-#pragma mark - Internal
-
-- (void)sendImage:(UIImage *)image toHandler:(void (^)(UIImage *))handler {
-	if (handler == NULL) return;
-	handler(image);	
-}
-
-+ (NSString *)defaultCachePath {
++ (NSString *)_defaultCachePath {
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	return [[paths objectAtIndex:0] stringByAppendingPathComponent:NSStringFromClass(self)];
 }
 
-+ (void)enumerateImageCachesUsingBlock:(void (^)(DCTImageCache *imageCache, BOOL *stop))block {
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
++ (void)_enumerateImageCachesUsingBlock:(void (^)(DCTImageCache *imageCache, BOOL *stop))block {
+	dispatch_async(self.queue, ^{
 	
 		NSFileManager *fileManager = [NSFileManager new];
-		NSString *cachePath = [[self class] defaultCachePath];
+		NSString *cachePath = [[self class] _defaultCachePath];
 		NSArray *caches = [[fileManager contentsOfDirectoryAtPath:cachePath error:nil] copy];
 	
 		[caches enumerateObjectsUsingBlock:^(NSString *name, NSUInteger i, BOOL *stop) {
@@ -144,7 +195,7 @@
 
 @end
 
-
+#pragma mark -
 
 @interface DCTInternalImageCacheHashStore : NSObject
 - (id)initWithPath:(NSString *)path;
@@ -199,38 +250,41 @@
 
 @end
 
-
-
-
-
+#pragma mark -
 
 @implementation DCTInternalMemoryImageCache {
 	__strong NSMutableDictionary *_cache;
 	__strong NSMutableDictionary *_cacheAccessCount;
+	dispatch_queue_t _queue;
 }
-
 - (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self
-													name:UIApplicationDidReceiveMemoryWarningNotification
-												  object:nil];
+	dispatch_sync(_queue, ^{
+		[[NSNotificationCenter defaultCenter] removeObserver:self
+														name:UIApplicationDidReceiveMemoryWarningNotification
+													  object:nil];
+	});
+	dispatch_release(_queue);
 }
 
 - (id)init {
 	if (!(self = [super init])) return nil;
 	_cache = [NSMutableDictionary new];
 	_cacheAccessCount = [NSMutableDictionary new];
+	_queue = dispatch_queue_create("uk.co.danieltull.DCTInternalMemoryImageCache", NULL);
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(didReceiveMemoryWarning:)
-												 name:UIApplicationDidReceiveMemoryWarningNotification
-											   object:nil];
+	dispatch_async(_queue, ^{
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(didReceiveMemoryWarning:)
+													 name:UIApplicationDidReceiveMemoryWarningNotification
+												   object:nil];
+	});
 	
 	return self;
 }
 
 - (void)didReceiveMemoryWarning:(NSNotification *)notification {
 		
-	dispatch_async(dispatch_get_main_queue(), ^{
+	dispatch_async(_queue, ^{
 		
 		NSArray *counts = [[_cacheAccessCount allValues] sortedArrayUsingSelector:@selector(compare:)];
 		NSNumber *mediumCountNumber = [counts objectAtIndex:[counts count]/2];
@@ -243,20 +297,48 @@
 			NSArray *array = [accessKey componentsSeparatedByString:@"+"];
 			NSString *key = [array objectAtIndex:0];
 			NSString *sizeString = [array objectAtIndex:1];
-			NSMutableDictionary *dictionary = [self imageCacheForKey:key];
+			NSMutableDictionary *dictionary = [self _imageCacheForKey:key];
 			[dictionary removeObjectForKey:sizeString];
 			if ([dictionary count] == 0) [_cache removeObjectForKey:key];
 		}];
 	});
 }
 
-- (void)didAskForImageWithKey:(NSString *)key size:(CGSize)size {
+- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
+	__block BOOL contains = NO;
+	dispatch_sync(_queue, ^{
+		NSDictionary *dictionary = [self _imageCacheForKey:key];
+		contains = [[dictionary allKeys] containsObject:NSStringFromCGSize(size)];
+	});
+	return contains;
+}
+
+- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
+	__block UIImage *image = nil;
+	dispatch_sync(_queue, ^{
+		[self _didAskForImageWithKey:key size:size];
+		NSDictionary *dictionary = [self _imageCacheForKey:key];
+		image = [dictionary objectForKey:NSStringFromCGSize(size)];
+	});
+	return image;
+}
+
+- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+	dispatch_async(_queue, ^{
+		NSMutableDictionary *dictionary = [self _imageCacheForKey:key];
+		[dictionary setObject:image forKey:NSStringFromCGSize(size)];
+	});
+}
+
+#pragma mark Internal
+
+- (void)_didAskForImageWithKey:(NSString *)key size:(CGSize)size {
 	NSString *accessKey = [NSString stringWithFormat:@"%@+%@", key, NSStringFromCGSize(size)];
 	NSNumber *count = [_cacheAccessCount objectForKey:accessKey];
 	[_cacheAccessCount setObject:[NSNumber numberWithInteger:[count integerValue]+1] forKey:accessKey];
 }
 
-- (NSMutableDictionary *)imageCacheForKey:(NSString *)key {
+- (NSMutableDictionary *)_imageCacheForKey:(NSString *)key {
 	NSMutableDictionary *dictionary = [_cache objectForKey:key];
 	if (!dictionary) {
 		dictionary = [NSMutableDictionary new];
@@ -265,25 +347,9 @@
 	return dictionary;
 }
 
-- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
-	NSDictionary *dictionary = [self imageCacheForKey:key];
-	return [[dictionary allKeys] containsObject:NSStringFromCGSize(size)];
-}
-
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	[self didAskForImageWithKey:key size:size];
-	NSDictionary *dictionary = [self imageCacheForKey:key];
-	return [dictionary objectForKey:NSStringFromCGSize(size)];
-}
-
-- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
-	NSMutableDictionary *dictionary = [self imageCacheForKey:key];
-	[dictionary setObject:image forKey:NSStringFromCGSize(size)];
-}
-
 @end
 
-
+#pragma mark -
 
 
 @implementation DCTInternalDiskImageCache {
@@ -371,7 +437,7 @@
 	});
 }
 
-#pragma mark - Internal
+#pragma mark Internal
 
 - (NSString *)pathForKey:(NSString *)key size:(CGSize)size {
 	NSString *path = [self pathForKey:key];

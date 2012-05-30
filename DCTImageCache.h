@@ -16,7 +16,11 @@
 @property (nonatomic, readonly) NSString *name;
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))block;
+
+// The handler is called back on the main queue.
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler;
+
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size queue:(dispatch_queue_t)queue handler:(void (^)(UIImage *))handler;
 
 @property (nonatomic, copy) void(^imageFetcher)(NSString *key, CGSize size, void(^imageBlock)(UIImage *));
 
