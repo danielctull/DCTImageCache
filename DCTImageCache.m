@@ -17,6 +17,11 @@
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block;
 @end
 
+
+@interface UIImage (DCTImageCache)
+- (void)dctImageCache_decompress;
+@end
+
 #pragma mark -
 
 @implementation DCTImageCache {
@@ -137,6 +142,7 @@
 		__block BOOL saveToDisk = NO;
 		void (^imageHandler)(UIImage *image) = ^(UIImage *image) {
 			dispatch_async(queue, ^{
+				[image dctImageCache_decompress];
 				[_memoryCache setObject:image forKey:cacheKey];
 				if (saveToDisk) [_diskCache setImage:image forKey:key size:size];
 				[self _sendImage:image toHandlersForKey:key size:size];
@@ -360,3 +366,16 @@
 }
 
 @end
+
+@implementation UIImage (DCTImageCache)
+
+- (void)dctImageCache_decompress {
+	const CGImageRef imageRef = [self CGImage];
+	const CGColorSpaceRef colorspace = CGImageGetColorSpace(imageRef);
+	const CGContextRef context = CGBitmapContextCreate(NULL, 1, 1, 8, 4, colorspace, kCGImageAlphaNoneSkipFirst);
+	CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), imageRef);
+	CGContextRelease(context);
+}
+
+@end
+
