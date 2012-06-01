@@ -133,28 +133,27 @@
 		[handlers addObject:handler];
 		
 		if ([handlers count] > 1) return;
-				
-		[_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
-			dispatch_async(_queue, ^{
-				if (image) {
-					[_memoryCache setObject:image forKey:cacheKey];
-					[self _sendImage:image toHandlersForKey:key size:size];
-					return;
-				}
-				
-				if (self.imageFetcher == NULL) return;
-				
-				dispatch_async(queue, ^{
-					self.imageFetcher(key, size, ^(UIImage *image) {
-						dispatch_async(_queue, ^{
-							if (!image) return;
-							[_memoryCache setObject:image forKey:cacheKey];
-							[_diskCache setImage:image forKey:key size:size];
-							[self _sendImage:image toHandlersForKey:key size:size];
-						});
-					});
-				});
+		
+		__block BOOL saveToDisk = NO;
+		void (^imageHandler)(UIImage *image) = ^(UIImage *image) {
+			dispatch_async(queue, ^{
+				[_memoryCache setObject:image forKey:cacheKey];
+				if (saveToDisk) [_diskCache setImage:image forKey:key size:size];
+				[self _sendImage:image toHandlersForKey:key size:size];
 			});
+		};
+		
+		[_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
+			
+			if (image) {
+				imageHandler(image);
+				return;
+			}
+			
+			if (self.imageFetcher == NULL) return;
+			
+			saveToDisk = YES;
+			self.imageFetcher(key, size, imageHandler);
 		}];
 	});
 }
