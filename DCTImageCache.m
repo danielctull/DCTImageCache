@@ -105,16 +105,12 @@
 	return self;
 }
 
-- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
+- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size; {
 	NSString *cacheKey = [self _cacheNameForKey:key size:size];
-	return ([_memoryCache objectForKey:cacheKey] != nil);
+	return [_memoryCache objectForKey:cacheKey];
 }
 
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
-	[self fetchImageForKey:key size:size queue:dispatch_get_main_queue() handler:handler];
-}
-
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size queue:(dispatch_queue_t)queue handler:(void (^)(UIImage *))theHandler {
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))theHandler {
 	
 	NSString *cacheKey = [self _cacheNameForKey:key size:size];
 	UIImage *image = [_memoryCache objectForKey:cacheKey];
@@ -126,12 +122,7 @@
 	dispatch_async(_queue, ^{
 		
 		void (^handler)(UIImage *) = ^(UIImage *image) {
-			
-			if (theHandler == NULL) return;
-			
-			dispatch_async(queue, ^{
-				theHandler(image);
-			});
+			if (theHandler != NULL) theHandler(image);
 		};
 		
 		NSMutableArray *handlers = [self _imageHandlersForKey:key size:size];
@@ -141,7 +132,7 @@
 		
 		__block BOOL saveToDisk = NO;
 		void (^imageHandler)(UIImage *image) = ^(UIImage *image) {
-			dispatch_async(queue, ^{
+			dispatch_async(_queue, ^{
 				[image dctImageCache_decompress];
 				[_memoryCache setObject:image forKey:cacheKey];
 				if (saveToDisk) [_diskCache setImage:image forKey:key size:size];
@@ -370,9 +361,9 @@
 @implementation UIImage (DCTImageCache)
 
 - (void)dctImageCache_decompress {
-	const CGImageRef imageRef = [self CGImage];
-	const CGColorSpaceRef colorspace = CGImageGetColorSpace(imageRef);
-	const CGContextRef context = CGBitmapContextCreate(NULL, 1, 1, 8, 4, colorspace, kCGImageAlphaNoneSkipFirst);
+	CGImageRef imageRef = [self CGImage];
+	CGColorSpaceRef colorspace = CGImageGetColorSpace(imageRef);
+	CGContextRef context = CGBitmapContextCreate(NULL, 1, 1, 8, 4, colorspace, kCGImageAlphaNoneSkipFirst);
 	CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), imageRef);
 	CGContextRelease(context);
 }
