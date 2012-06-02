@@ -15,6 +15,10 @@
 + (DCTImageCache *)imageCacheWithName:(NSString *)name;
 @property (nonatomic, readonly) NSString *name;
 
+- (void)removeAllImages;
+- (void)removeAllImagesForKey:(NSString *)key;
+- (void)removeImageForKey:(NSString *)key size:(CGSize)size;
+
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler;
 

@@ -13,8 +13,13 @@
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler;
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
 - (void)fetchAttributesForImageWithKey:(NSString *)key size:(CGSize)size handler:(void (^)(NSDictionary *))handler;
+
+- (void)removeAllImages;
 - (void)removeImagesForKey:(NSString *)key;
+- (void)removeImageForKey:(NSString *)key size:(CGSize)size;
+
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block;
+- (void)enumerateSizesForKey:(NSString *)key usingBlock:(void (^)(CGSize size, BOOL *stop))block;
 @end
 
 
@@ -103,6 +108,20 @@
 		_diskCache = [[DCTInternalDiskImageCache alloc] initWithPath:path];
 	});
 	return self;
+}
+- (void)removeAllImages {
+	[_memoryCache removeAllObjects];
+	[_diskCache removeAllImages];
+}
+- (void)removeAllImagesForKey:(NSString *)key {
+	[_diskCache enumerateSizesForKey:key usingBlock:^(CGSize size, BOOL *stop) {
+		[_memoryCache removeObjectForKey:[self _cacheNameForKey:key size:size]];
+	}];
+	[_diskCache removeImagesForKey:key];
+}
+- (void)removeImageForKey:(NSString *)key size:(CGSize)size {
+	[_memoryCache removeObjectForKey:[self _cacheNameForKey:key size:size]];
+	[_diskCache removeImageForKey:key size:size];
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size; {
@@ -275,12 +294,27 @@
 
 - (id)initWithPath:(NSString *)path {
 	if (!(self = [super init])) return nil;
-	_path = [path copy];
 	dispatch_sync([self queue], ^{
+		_path = [path copy];
 		_hashStore = [[DCTInternalImageCacheHashStore alloc] initWithPath:[self hashesPath]];
 		_fileManager = [NSFileManager new];
+		[_fileManager createDirectoryAtPath:_path withIntermediateDirectories:YES attributes:nil error:nil];
 	});
 	return self;
+}
+
+- (void)removeAllImages {
+	dispatch_async(self.queue, ^{
+		[_fileManager removeItemAtPath:_path error:nil];
+		[_fileManager createDirectoryAtPath:_path withIntermediateDirectories:YES attributes:nil error:nil];
+	});
+}
+
+- (void)removeImageForKey:(NSString *)key size:(CGSize)size {
+	dispatch_async(self.queue, ^{
+		NSString *path = [self pathForKey:key size:size];
+		[_fileManager removeItemAtPath:path error:nil];
+	});
 }
 
 - (void)removeImagesForKey:(NSString *)key {
@@ -327,17 +361,18 @@
 }
 
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block {
-	dispatch_queue_t callingQueue = dispatch_get_current_queue();
-	dispatch_async(self.queue, ^{
-		NSArray *filenames = [[_fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
-		
-		[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
-			NSString *key = [_hashStore keyForHash:filename];
-			dispatch_async(callingQueue, ^{
-				block(key, stop);
-			});
-		}];
-	});
+	NSArray *filenames = [[_fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
+	[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
+		NSString *key = [_hashStore keyForHash:filename];
+		block(key, stop);
+	}];
+}
+
+- (void)enumerateSizesForKey:(NSString *)key usingBlock:(void (^)(CGSize size, BOOL *stop))block {
+	NSArray *filenames = [[_fileManager contentsOfDirectoryAtPath:[self pathForKey:key] error:nil] copy];
+	[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
+		block(CGSizeFromString(filename), stop);
+	}];
 }
 
 #pragma mark Internal
