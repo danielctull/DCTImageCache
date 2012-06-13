@@ -152,6 +152,7 @@
 		__block BOOL saveToDisk = NO;
 		void (^imageHandler)(UIImage *image) = ^(UIImage *image) {
 			dispatch_async(_queue, ^{
+				if (!image) return;
 				[image dctImageCache_decompress];
 				[_memoryCache setObject:image forKey:cacheKey];
 				if (saveToDisk) [_diskCache setImage:image forKey:key size:size];
