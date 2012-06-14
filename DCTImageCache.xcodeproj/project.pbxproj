@@ -1,0 +1,413 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		24F7CB43158A1B9D00B2E33E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
+		24F7CB48158A1B9D00B2E33E /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
+		24F7CB4A158A1B9D00B2E33E /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
+		24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */; };
+		24F7CB54158A1B9D00B2E33E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB53158A1B9D00B2E33E /* UIKit.framework */; };
+		24F7CB55158A1B9D00B2E33E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
+		24F7CB58158A1B9D00B2E33E /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */; };
+		24F7CB5E158A1B9D00B2E33E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 24F7CB5C158A1B9D00B2E33E /* InfoPlist.strings */; };
+		24F7CB61158A1B9D00B2E33E /* DCTImageCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB60158A1B9D00B2E33E /* DCTImageCacheTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		24F7CB56158A1B9D00B2E33E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 24F7CB36158A1B9D00B2E33E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 24F7CB3E158A1B9D00B2E33E;
+			remoteInfo = DCTImageCache;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		24F7CB3D158A1B9D00B2E33E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/${PRODUCT_NAME}";
+			dstSubfolderSpec = 16;
+			files = (
+				24F7CB48158A1B9D00B2E33E /* DCTImageCache.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		24F7CB42158A1B9D00B2E33E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		24F7CB46158A1B9D00B2E33E /* DCTImageCache-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DCTImageCache-Prefix.pch"; sourceTree = "<group>"; };
+		24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCTImageCache.h; sourceTree = "<group>"; };
+		24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCTImageCache.m; sourceTree = "<group>"; };
+		24F7CB50158A1B9D00B2E33E /* DCTImageCacheTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCTImageCacheTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		24F7CB53158A1B9D00B2E33E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		24F7CB5B158A1B9D00B2E33E /* DCTImageCacheTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCacheTests-Info.plist"; sourceTree = "<group>"; };
+		24F7CB5D158A1B9D00B2E33E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		24F7CB5F158A1B9D00B2E33E /* DCTImageCacheTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheTests.h; sourceTree = "<group>"; };
+		24F7CB60158A1B9D00B2E33E /* DCTImageCacheTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		24F7CB3C158A1B9D00B2E33E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24F7CB43158A1B9D00B2E33E /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		24F7CB4C158A1B9D00B2E33E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */,
+				24F7CB54158A1B9D00B2E33E /* UIKit.framework in Frameworks */,
+				24F7CB55158A1B9D00B2E33E /* Foundation.framework in Frameworks */,
+				24F7CB58158A1B9D00B2E33E /* libDCTImageCache.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		24F7CB34158A1B9D00B2E33E = {
+			isa = PBXGroup;
+			children = (
+				24F7CB44158A1B9D00B2E33E /* DCTImageCache */,
+				24F7CB59158A1B9D00B2E33E /* DCTImageCacheTests */,
+				24F7CB41158A1B9D00B2E33E /* Frameworks */,
+				24F7CB40158A1B9D00B2E33E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		24F7CB40158A1B9D00B2E33E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */,
+				24F7CB50158A1B9D00B2E33E /* DCTImageCacheTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		24F7CB41158A1B9D00B2E33E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				24F7CB42158A1B9D00B2E33E /* Foundation.framework */,
+				24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */,
+				24F7CB53158A1B9D00B2E33E /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		24F7CB44158A1B9D00B2E33E /* DCTImageCache */ = {
+			isa = PBXGroup;
+			children = (
+				24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */,
+				24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */,
+				24F7CB45158A1B9D00B2E33E /* Supporting Files */,
+			);
+			path = DCTImageCache;
+			sourceTree = "<group>";
+		};
+		24F7CB45158A1B9D00B2E33E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				24F7CB46158A1B9D00B2E33E /* DCTImageCache-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		24F7CB59158A1B9D00B2E33E /* DCTImageCacheTests */ = {
+			isa = PBXGroup;
+			children = (
+				24F7CB5F158A1B9D00B2E33E /* DCTImageCacheTests.h */,
+				24F7CB60158A1B9D00B2E33E /* DCTImageCacheTests.m */,
+				24F7CB5A158A1B9D00B2E33E /* Supporting Files */,
+			);
+			path = DCTImageCacheTests;
+			sourceTree = "<group>";
+		};
+		24F7CB5A158A1B9D00B2E33E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				24F7CB5B158A1B9D00B2E33E /* DCTImageCacheTests-Info.plist */,
+				24F7CB5C158A1B9D00B2E33E /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		24F7CB3E158A1B9D00B2E33E /* DCTImageCache */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24F7CB64158A1B9D00B2E33E /* Build configuration list for PBXNativeTarget "DCTImageCache" */;
+			buildPhases = (
+				24F7CB3B158A1B9D00B2E33E /* Sources */,
+				24F7CB3C158A1B9D00B2E33E /* Frameworks */,
+				24F7CB3D158A1B9D00B2E33E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DCTImageCache;
+			productName = DCTImageCache;
+			productReference = 24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		24F7CB4F158A1B9D00B2E33E /* DCTImageCacheTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24F7CB67158A1B9D00B2E33E /* Build configuration list for PBXNativeTarget "DCTImageCacheTests" */;
+			buildPhases = (
+				24F7CB4B158A1B9D00B2E33E /* Sources */,
+				24F7CB4C158A1B9D00B2E33E /* Frameworks */,
+				24F7CB4D158A1B9D00B2E33E /* Resources */,
+				24F7CB4E158A1B9D00B2E33E /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				24F7CB57158A1B9D00B2E33E /* PBXTargetDependency */,
+			);
+			name = DCTImageCacheTests;
+			productName = DCTImageCacheTests;
+			productReference = 24F7CB50158A1B9D00B2E33E /* DCTImageCacheTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		24F7CB36158A1B9D00B2E33E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "Daniel Tull";
+			};
+			buildConfigurationList = 24F7CB39158A1B9D00B2E33E /* Build configuration list for PBXProject "DCTImageCache" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 24F7CB34158A1B9D00B2E33E;
+			productRefGroup = 24F7CB40158A1B9D00B2E33E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				24F7CB3E158A1B9D00B2E33E /* DCTImageCache */,
+				24F7CB4F158A1B9D00B2E33E /* DCTImageCacheTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		24F7CB4D158A1B9D00B2E33E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24F7CB5E158A1B9D00B2E33E /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		24F7CB4E158A1B9D00B2E33E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		24F7CB3B158A1B9D00B2E33E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24F7CB4A158A1B9D00B2E33E /* DCTImageCache.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		24F7CB4B158A1B9D00B2E33E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24F7CB61158A1B9D00B2E33E /* DCTImageCacheTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		24F7CB57158A1B9D00B2E33E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 24F7CB3E158A1B9D00B2E33E /* DCTImageCache */;
+			targetProxy = 24F7CB56158A1B9D00B2E33E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		24F7CB5C158A1B9D00B2E33E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				24F7CB5D158A1B9D00B2E33E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		24F7CB62158A1B9D00B2E33E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		24F7CB63158A1B9D00B2E33E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		24F7CB65158A1B9D00B2E33E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/DCTImageCache.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "include/$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		24F7CB66158A1B9D00B2E33E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DSTROOT = /tmp/DCTImageCache.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PUBLIC_HEADERS_FOLDER_PATH = "include/$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		24F7CB68158A1B9D00B2E33E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
+				INFOPLIST_FILE = "DCTImageCacheTests/DCTImageCacheTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		24F7CB69158A1B9D00B2E33E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
+				INFOPLIST_FILE = "DCTImageCacheTests/DCTImageCacheTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		24F7CB39158A1B9D00B2E33E /* Build configuration list for PBXProject "DCTImageCache" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24F7CB62158A1B9D00B2E33E /* Debug */,
+				24F7CB63158A1B9D00B2E33E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		24F7CB64158A1B9D00B2E33E /* Build configuration list for PBXNativeTarget "DCTImageCache" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24F7CB65158A1B9D00B2E33E /* Debug */,
+				24F7CB66158A1B9D00B2E33E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		24F7CB67158A1B9D00B2E33E /* Build configuration list for PBXNativeTarget "DCTImageCacheTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24F7CB68158A1B9D00B2E33E /* Debug */,
+				24F7CB69158A1B9D00B2E33E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 24F7CB36158A1B9D00B2E33E /* Project object */;
+}
