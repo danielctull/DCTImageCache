@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		24F7CB43158A1B9D00B2E33E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
-		24F7CB48158A1B9D00B2E33E /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
+		24F7CB48158A1B9D00B2E33E /* DCTImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		24F7CB4A158A1B9D00B2E33E /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
 		24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */; };
 		24F7CB54158A1B9D00B2E33E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB53158A1B9D00B2E33E /* UIKit.framework */; };
@@ -27,19 +27,6 @@
 			remoteInfo = DCTImageCache;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		24F7CB3D158A1B9D00B2E33E /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/${PRODUCT_NAME}";
-			dstSubfolderSpec = 16;
-			files = (
-				24F7CB48158A1B9D00B2E33E /* DCTImageCache.h in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +134,17 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		24F6EB3D158A1FC200CEDD41 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24F7CB48158A1B9D00B2E33E /* DCTImageCache.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		24F7CB3E158A1B9D00B2E33E /* DCTImageCache */ = {
 			isa = PBXNativeTarget;
@@ -154,7 +152,7 @@
 			buildPhases = (
 				24F7CB3B158A1B9D00B2E33E /* Sources */,
 				24F7CB3C158A1B9D00B2E33E /* Frameworks */,
-				24F7CB3D158A1B9D00B2E33E /* CopyFiles */,
+				24F6EB3D158A1FC200CEDD41 /* Headers */,
 			);
 			buildRules = (
 			);
