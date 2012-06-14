@@ -399,8 +399,10 @@
 - (void)dctImageCache_decompress {
 	CGImageRef imageRef = [self CGImage];
 	CGColorSpaceRef colorspace = CGImageGetColorSpace(imageRef);
-	CGContextRef context = CGBitmapContextCreate(NULL, 1, 1, 8, 4, colorspace, kCGImageAlphaNoneSkipFirst);
-	CGContextDrawImage(context, CGRectMake(0, 0, 1, 1), imageRef);
+	size_t width = CGImageGetWidth(imageRef);
+	size_t height = CGImageGetHeight(imageRef);
+	CGContextRef context = CGBitmapContextCreate(NULL, width, height, 8, 4*width, colorspace, kCGImageAlphaNoneSkipFirst);
+	CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
 	CGContextRelease(context);
 }
 
