@@ -41,29 +41,30 @@
 #pragma mark NSObject
 
 + (void)load {
-	
-	NSDate *now = [NSDate date];
-	
-	[self _enumerateImageCachesUsingBlock:^(DCTImageCache *imageCache, BOOL *stop) {
+	@autoreleasepool {
+		NSDate *now = [NSDate date];
 		
-		DCTInternalDiskImageCache *diskCache = imageCache->_diskCache;
-		[diskCache enumerateKeysUsingBlock:^(NSString *key, BOOL *stop) {
-		
-			[diskCache fetchAttributesForImageWithKey:key size:CGSizeZero handler:^(NSDictionary *attributes) {
+		[self _enumerateImageCachesUsingBlock:^(DCTImageCache *imageCache, BOOL *stop) {
 			
-				if (!attributes) {
-					[diskCache removeImagesForKey:key];
-					return;
-				}
-					
-				NSDate *creationDate = [attributes objectForKey:NSFileCreationDate];
-				NSTimeInterval timeInterval = [now timeIntervalSinceDate:creationDate];
+			DCTInternalDiskImageCache *diskCache = imageCache->_diskCache;
+			[diskCache enumerateKeysUsingBlock:^(NSString *key, BOOL *stop) {
+			
+				[diskCache fetchAttributesForImageWithKey:key size:CGSizeZero handler:^(NSDictionary *attributes) {
 				
-				if (timeInterval > 604800) // 7 days
-					[diskCache removeImagesForKey:key];
+					if (!attributes) {
+						[diskCache removeImagesForKey:key];
+						return;
+					}
+						
+					NSDate *creationDate = [attributes objectForKey:NSFileCreationDate];
+					NSTimeInterval timeInterval = [now timeIntervalSinceDate:creationDate];
+					
+					if (timeInterval > 604800) // 7 days
+						[diskCache removeImagesForKey:key];
+				}];
 			}];
 		}];
-	}];
+	}
 }
 
 #pragma mark DCTImageCache
