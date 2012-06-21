@@ -399,12 +399,13 @@
 
 - (void)dctImageCache_decompress {
 	CGImageRef imageRef = [self CGImage];
-	CGColorSpaceRef colorspace = CGImageGetColorSpace(imageRef);
 	size_t width = CGImageGetWidth(imageRef);
 	size_t height = CGImageGetHeight(imageRef);
-	CGContextRef context = CGBitmapContextCreate(NULL, width, height, 8, 4*width, colorspace, kCGImageAlphaNoneSkipFirst);
+	CGSize size = CGSizeMake(width, height);
+	UIGraphicsBeginImageContext(size);
+	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
-	CGContextRelease(context);
+	UIGraphicsEndImageContext();	
 }
 
 @end
