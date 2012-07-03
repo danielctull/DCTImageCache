@@ -23,7 +23,7 @@
 	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
 	imageCache.imageFetcher = ^(NSString *key, CGSize size, void(^imageBlock)(UIImage *)) {
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[self downloadURL:[NSURL URLWithString:key] imageBlock:imageBlock];
+			[self downloadKey:key imageBlock:imageBlock];
 		});
 	};	
 	
@@ -35,7 +35,8 @@
     return YES;
 }
 
-- (void)downloadURL:(NSURL *)URL imageBlock:(void(^)(UIImage *))imageBlock {
+- (void)downloadKey:(NSString *)key imageBlock:(void(^)(UIImage *))imageBlock {
+	NSURL *URL = [NSURL URLWithString:key];
 	[_imageBlocks setObject:imageBlock forKey:URL];
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:URL];
 	[NSURLConnection connectionWithRequest:request delegate:self];
@@ -44,19 +45,22 @@
 #pragma mark - NSURLConnectionDownloadDelegate
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+	NSURL *URL = connection.originalRequest.URL;
 	
-	NSMutableData *imageData = [_datas objectForKey:connection.originalRequest.URL];
+	NSMutableData *imageData = [_datas objectForKey:URL];
 	if (!imageData) {
 		imageData = [NSMutableData new];
-		[_datas setObject:imageData forKey:connection.originalRequest.URL];
+		[_datas setObject:imageData forKey:URL];
 	}
 	
 	[imageData appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-	void(^imageBlock)(UIImage *) = [_imageBlocks objectForKey:connection.originalRequest.URL];
-	NSData *data = [_datas objectForKey:connection.originalRequest.URL];
+	NSURL *URL = connection.originalRequest.URL;
+	
+	void(^imageBlock)(UIImage *) = [_imageBlocks objectForKey:URL];
+	NSData *data = [_datas objectForKey:URL];
 	UIImage *image = [UIImage imageWithData:data];
 	imageBlock(image);
 }
