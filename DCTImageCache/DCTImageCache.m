@@ -87,7 +87,10 @@
 }
 
 - (id)_initWithName:(NSString *)name {
-	if (!(self = [super init])) return nil;
+	
+	self = [super init];
+	if (!self) return nil;
+	
 	NSString *queueName = [NSString stringWithFormat:@"uk.co.danieltull.DCTImageCache.%@", name];
 	_queue = [NSOperationQueue new];
 	[_queue setMaxConcurrentOperationCount:1];
@@ -103,14 +106,17 @@
 	
 	return self;
 }
+
 - (void)removeAllImages {
 	[_memoryCache removeAllImages];
 	[_diskCache removeAllImages];
 }
+
 - (void)removeAllImagesForKey:(NSString *)key {
 	[_memoryCache removeAllImagesForKey:key];
 	[_diskCache removeAllImagesForKey:key];
 }
+
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
 	[_memoryCache removeImageForKey:key size:size];
 	[_diskCache removeImageForKey:key size:size];
