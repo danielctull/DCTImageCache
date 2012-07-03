@@ -46,7 +46,7 @@
 	}];
 }
 
-- (void)removeImagesForKey:(NSString *)key {
+- (void)removeAllImagesForKey:(NSString *)key {
 	[_queue addOperationWithBlock:^{
 		[_hashStore removeHashForKey:key];
 		NSString *directoryPath = [self _pathForKey:key];
@@ -54,11 +54,29 @@
 	}];
 }
 
+- (UIImage *)_imageForKey:(NSString *)key size:(CGSize)size {
+	NSString *imagePath = [self _pathForKey:key size:size];
+	NSData *data = [_fileManager contentsAtPath:imagePath];
+	return [UIImage imageWithData:data];
+}
+
+- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
+	
+	__block dispatch_semaphore_t waiter = dispatch_semaphore_create(0);
+	__block UIImage *image = nil;
+	
+	[_queue addOperationWithBlock:^{
+		image = [self imageForKey:key size:size];
+		dispatch_semaphore_signal(waiter);
+	}];
+	
+	dispatch_semaphore_wait(waiter, DISPATCH_TIME_FOREVER);
+	return image;
+}
+
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 	[_queue addOperationWithBlock:^{
-		NSString *imagePath = [self _pathForKey:key size:size];
-		NSData *data = [_fileManager contentsAtPath:imagePath];
-		UIImage *image = [UIImage imageWithData:data];
+		UIImage *image = [self _imageForKey:key size:size];
 		handler(image);
 	}];
 }

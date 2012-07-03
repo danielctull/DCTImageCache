@@ -38,7 +38,7 @@
 				[diskCache fetchAttributesForImageWithKey:key size:CGSizeZero handler:^(NSDictionary *attributes) {
 				
 					if (!attributes) {
-						[diskCache removeImagesForKey:key];
+						[diskCache removeAllImagesForKey:key];
 						return;
 					}
 						
@@ -46,7 +46,7 @@
 					NSTimeInterval timeInterval = [now timeIntervalSinceDate:creationDate];
 					
 					if (timeInterval > 604800) // 7 days
-						[diskCache removeImagesForKey:key];
+						[diskCache removeAllImagesForKey:key];
 				}];
 			}];
 		}];
@@ -104,7 +104,7 @@
 	[_diskCache enumerateSizesForKey:key usingBlock:^(CGSize size, BOOL *stop) {
 		[_memoryCache removeObjectForKey:[self _cacheNameForKey:key size:size]];
 	}];
-	[_diskCache removeImagesForKey:key];
+	[_diskCache removeAllImagesForKey:key];
 }
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
 	[_memoryCache removeObjectForKey:[self _cacheNameForKey:key size:size]];
@@ -160,6 +160,12 @@
 			self.imageFetcher(key, size, imageHandler);
 		}];
 	}];
+}
+
+- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+	NSString *cacheKey = [self _cacheNameForKey:key size:size];
+	[_memoryCache setObject:image forKey:cacheKey];
+	[_diskCache setImage:image forKey:key size:size];
 }
 
 #pragma mark Internal

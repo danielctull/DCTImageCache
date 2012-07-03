@@ -7,17 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DCTImageCache.h"
 
-@interface _DCTDiskImageCache : NSObject
+@interface _DCTDiskImageCache : NSObject <DCTImageCache>
 - (id)initWithPath:(NSString *)path;
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler;
-- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
 - (void)fetchAttributesForImageWithKey:(NSString *)key size:(CGSize)size handler:(void (^)(NSDictionary *))handler;
-
-- (void)removeAllImages;
-- (void)removeImagesForKey:(NSString *)key;
-- (void)removeImageForKey:(NSString *)key size:(CGSize)size;
-
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block;
 - (void)enumerateSizesForKey:(NSString *)key usingBlock:(void (^)(CGSize size, BOOL *stop))block;
 @end
