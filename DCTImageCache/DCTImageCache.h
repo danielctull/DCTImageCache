@@ -18,6 +18,7 @@
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
 
+- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler;
 
@@ -32,5 +33,8 @@
 @property (nonatomic, readonly) NSString *name;
 
 @property (nonatomic, copy) void(^imageFetcher)(NSString *key, CGSize size, void(^imageBlock)(UIImage *));
+
+@property (nonatomic, readonly) id<DCTImageCache> diskCache;
+@property (nonatomic, readonly) id<DCTImageCache> memoryCache;
 
 @end

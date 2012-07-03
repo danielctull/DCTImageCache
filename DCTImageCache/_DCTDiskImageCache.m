@@ -74,6 +74,21 @@
 	return image;
 }
 
+- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
+	
+	__block dispatch_semaphore_t waiter = dispatch_semaphore_create(0);
+	__block BOOL hasImage = NO;
+	
+	[_queue addOperationWithBlock:^{
+		NSString *imagePath = [self _pathForKey:key size:size];
+		hasImage = [_fileManager fileExistsAtPath:imagePath];
+		dispatch_semaphore_signal(waiter);
+	}];
+	
+	dispatch_semaphore_wait(waiter, DISPATCH_TIME_FOREVER);
+	return hasImage;	
+}
+
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 	[_queue addOperationWithBlock:^{
 		UIImage *image = [self _imageForKey:key size:size];

@@ -8,6 +8,7 @@
 
 #import "DCTImageCache.h"
 #import "_DCTDiskImageCache.h"
+#import "_DCTMemoryImageCache.h"
 
 @interface UIImage (DCTImageCache)
 - (void)dctImageCache_decompress;
@@ -17,7 +18,7 @@
 
 @implementation DCTImageCache {
 	__strong _DCTDiskImageCache *_diskCache;
-	__strong NSCache *_memoryCache;
+	__strong _DCTMemoryImageCache *_memoryCache;
 	__strong NSMutableDictionary *_imageHandlers;
 	__strong NSOperationQueue *_queue;
 }
@@ -32,7 +33,7 @@
 		
 		[self _enumerateImageCachesUsingBlock:^(DCTImageCache *imageCache, BOOL *stop) {
 			
-			_DCTDiskImageCache *diskCache = imageCache->_diskCache;
+			_DCTDiskImageCache *diskCache = imageCache.diskCache;
 			[diskCache enumerateKeysUsingBlock:^(NSString *key, BOOL *stop) {
 			
 				[diskCache fetchAttributesForImageWithKey:key size:CGSizeZero handler:^(NSDictionary *attributes) {
@@ -54,6 +55,14 @@
 }
 
 #pragma mark DCTImageCache
+
+- (id<DCTImageCache>)diskCache {
+	return _diskCache;
+}
+
+- (id<DCTImageCache>)memoryCache {
+	return _memoryCache;
+}
 
 + (NSMutableDictionary *)imageCaches {
 	static NSMutableDictionary *sharedInstance = nil;
@@ -88,7 +97,7 @@
 	
 	[_queue addOperationWithBlock:^{
 		_name = [name copy];
-		_memoryCache = [NSCache new];
+		_memoryCache = [_DCTMemoryImageCache new];
 		_imageHandlers = [NSMutableDictionary new];
 		NSString *path = [[[self class] _defaultCachePath] stringByAppendingPathComponent:name];
 		_diskCache = [[_DCTDiskImageCache alloc] initWithPath:path];
@@ -97,29 +106,33 @@
 	return self;
 }
 - (void)removeAllImages {
-	[_memoryCache removeAllObjects];
+	[_memoryCache removeAllImages];
 	[_diskCache removeAllImages];
 }
 - (void)removeAllImagesForKey:(NSString *)key {
-	[_diskCache enumerateSizesForKey:key usingBlock:^(CGSize size, BOOL *stop) {
-		[_memoryCache removeObjectForKey:[self _cacheNameForKey:key size:size]];
-	}];
+	[_memoryCache removeAllImagesForKey:key];
 	[_diskCache removeAllImagesForKey:key];
 }
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
-	[_memoryCache removeObjectForKey:[self _cacheNameForKey:key size:size]];
+	[_memoryCache removeImageForKey:key size:size];
 	[_diskCache removeImageForKey:key size:size];
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size; {
-	NSString *cacheKey = [self _cacheNameForKey:key size:size];
-	return [_memoryCache objectForKey:cacheKey];
+	return [_memoryCache imageForKey:key size:size];
+}
+
+- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
+	
+	if ([_memoryCache hasImageForKey:key size:size])
+		return YES;
+	
+	return [_diskCache hasImageForKey:key size:size];
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))theHandler {
 	
-	NSString *cacheKey = [self _cacheNameForKey:key size:size];
-	UIImage *image = [_memoryCache objectForKey:cacheKey];
+	UIImage *image = [_memoryCache imageForKey:key size:size];
 	if (image) {
 		if (theHandler != NULL) theHandler(image);
 		return;
@@ -141,7 +154,7 @@
 			[_queue addOperationWithBlock:^{
 				if (!image) return;
 				[image dctImageCache_decompress];
-				[_memoryCache setObject:image forKey:cacheKey];
+				[_memoryCache setImage:image forKey:key size:size];
 				if (saveToDisk) [_diskCache setImage:image forKey:key size:size];
 				[self _sendImage:image toHandlersForKey:key size:size];
 			}];
@@ -163,16 +176,11 @@
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
-	NSString *cacheKey = [self _cacheNameForKey:key size:size];
-	[_memoryCache setObject:image forKey:cacheKey];
+	[_memoryCache setImage:image forKey:key size:size];
 	[_diskCache setImage:image forKey:key size:size];
 }
 
 #pragma mark Internal
-
-- (NSString *)_cacheNameForKey:(NSString *)key size:(CGSize)size {
-	return [NSString stringWithFormat:@"%@.%@", key, NSStringFromCGSize(size)];
-}
 
 - (NSMutableArray *)_imageHandlersForKey:(NSString *)key size:(CGSize)size {
 	NSString *accessKey = [NSString stringWithFormat:@"%@+%@", key, NSStringFromCGSize(size)];
