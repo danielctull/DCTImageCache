@@ -40,7 +40,7 @@
 
 #pragma mark NSObject
 
-+ (void)load {
++ (void)initialize {
 	@autoreleasepool {
 		NSDate *now = [NSDate date];
 		
