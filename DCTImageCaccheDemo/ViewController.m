@@ -19,7 +19,11 @@
     [super viewDidLoad];
 	
 	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
-	[imageCache fetchImageForKey:@"http://apod.nasa.gov/apod/image/1207/saturntitan2_cassini_960.jpg" size:CGSizeZero handler:^(UIImage *image) {
+	
+	[imageCache fetchImageForKey:@"http://apod.nasa.gov/apod/image/1207/saturntitan2_cassini_960.jpg"
+							size:self.imageView.bounds.size
+						 handler:^(UIImage *image) {
+							 
 		dispatch_async(dispatch_get_main_queue(), ^{
 			self.imageView.image = image;
 		});
