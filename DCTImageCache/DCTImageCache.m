@@ -33,7 +33,7 @@
 	__strong DCTInternalDiskImageCache *_diskCache;
 	__strong NSCache *_memoryCache;
 	__strong NSMutableDictionary *_imageHandlers;
-	dispatch_queue_t _queue;
+	__strong NSOperationQueue *_queue;
 }
 @synthesize name = _name;
 @synthesize imageFetcher = _imageFetcher;
@@ -93,21 +93,21 @@
 	return imageCache;
 }
 
-- (void)dealloc {
-	dispatch_release(_queue);
-}
-
 - (id)_initWithName:(NSString *)name {
 	if (!(self = [super init])) return nil;
 	NSString *queueName = [NSString stringWithFormat:@"uk.co.danieltull.DCTImageCache.%@", name];
-	_queue = dispatch_queue_create([queueName cStringUsingEncoding:NSUTF8StringEncoding], NULL);
-	dispatch_sync(_queue, ^{
+	_queue = [NSOperationQueue new];
+	[_queue setMaxConcurrentOperationCount:1];
+	[_queue setName:queueName];
+	
+	[_queue addOperationWithBlock:^{
 		_name = [name copy];
 		_memoryCache = [NSCache new];
 		_imageHandlers = [NSMutableDictionary new];
 		NSString *path = [[[self class] _defaultCachePath] stringByAppendingPathComponent:name];
 		_diskCache = [[DCTInternalDiskImageCache alloc] initWithPath:path];
-	});
+	}];
+	
 	return self;
 }
 - (void)removeAllImages {
@@ -139,7 +139,7 @@
 		return;
 	}
 	
-	dispatch_async(_queue, ^{
+	[_queue addOperationWithBlock:^{
 		
 		void (^handler)(UIImage *) = ^(UIImage *image) {
 			if (theHandler != NULL) theHandler(image);
@@ -152,13 +152,13 @@
 		
 		__block BOOL saveToDisk = NO;
 		void (^imageHandler)(UIImage *image) = ^(UIImage *image) {
-			dispatch_async(_queue, ^{
+			[_queue addOperationWithBlock:^{
 				if (!image) return;
 				[image dctImageCache_decompress];
 				[_memoryCache setObject:image forKey:cacheKey];
 				if (saveToDisk) [_diskCache setImage:image forKey:key size:size];
 				[self _sendImage:image toHandlersForKey:key size:size];
-			});
+			}];
 		};
 		
 		[_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
@@ -173,7 +173,7 @@
 			saveToDisk = YES;
 			self.imageFetcher(key, size, imageHandler);
 		}];
-	});
+	}];
 }
 
 #pragma mark Internal
