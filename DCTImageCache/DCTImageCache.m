@@ -22,8 +22,6 @@
 	__strong NSMutableDictionary *_imageHandlers;
 	__strong NSOperationQueue *_queue;
 }
-@synthesize name = _name;
-@synthesize imageFetcher = _imageFetcher;
 
 #pragma mark NSObject
 
