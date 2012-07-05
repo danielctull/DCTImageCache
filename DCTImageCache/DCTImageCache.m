@@ -10,12 +10,6 @@
 #import "_DCTDiskImageCache.h"
 #import "_DCTMemoryImageCache.h"
 
-@interface UIImage (DCTImageCache)
-- (void)dctImageCache_decompress;
-@end
-
-#pragma mark -
-
 @implementation DCTImageCache {
 	__strong _DCTDiskImageCache *_diskCache;
 	__strong _DCTMemoryImageCache *_memoryCache;
@@ -88,7 +82,7 @@
 
 - (id)_initWithName:(NSString *)name {
 	
-	self = [super init];
+	self = [self init];
 	if (!self) return nil;
 	
 	NSString *queueName = [NSString stringWithFormat:@"uk.co.danieltull.DCTImageCache.%@", name];
@@ -96,7 +90,7 @@
 	[_queue setMaxConcurrentOperationCount:1];
 	[_queue setName:queueName];
 	
-	[_queue addOperationWithBlock:^{
+	[self _performBlock:^{
 		_name = [name copy];
 		_memoryCache = [_DCTMemoryImageCache new];
 		_imageHandlers = [NSMutableDictionary new];
@@ -123,7 +117,12 @@
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size; {
-	return [_memoryCache imageForKey:key size:size];
+	UIImage *image = [_memoryCache imageForKey:key size:size];
+	if (image) return image;
+	
+	image = [_diskCache imageForKey:key size:size];
+	if (image) [_memoryCache setImage:image forKey:key size:size];
+	return image;
 }
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
@@ -142,7 +141,7 @@
 		return;
 	}
 	
-	[_queue addOperationWithBlock:^{
+	[self _performBlock:^{
 		
 		void (^handler)(UIImage *) = ^(UIImage *image) {
 			if (theHandler != NULL) theHandler(image);
@@ -153,28 +152,19 @@
 		
 		if ([handlers count] > 1) return;
 		
-		__block BOOL saveToDisk = NO;
-		void (^imageHandler)(UIImage *image) = ^(UIImage *image) {
-			[_queue addOperationWithBlock:^{
-				if (!image) return;
-				[image dctImageCache_decompress];
-				[_memoryCache setImage:image forKey:key size:size];
-				if (saveToDisk) [_diskCache setImage:image forKey:key size:size];
-				[self _sendImage:image toHandlersForKey:key size:size];
-			}];
-		};
-		
 		[_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
 			
 			if (image) {
-				imageHandler(image);
+				[_memoryCache setImage:image forKey:key size:size];
+				[self _sendImage:image toHandlersForKey:key size:size];
 				return;
 			}
 			
 			if (self.imageFetcher == NULL) return;
 			
-			saveToDisk = YES;
-			self.imageFetcher(key, size, imageHandler);
+			self.imageFetcher(key, size, ^(UIImage *image){
+				[self setImage:image forKey:key size:size];
+			});
 		}];
 	}];
 }
@@ -182,9 +172,20 @@
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
 	[_memoryCache setImage:image forKey:key size:size];
 	[_diskCache setImage:image forKey:key size:size];
+	[self _sendImage:image toHandlersForKey:key size:size];
 }
 
 #pragma mark Internal
+
+- (void)_performBlock:(void(^)())block {
+	[self _performWithPriority:NSOperationQueuePriorityNormal block:block];
+}
+
+- (void)_performWithPriority:(NSOperationQueuePriority)priority block:(void(^)())block {
+	NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:block];
+	[blockOperation setQueuePriority:priority];
+	[_queue addOperation:blockOperation];
+}
 
 - (NSMutableArray *)_imageHandlersForKey:(NSString *)key size:(CGSize)size {
 	NSString *accessKey = [NSString stringWithFormat:@"%@+%@", key, NSStringFromCGSize(size)];
@@ -197,11 +198,13 @@
 }
 
 - (void)_sendImage:(UIImage *)image toHandlersForKey:(NSString *)key size:(CGSize)size {
-	NSMutableArray *handlers = [self _imageHandlersForKey:key size:size];
-	[handlers enumerateObjectsUsingBlock:^(void(^handler)(UIImage *), NSUInteger idx, BOOL *stop) {
-		handler(image);
+	[self _performWithPriority:NSOperationQueuePriorityVeryHigh block:^{
+		NSMutableArray *handlers = [self _imageHandlersForKey:key size:size];
+		[handlers enumerateObjectsUsingBlock:^(void(^handler)(UIImage *), NSUInteger idx, BOOL *stop) {
+			handler(image);
+		}];
+		[handlers removeAllObjects];
 	}];
-	[handlers removeAllObjects];
 }
 
 + (NSString *)_defaultCachePath {
@@ -221,20 +224,3 @@
 }
 
 @end
-
-
-@implementation UIImage (DCTImageCache)
-
-- (void)dctImageCache_decompress {
-	CGImageRef imageRef = [self CGImage];
-	size_t width = CGImageGetWidth(imageRef);
-	size_t height = CGImageGetHeight(imageRef);
-	CGSize size = CGSizeMake(width, height);
-	UIGraphicsBeginImageContext(size);
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
-	UIGraphicsEndImageContext();	
-}
-
-@end
-
