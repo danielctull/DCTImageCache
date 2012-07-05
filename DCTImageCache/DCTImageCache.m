@@ -133,22 +133,22 @@
 	return [_diskCache hasImageForKey:key size:size];
 }
 
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))theHandler {
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 	
 	UIImage *image = [_memoryCache imageForKey:key size:size];
 	if (image) {
-		if (theHandler != NULL) theHandler(image);
+		if (handler != NULL) handler(image);
 		return;
 	}
 	
 	[self _performBlock:^{
 		
-		void (^handler)(UIImage *) = ^(UIImage *image) {
-			if (theHandler != NULL) theHandler(image);
+		void (^wrappedHandler)(UIImage *) = ^(UIImage *image) {
+			if (handler != NULL) handler(image);
 		};
 		
 		NSMutableArray *handlers = [self _imageHandlersForKey:key size:size];
-		[handlers addObject:handler];
+		[handlers addObject:wrappedHandler];
 		
 		if ([handlers count] > 1) return;
 		
@@ -160,11 +160,8 @@
 				return;
 			}
 			
-			if (self.imageFetcher == NULL) return;
-			
-			self.imageFetcher(key, size, ^(UIImage *image){
-				[self setImage:image forKey:key size:size];
-			});
+			if (self.imageFetcher != NULL)
+				self.imageFetcher(key, size);
 		}];
 	}];
 }

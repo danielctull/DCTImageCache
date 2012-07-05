@@ -421,6 +421,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCTImageCaccheDemo/DCTImageCaccheDemo-Prefix.pch";
 				INFOPLIST_FILE = "DCTImageCaccheDemo/DCTImageCaccheDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -441,6 +442,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCTImageCaccheDemo/DCTImageCaccheDemo-Prefix.pch";
 				INFOPLIST_FILE = "DCTImageCaccheDemo/DCTImageCaccheDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -561,6 +563,7 @@
 				24B3EED115A2EB1F00D5E63C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		24F7CB39158A1B9D00B2E33E /* Build configuration list for PBXProject "DCTImageCache" */ = {
 			isa = XCConfigurationList;
