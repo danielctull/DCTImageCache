@@ -60,7 +60,7 @@
 	__block UIImage *image = nil;
 	
 	[self _performWithPriority:NSOperationQueuePriorityVeryHigh block:^{
-		image = [self imageForKey:key size:size];
+		image = [self _imageForKey:key size:size];
 		dispatch_semaphore_signal(waiter);
 	}];
 	
