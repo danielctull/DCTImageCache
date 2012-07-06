@@ -24,7 +24,7 @@
 	
 	[self _performWithPriority:NSOperationQueuePriorityVeryHigh block:^{
 		_path = [path copy];
-		_hashStore = [[_DCTImageCacheHashStore alloc] initWithPath:[self _hashesPath]];
+		_hashStore = [[_DCTImageCacheHashStore alloc] initWithPath:path];
 		_fileManager = [NSFileManager new];
 		[_fileManager createDirectoryAtPath:_path withIntermediateDirectories:YES attributes:nil error:nil];
 	}];
@@ -155,10 +155,6 @@
 - (NSString *)_pathForKey:(NSString *)key {
 	NSString *hash = [_hashStore hashForKey:key];
 	return [_path stringByAppendingPathComponent:hash];
-}
-
-- (NSString *)_hashesPath {
-	return [_path stringByAppendingPathComponent:@".hashes"];
 }
 
 @end
