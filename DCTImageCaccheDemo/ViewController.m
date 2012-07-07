@@ -22,9 +22,8 @@
 
 	NSString *URLString = @"http://apod.nasa.gov/apod/image/1207/saturntitan2_cassini_960.jpg";
 
-	CGFloat screenScale = [[UIScreen mainScreen] scale];
-	CGFloat width = screenScale * self.imageView.bounds.size.width;
-	CGFloat height = screenScale * self.imageView.bounds.size.height;
+	CGFloat width = self.imageView.contentScaleFactor * self.imageView.bounds.size.width;
+	CGFloat height = self.imageView.contentScaleFactor * self.imageView.bounds.size.height;
 	
 	[imageCache fetchImageForKey:URLString
 							size:CGSizeMake(width, height)
