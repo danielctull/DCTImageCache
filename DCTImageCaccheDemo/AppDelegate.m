@@ -10,6 +10,18 @@
 #import "ViewController.h"
 #import <DCTImageCache/DCTImageCache.h>
 
+
+// setDelegateQueue was broken on iOS 5...
+BOOL CanSetDelegateQueue() {
+
+	Class collectionViewClass = NSClassFromString(@"UICollectionView");
+	Class tableViewClass = NSClassFromString(@"UITableView");
+
+	if (tableViewClass && !collectionViewClass) return NO;
+
+	return YES;
+}
+
 @implementation AppDelegate {
 	__strong NSMutableDictionary *_datas;
 }
@@ -17,7 +29,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	
 	_datas = [NSMutableDictionary new];
-	
+
 	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
 	imageCache.imageFetcher = ^(NSString *key, CGSize size) {
 		[self fetchImageForKey:key size:size];
@@ -33,11 +45,18 @@
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size {
 	
 	if (CGSizeEqualToSize(size, CGSizeZero)) {
-		dispatch_async(dispatch_get_main_queue(), ^{
-			NSURL *URL = [NSURL URLWithString:key];
-			NSURLRequest *request = [[NSURLRequest alloc] initWithURL:URL];
-			[NSURLConnection connectionWithRequest:request delegate:self];
-		});
+		NSURL *URL = [NSURL URLWithString:key];
+		NSURLRequest *request = [[NSURLRequest alloc] initWithURL:URL];
+		NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+
+		if (CanSetDelegateQueue())
+			[connection setDelegateQueue:[NSOperationQueue currentQueue]];
+
+		[connection start];
+
+		if (!CanSetDelegateQueue())
+			CFRunLoopRun();
+
 		return;
 	}
 	
@@ -50,6 +69,7 @@
 #pragma mark - NSURLConnectionDownloadDelegate
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+	
 	NSURL *URL = connection.originalRequest.URL;
 	
 	NSMutableData *imageData = [_datas objectForKey:URL];
@@ -67,33 +87,41 @@
 	UIImage *image = [UIImage imageWithData:data];
 	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
 	[imageCache setImage:image forKey:[URL absoluteString] size:CGSizeZero];
+
+	if (!CanSetDelegateQueue())
+		CFRunLoopStop(CFRunLoopGetCurrent());
 }
 
 - (UIImage *)imageFromImage:(UIImage *)image toFitSize:(CGSize)size {
 	
 	CGImageRef imageRef = image.CGImage;
-	CGFloat height = image.size.height;
-	CGFloat width = image.size.width;
-	
-	if (height < width) {
-		NSInteger x = (NSInteger)(width-height)/2.0f;
-		imageRef = CGImageCreateWithImageInRect(imageRef, CGRectMake((CGFloat)x, 0.0f, height, height));
-		
-	} else if (height > width) {
-		NSInteger y = (NSInteger)(height-width)/2.0f;
-		imageRef = CGImageCreateWithImageInRect(imageRef, CGRectMake(0.0f, y, width, width));
-		
-	} else {
-		CGImageRetain(imageRef);
+	CGImageRetain(imageRef);
+	CGFloat imageHeight = image.size.height;
+	CGFloat imageWidth = image.size.width;
+	CGFloat imageRatio = imageHeight/imageWidth;
+
+	CGFloat height = size.height;
+	CGFloat width = size.width;
+	CGFloat ratio = height/width;
+
+	CGRect imageRect = CGRectMake(0.0f, 0.0f, width, height);
+
+	if (imageRatio < ratio) {
+		NSInteger newImageWidth = imageWidth * height/imageHeight;
+		NSInteger x = (NSInteger)(width-newImageWidth)/2.0f;
+		imageRect = CGRectMake((CGFloat)x, 0.0f, (CGFloat)newImageWidth, height);
+	} else if (imageRatio > ratio) {
+		NSInteger newImageHeight = imageHeight * width/imageWidth;
+		NSInteger y = (NSInteger)(height-newImageHeight)/2.0f;
+		imageRect = CGRectMake(0.0f, y, width, newImageHeight);
 	}
 	
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-	CGContextRef context = CGBitmapContextCreate(NULL, size.width, size.height, 8, 0, colorSpace, kCGImageAlphaNoneSkipLast);
+	CGContextRef context = CGBitmapContextCreate(NULL, width, height, 8, 0, colorSpace, kCGImageAlphaNoneSkipLast);
 	
-	CGRect imageRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
-	
+	CGRect rect = CGRectMake(0.0f, 0.0f, width, height);
 	CGContextSetFillColor(context, CGColorGetComponents([UIColor whiteColor].CGColor));
-	CGContextFillRect(context, imageRect);
+	CGContextFillRect(context, rect);
 	
 	CGContextDrawImage(context, imageRect, imageRef);
 	
