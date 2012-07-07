@@ -53,6 +53,7 @@ BOOL CanSetDelegateQueue() {
 			[connection setDelegateQueue:[NSOperationQueue currentQueue]];
 
 		[connection start];
+		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 
 		if (!CanSetDelegateQueue())
 			CFRunLoopRun();
@@ -88,6 +89,7 @@ BOOL CanSetDelegateQueue() {
 	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
 	[imageCache setImage:image forKey:[URL absoluteString] size:CGSizeZero];
 
+	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 	if (!CanSetDelegateQueue())
 		CFRunLoopStop(CFRunLoopGetCurrent());
 }
