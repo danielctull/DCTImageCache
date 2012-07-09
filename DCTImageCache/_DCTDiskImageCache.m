@@ -22,7 +22,7 @@
 	_queue = [NSOperationQueue new];
 	[_queue setMaxConcurrentOperationCount:1];
 	
-	[self _performWithPriority:NSOperationQueuePriorityVeryHigh block:^{
+	[self _performBlock:^{
 		_path = [path copy];
 		_hashStore = [[_DCTImageCacheHashStore alloc] initWithPath:path];
 		_fileManager = [NSFileManager new];
@@ -56,30 +56,24 @@
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
 	
-	__block dispatch_semaphore_t waiter = dispatch_semaphore_create(0);
 	__block UIImage *image = nil;
 	
-	[self _performWithPriority:NSOperationQueuePriorityVeryHigh block:^{
+	[self _performBlockAndWait:^{
 		image = [self _imageForKey:key size:size];
-		dispatch_semaphore_signal(waiter);
 	}];
 	
-	dispatch_semaphore_wait(waiter, DISPATCH_TIME_FOREVER);
 	return image;
 }
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
 	
-	__block dispatch_semaphore_t waiter = dispatch_semaphore_create(0);
 	__block BOOL hasImage = NO;
 	
-	[self _performWithPriority:NSOperationQueuePriorityVeryHigh block:^{
+	[self _performBlockAndWait:^{
 		NSString *imagePath = [self _pathForKey:key size:size];
 		hasImage = [_fileManager fileExistsAtPath:imagePath];
-		dispatch_semaphore_signal(waiter);
 	}];
 	
-	dispatch_semaphore_wait(waiter, DISPATCH_TIME_FOREVER);
 	return hasImage;	
 }
 
@@ -132,13 +126,18 @@
 #pragma mark Internal
 
 - (void)_performBlock:(void(^)())block {
-	[self _performWithPriority:NSOperationQueuePriorityNormal block:block];
+	[_queue addOperationWithBlock:block];
 }
 
-- (void)_performWithPriority:(NSOperationQueuePriority)priority block:(void(^)())block {
-	NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:block];
-	[blockOperation setQueuePriority:priority];
+- (void)_performBlockAndWait:(void(^)())block {
+	__block dispatch_semaphore_t waiter = dispatch_semaphore_create(0);
+	NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^{
+		block();
+		dispatch_semaphore_signal(waiter);
+	}];
+	[blockOperation setQueuePriority:NSOperationQueuePriorityVeryHigh];
 	[_queue addOperation:blockOperation];
+	dispatch_semaphore_wait(waiter, DISPATCH_TIME_FOREVER);
 }
 
 - (UIImage *)_imageForKey:(NSString *)key size:(CGSize)size {
