@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2437B67815B97BA600750117 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
+		2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
+		2437B68415B97BD700750117 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
+		2437B68515B97BD700750117 /* _DCTDiskImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EED615A30EEB00D5E63C /* _DCTDiskImageCache.m */; };
+		2437B68615B97BD700750117 /* _DCTMemoryImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */; };
+		2437B68715B97BD700750117 /* _DCTImageCacheHashStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDA15A30F6600D5E63C /* _DCTImageCacheHashStore.m */; };
 		24B3EEBA15A2EB1F00D5E63C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB53158A1B9D00B2E33E /* UIKit.framework */; };
 		24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */; };
@@ -15,35 +21,28 @@
 		24B3EEC915A2EB1F00D5E63C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEC815A2EB1F00D5E63C /* AppDelegate.m */; };
 		24B3EECC15A2EB1F00D5E63C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EECB15A2EB1F00D5E63C /* ViewController.m */; };
 		24B3EECF15A2EB1F00D5E63C /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24B3EECD15A2EB1F00D5E63C /* ViewController.xib */; };
-		24B3EED415A2EB9500D5E63C /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */; };
-		24B3EED715A30EEB00D5E63C /* _DCTDiskImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 24B3EED515A30EEB00D5E63C /* _DCTDiskImageCache.h */; };
-		24B3EED815A30EEB00D5E63C /* _DCTDiskImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EED615A30EEB00D5E63C /* _DCTDiskImageCache.m */; };
-		24B3EEDB15A30F6600D5E63C /* _DCTImageCacheHashStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 24B3EED915A30F6600D5E63C /* _DCTImageCacheHashStore.h */; };
-		24B3EEDC15A30F6600D5E63C /* _DCTImageCacheHashStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDA15A30F6600D5E63C /* _DCTImageCacheHashStore.m */; };
-		24B3EEDF15A311D400D5E63C /* _DCTMemoryImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 24B3EEDD15A311D400D5E63C /* _DCTMemoryImageCache.h */; };
-		24B3EEE015A311D400D5E63C /* _DCTMemoryImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */; };
-		24F7CB43158A1B9D00B2E33E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
-		24F7CB48158A1B9D00B2E33E /* DCTImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		24F7CB4A158A1B9D00B2E33E /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
 		24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */; };
 		24F7CB54158A1B9D00B2E33E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB53158A1B9D00B2E33E /* UIKit.framework */; };
 		24F7CB55158A1B9D00B2E33E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
-		24F7CB58158A1B9D00B2E33E /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */; };
 		24F7CB5E158A1B9D00B2E33E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 24F7CB5C158A1B9D00B2E33E /* InfoPlist.strings */; };
 		24F7CB61158A1B9D00B2E33E /* DCTImageCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB60158A1B9D00B2E33E /* DCTImageCacheTests.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		24F7CB56158A1B9D00B2E33E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 24F7CB36158A1B9D00B2E33E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 24F7CB3E158A1B9D00B2E33E;
-			remoteInfo = DCTImageCache;
+/* Begin PBXCopyFilesBuildPhase section */
+		2437B67515B97BA600750117 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/${PRODUCT_NAME}";
+			dstSubfolderSpec = 16;
+			files = (
+				2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXContainerItemProxy section */
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2437B67715B97BA600750117 /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		24B3EEB815A2EB1F00D5E63C /* DCTImageCaccheDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTImageCaccheDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		24B3EEC015A2EB1F00D5E63C /* DCTImageCaccheDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCaccheDemo-Info.plist"; sourceTree = "<group>"; };
@@ -61,7 +60,6 @@
 		24B3EEDA15A30F6600D5E63C /* _DCTImageCacheHashStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheHashStore.m; sourceTree = "<group>"; };
 		24B3EEDD15A311D400D5E63C /* _DCTMemoryImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTMemoryImageCache.h; sourceTree = "<group>"; };
 		24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTMemoryImageCache.m; sourceTree = "<group>"; };
-		24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		24F7CB42158A1B9D00B2E33E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		24F7CB46158A1B9D00B2E33E /* DCTImageCache-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DCTImageCache-Prefix.pch"; sourceTree = "<group>"; };
 		24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCTImageCache.h; sourceTree = "<group>"; };
@@ -76,22 +74,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2437B67415B97BA600750117 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2437B67815B97BA600750117 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		24B3EEB515A2EB1F00D5E63C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				24B3EED415A2EB9500D5E63C /* libDCTImageCache.a in Frameworks */,
 				24B3EEBA15A2EB1F00D5E63C /* UIKit.framework in Frameworks */,
 				24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */,
 				24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		24F7CB3C158A1B9D00B2E33E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				24F7CB43158A1B9D00B2E33E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +99,6 @@
 				24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */,
 				24F7CB54158A1B9D00B2E33E /* UIKit.framework in Frameworks */,
 				24F7CB55158A1B9D00B2E33E /* Foundation.framework in Frameworks */,
-				24F7CB58158A1B9D00B2E33E /* libDCTImageCache.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,9 +143,9 @@
 		24F7CB40158A1B9D00B2E33E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */,
 				24F7CB50158A1B9D00B2E33E /* DCTImageCacheTests.octest */,
 				24B3EEB815A2EB1F00D5E63C /* DCTImageCaccheDemo.app */,
+				2437B67715B97BA600750117 /* libDCTImageCache.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -210,21 +206,24 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		24F6EB3D158A1FC200CEDD41 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				24F7CB48158A1B9D00B2E33E /* DCTImageCache.h in Headers */,
-				24B3EED715A30EEB00D5E63C /* _DCTDiskImageCache.h in Headers */,
-				24B3EEDB15A30F6600D5E63C /* _DCTImageCacheHashStore.h in Headers */,
-				24B3EEDF15A311D400D5E63C /* _DCTMemoryImageCache.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
+		2437B67615B97BA600750117 /* DCTImageCache */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2437B68015B97BA600750117 /* Build configuration list for PBXNativeTarget "DCTImageCache" */;
+			buildPhases = (
+				2437B67315B97BA600750117 /* Sources */,
+				2437B67415B97BA600750117 /* Frameworks */,
+				2437B67515B97BA600750117 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DCTImageCache;
+			productName = DCTImageCache;
+			productReference = 2437B67715B97BA600750117 /* libDCTImageCache.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		24B3EEB715A2EB1F00D5E63C /* DCTImageCaccheDemo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCaccheDemo" */;
@@ -242,23 +241,6 @@
 			productReference = 24B3EEB815A2EB1F00D5E63C /* DCTImageCaccheDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		24F7CB3E158A1B9D00B2E33E /* DCTImageCache */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 24F7CB64158A1B9D00B2E33E /* Build configuration list for PBXNativeTarget "DCTImageCache" */;
-			buildPhases = (
-				24F7CB3B158A1B9D00B2E33E /* Sources */,
-				24F7CB3C158A1B9D00B2E33E /* Frameworks */,
-				24F6EB3D158A1FC200CEDD41 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = DCTImageCache;
-			productName = DCTImageCache;
-			productReference = 24F7CB3F158A1B9D00B2E33E /* libDCTImageCache.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		24F7CB4F158A1B9D00B2E33E /* DCTImageCacheTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 24F7CB67158A1B9D00B2E33E /* Build configuration list for PBXNativeTarget "DCTImageCacheTests" */;
@@ -271,7 +253,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				24F7CB57158A1B9D00B2E33E /* PBXTargetDependency */,
 			);
 			name = DCTImageCacheTests;
 			productName = DCTImageCacheTests;
@@ -299,7 +280,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				24F7CB3E158A1B9D00B2E33E /* DCTImageCache */,
+				2437B67615B97BA600750117 /* DCTImageCache */,
 				24F7CB4F158A1B9D00B2E33E /* DCTImageCacheTests */,
 				24B3EEB715A2EB1F00D5E63C /* DCTImageCaccheDemo */,
 			);
@@ -343,6 +324,17 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2437B67315B97BA600750117 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2437B68415B97BD700750117 /* DCTImageCache.m in Sources */,
+				2437B68515B97BD700750117 /* _DCTDiskImageCache.m in Sources */,
+				2437B68615B97BD700750117 /* _DCTMemoryImageCache.m in Sources */,
+				2437B68715B97BD700750117 /* _DCTImageCacheHashStore.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		24B3EEB415A2EB1F00D5E63C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -350,17 +342,6 @@
 				24B3EEC515A2EB1F00D5E63C /* main.m in Sources */,
 				24B3EEC915A2EB1F00D5E63C /* AppDelegate.m in Sources */,
 				24B3EECC15A2EB1F00D5E63C /* ViewController.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		24F7CB3B158A1B9D00B2E33E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				24F7CB4A158A1B9D00B2E33E /* DCTImageCache.m in Sources */,
-				24B3EED815A30EEB00D5E63C /* _DCTDiskImageCache.m in Sources */,
-				24B3EEDC15A30F6600D5E63C /* _DCTImageCacheHashStore.m in Sources */,
-				24B3EEE015A311D400D5E63C /* _DCTMemoryImageCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,14 +354,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		24F7CB57158A1B9D00B2E33E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 24F7CB3E158A1B9D00B2E33E /* DCTImageCache */;
-			targetProxy = 24F7CB56158A1B9D00B2E33E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		24B3EEC115A2EB1F00D5E63C /* InfoPlist.strings */ = {
@@ -410,6 +383,34 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		2437B68115B97BA600750117 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
+				DSTROOT = /tmp/DCTImageCache.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		2437B68215B97BA600750117 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LIBRARY = "libc++";
+				DSTROOT = /tmp/DCTImageCache.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		24B3EED015A2EB1F00D5E63C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -495,34 +496,6 @@
 			};
 			name = Release;
 		};
-		24F7CB65158A1B9D00B2E33E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DSTROOT = /tmp/DCTImageCache.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "include/$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		24F7CB66158A1B9D00B2E33E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DSTROOT = /tmp/DCTImageCache.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "include/$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		24F7CB68158A1B9D00B2E33E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -556,6 +529,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2437B68015B97BA600750117 /* Build configuration list for PBXNativeTarget "DCTImageCache" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2437B68115B97BA600750117 /* Debug */,
+				2437B68215B97BA600750117 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCaccheDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -570,15 +551,6 @@
 			buildConfigurations = (
 				24F7CB62158A1B9D00B2E33E /* Debug */,
 				24F7CB63158A1B9D00B2E33E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		24F7CB64158A1B9D00B2E33E /* Build configuration list for PBXNativeTarget "DCTImageCache" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				24F7CB65158A1B9D00B2E33E /* Debug */,
-				24F7CB66158A1B9D00B2E33E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
