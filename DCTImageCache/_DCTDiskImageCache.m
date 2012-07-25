@@ -130,14 +130,10 @@
 }
 
 - (void)_performBlockAndWait:(void(^)())block {
-	__block dispatch_semaphore_t waiter = dispatch_semaphore_create(0);
-	NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:^{
-		block();
-		dispatch_semaphore_signal(waiter);
-	}];
+	NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:block];
 	[blockOperation setQueuePriority:NSOperationQueuePriorityVeryHigh];
 	[_queue addOperation:blockOperation];
-	dispatch_semaphore_wait(waiter, DISPATCH_TIME_FOREVER);
+	[blockOperation waitUntilFinished];
 }
 
 - (UIImage *)_imageForKey:(NSString *)key size:(CGSize)size {
