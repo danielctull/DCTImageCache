@@ -92,7 +92,7 @@
 		if (![_fileManager fileExistsAtPath:path])
 			[_fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
 
-		[NSKeyedArchiver archiveRootObject:image toFile:imagePath];
+		[_fileManager createFileAtPath:imagePath contents:UIImagePNGRepresentation(image) attributes:nil];
 	}];
 }
 
@@ -138,7 +138,8 @@
 
 - (UIImage *)_imageForKey:(NSString *)key size:(CGSize)size {
 	NSString *imagePath = [self _pathForKey:key size:size];
-	return [NSKeyedUnarchiver unarchiveObjectWithFile:imagePath];
+	NSData *data = [_fileManager contentsAtPath:imagePath];
+	return [UIImage imageWithData:data];
 }
 
 - (NSString *)_pathForKey:(NSString *)key size:(CGSize)size {
