@@ -48,9 +48,9 @@
 
 - (void)removeAllImagesForKey:(NSString *)key {
 	[self _performBlock:^{
-		[_hashStore removeHashForKey:key];
 		NSString *directoryPath = [self _pathForKey:key];
 		[_fileManager removeItemAtPath:directoryPath error:nil];
+		[_hashStore removeHashForKey:key];
 	}];
 }
 
