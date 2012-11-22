@@ -78,7 +78,7 @@
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
-	[self _performBlock:^{
+	[self _performWithPriority:NSOperationQueuePriorityVeryHigh block:^{
 		UIImage *image = [self _imageForKey:key size:size];
 		handler(image);
 	}];
@@ -127,6 +127,12 @@
 
 - (void)_performBlock:(void(^)())block {
 	[_queue addOperationWithBlock:block];
+}
+
+- (void)_performWithPriority:(NSOperationQueuePriority)priority block:(void(^)())block {
+	NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:block];
+	[blockOperation setQueuePriority:priority];
+	[_queue addOperation:blockOperation];
 }
 
 - (void)_performBlockAndWait:(void(^)())block {

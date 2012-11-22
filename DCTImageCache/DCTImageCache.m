@@ -15,6 +15,7 @@
 	__strong _DCTMemoryImageCache *_memoryCache;
 	__strong NSMutableDictionary *_imageHandlers;
 	__strong NSOperationQueue *_queue;
+	__strong NSMutableSet *_fetchingKeySizes;
 }
 
 #pragma mark NSObject
@@ -90,12 +91,13 @@
 	[_queue setMaxConcurrentOperationCount:1];
 	[_queue setName:queueName];
 	
-	[self _performBlock:^{
+	[self _performWithPriority:NSOperationQueuePriorityNormal block:^{
 		_name = [name copy];
 		_memoryCache = [_DCTMemoryImageCache new];
 		_imageHandlers = [NSMutableDictionary new];
 		NSString *path = [[[self class] _defaultCachePath] stringByAppendingPathComponent:name];
 		_diskCache = [[_DCTDiskImageCache alloc] initWithPath:path];
+		_fetchingKeySizes = [NSMutableSet new];
 	}];
 	
 	return self;
@@ -141,21 +143,19 @@
 		return;
 	}
 	
-	[self _performBlock:^{
-		
-		void (^wrappedHandler)(UIImage *) = ^(UIImage *image) {
-			if (handler != NULL) handler(image);
-		};
-		
-		NSMutableArray *handlers = [self _imageHandlersForKey:key size:size];
-		[handlers addObject:wrappedHandler];
-		
-		if ([handlers count] > 1) return;
+	NSOperationQueuePriority priority = NSOperationQueuePriorityVeryLow;
+	if (handler != NULL) priority = NSOperationQueuePriorityVeryHigh;
+
+	[self _performWithPriority:priority block:^{
+
+		[self _addHandler:handler forKey:key size:size];
+
+		if ([self _isRetrievingImageForKey:key size:size]) return;
+		[self _setRetrieving:YES forImageForKey:key size:size];
 		
 		[_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
 			
 			if (image) {
-				[_memoryCache setImage:image forKey:key size:size];
 				[self _sendImage:image toHandlersForKey:key size:size];
 				return;
 			}
@@ -167,15 +167,33 @@
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
-	[_memoryCache setImage:image forKey:key size:size];
 	[_diskCache setImage:image forKey:key size:size];
 	[self _sendImage:image toHandlersForKey:key size:size];
 }
 
 #pragma mark Internal
 
-- (void)_performBlock:(void(^)())block {
-	[self _performWithPriority:NSOperationQueuePriorityNormal block:block];
+- (NSString *)_accessKeyForKey:(NSString *)key size:(CGSize)size {
+	return [NSString stringWithFormat:@"%@+%@", key, NSStringFromCGSize(size)];
+}
+
+- (void)_setRetrieving:(BOOL)retrieving forImageForKey:(NSString *)key size:(CGSize)size {
+	NSString *accessKey = [self _accessKeyForKey:key size:size];
+	if (retrieving) [_fetchingKeySizes addObject:accessKey];
+	else [_fetchingKeySizes removeObject:accessKey];
+}
+
+- (BOOL)_isRetrievingImageForKey:(NSString *)key size:(CGSize)size {
+	NSString *accessKey = [self _accessKeyForKey:key size:size];
+	return [_fetchingKeySizes containsObject:accessKey];
+}
+
+- (void)_fetchImageForKey:(NSString *)key size:(CGSize)size {
+
+	if (self.imageFetcher == NULL) return;
+
+	NSString *accessKey = [self _accessKeyForKey:key size:size];
+	[_fetchingKeySizes addObject:accessKey];
 }
 
 - (void)_performWithPriority:(NSOperationQueuePriority)priority block:(void(^)())block {
@@ -184,23 +202,38 @@
 	[_queue addOperation:blockOperation];
 }
 
-- (NSMutableArray *)_imageHandlersForKey:(NSString *)key size:(CGSize)size {
-	NSString *accessKey = [NSString stringWithFormat:@"%@+%@", key, NSStringFromCGSize(size)];
+- (void)_removeHandlerForKey:(NSString *)key size:(CGSize)size {
+	NSString *accessKey = [self _accessKeyForKey:key size:size];
+	[_imageHandlers removeObjectForKey:accessKey];
+}
+
+- (void)_addHandler:(void(^)(UIImage *))handler forKey:(NSString *)key size:(CGSize)size {
+	if (handler == NULL) return;
+
+	NSString *accessKey = [self _accessKeyForKey:key size:size];
 	NSMutableArray *handlers = [_imageHandlers objectForKey:accessKey];
 	if (!handlers) {
 		handlers = [NSMutableArray new];
 		[_imageHandlers setObject:handlers forKey:accessKey];
 	}
-	return handlers;
+	[handlers addObject:handler];
+}
+
+- (NSArray *)_imageHandlersForKey:(NSString *)key size:(CGSize)size {
+	NSString *accessKey = [self _accessKeyForKey:key size:size];
+	return [_imageHandlers objectForKey:accessKey];
 }
 
 - (void)_sendImage:(UIImage *)image toHandlersForKey:(NSString *)key size:(CGSize)size {
 	[self _performWithPriority:NSOperationQueuePriorityVeryHigh block:^{
-		NSMutableArray *handlers = [self _imageHandlersForKey:key size:size];
+		[self _setRetrieving:NO forImageForKey:key size:size];
+		NSArray *handlers = [self _imageHandlersForKey:key size:size];
+		if (!handlers) return;
+		[_memoryCache setImage:image forKey:key size:size];
 		[handlers enumerateObjectsUsingBlock:^(void(^handler)(UIImage *), NSUInteger idx, BOOL *stop) {
 			handler(image);
 		}];
-		[handlers removeAllObjects];
+		[self _removeHandlerForKey:key size:size];
 	}];
 }
 
