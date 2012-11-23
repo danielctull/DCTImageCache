@@ -11,11 +11,10 @@
 #import <CoreData/CoreData.h>
 
 @implementation _DCTDiskImageCache {
-	__strong NSOperationQueue *_queue;
-
+	NSURL *_storeURL;
 	NSManagedObjectContext *_managedObjectContext;
-	//NSManagedObjectContext *savingContext;
-	//NSManagedObjectContext *fetchingContext;
+	NSManagedObjectContext *_savingContext;
+	NSManagedObjectContext *_fetchingContext;
 }
 
 + (NSBundle *)bundle {
@@ -37,24 +36,34 @@
 
 - (id)initWithPath:(NSString *)path {
 	if (!(self = [super init])) return nil;
-	
-	NSURL *storeURL = [[[NSURL alloc] initFileURLWithPath:path] URLByAppendingPathComponent:@"store"];
-	NSURL *modelURL = [[[self class] bundle] URLForResource:@"DCTImageCache" withExtension:@"momd"];
-	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-	[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:NULL];
-	_managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-	_managedObjectContext.persistentStoreCoordinator = coordinator;
-	
+	_storeURL = [[[NSURL alloc] initFileURLWithPath:path] URLByAppendingPathComponent:@"store"];
+	[self _createStack];
 	return self;
 }
 
+- (void)_createStack {
+	NSURL *modelURL = [[[self class] bundle] URLForResource:@"DCTImageCache" withExtension:@"momd"];
+	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+
+	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:_storeURL options:nil error:NULL]) {
+		[[NSFileManager defaultManager] removeItemAtURL:_storeURL error:NULL];
+		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:_storeURL options:nil error:NULL];
+	}
+
+	_managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	_managedObjectContext.persistentStoreCoordinator = coordinator;
+
+	_savingContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	_savingContext.parentContext = _managedObjectContext;
+
+	_fetchingContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	_fetchingContext.parentContext = _managedObjectContext;
+}
+
 - (void)removeAllImages {
-	[_managedObjectContext performBlock:^{
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
-	}];
+	[[NSFileManager defaultManager] removeItemAtURL:_storeURL error:NULL];
+	[self _createStack];
 }
 
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
@@ -105,7 +114,7 @@
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
-	[_managedObjectContext performBlock:^{
+	[_fetchingContext performBlock:^{
 		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
 		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
 		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
@@ -118,12 +127,13 @@
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
-	[_managedObjectContext performBlock:^{
-		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
+	[_savingContext performBlock:^{
+		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_savingContext];
 		item.key = key;
 		item.sizeString = NSStringFromCGSize(size);
 		item.imageData = UIImagePNGRepresentation(image);
-		[_managedObjectContext save:NULL];
+		item.date = [NSDate new];
+		[_savingContext save:NULL];
 	}];
 }
 /*

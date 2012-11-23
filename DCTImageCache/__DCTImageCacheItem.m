@@ -4,6 +4,7 @@
 #import "__DCTImageCacheItem.h"
 
 const struct _DCTImageCacheItemAttributes _DCTImageCacheItemAttributes = {
+	.date = @"date",
 	.imageData = @"imageData",
 	.key = @"key",
 	.sizeString = @"sizeString",
@@ -44,6 +45,13 @@ const struct _DCTImageCacheItemFetchedProperties _DCTImageCacheItemFetchedProper
 
 	return keyPaths;
 }
+
+
+
+
+@dynamic date;
+
+
 
 
 

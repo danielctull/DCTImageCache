@@ -5,6 +5,7 @@
 
 
 extern const struct _DCTImageCacheItemAttributes {
+	__unsafe_unretained NSString *date;
 	__unsafe_unretained NSString *imageData;
 	__unsafe_unretained NSString *key;
 	__unsafe_unretained NSString *sizeString;
@@ -21,6 +22,7 @@ extern const struct _DCTImageCacheItemFetchedProperties {
 
 
 
+
 @interface _DCTImageCacheItemID : NSManagedObjectID {}
 @end
 
@@ -29,6 +31,14 @@ extern const struct _DCTImageCacheItemFetchedProperties {
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (_DCTImageCacheItemID*)objectID;
+
+
+
+
+@property (nonatomic, strong) NSDate* date;
+
+
+//- (BOOL)validateDate:(id*)value_ error:(NSError**)error_;
 
 
 
@@ -66,6 +76,12 @@ extern const struct _DCTImageCacheItemFetchedProperties {
 @end
 
 @interface __DCTImageCacheItem (CoreDataGeneratedPrimitiveAccessors)
+
+
+- (NSDate*)primitiveDate;
+- (void)setPrimitiveDate:(NSDate*)value;
+
+
 
 
 - (NSData*)primitiveImageData;
