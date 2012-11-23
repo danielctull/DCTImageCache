@@ -11,7 +11,7 @@
 
 @interface _DCTDiskImageCache : NSObject <DCTImageCache>
 - (id)initWithPath:(NSString *)path;
-- (void)fetchAttributesForImageWithKey:(NSString *)key size:(CGSize)size handler:(void (^)(NSDictionary *))handler;
+/*- (void)fetchAttributesForImageWithKey:(NSString *)key size:(CGSize)size handler:(void (^)(NSDictionary *))handler;
 - (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block;
 - (void)enumerateSizesForKey:(NSString *)key usingBlock:(void (^)(CGSize size, BOOL *stop))block;
-@end
+*/@end

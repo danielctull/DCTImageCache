@@ -1,0 +1,1 @@
+mogenerator -m DCTImageCacheBundle/DCTImageCache.xcdatamodeld/DCTImageCache.xcdatamodel -M DCTImageCache -H DCTImageCache --template-var arc=true

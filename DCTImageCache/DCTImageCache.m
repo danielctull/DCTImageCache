@@ -19,7 +19,7 @@
 }
 
 #pragma mark NSObject
-
+/*
 + (void)initialize {
 	@autoreleasepool {
 		NSDate *now = [NSDate date];
@@ -46,7 +46,7 @@
 		}];
 	}
 }
-
+*/
 #pragma mark DCTImageCache
 
 - (id<DCTImageCache>)diskCache {

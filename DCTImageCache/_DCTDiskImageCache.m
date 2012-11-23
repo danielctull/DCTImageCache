@@ -7,95 +7,126 @@
 //
 
 #import "_DCTDiskImageCache.h"
-#import "_DCTImageCacheHashStore.h"
+#import "_DCTImageCacheItem.h"
+#import <CoreData/CoreData.h>
 
 @implementation _DCTDiskImageCache {
-	__strong NSString *_path;
-	__strong _DCTImageCacheHashStore *_hashStore;
-	__strong NSFileManager *_fileManager;
 	__strong NSOperationQueue *_queue;
+
+	NSManagedObjectContext *_managedObjectContext;
+	//NSManagedObjectContext *savingContext;
+	//NSManagedObjectContext *fetchingContext;
+}
+
++ (NSBundle *)bundle {
+	static NSBundle *bundle;
+	static dispatch_once_t bundleToken;
+	dispatch_once(&bundleToken, ^{
+		NSDirectoryEnumerator *enumerator = [[NSFileManager new] enumeratorAtURL:[[NSBundle mainBundle] bundleURL]
+													  includingPropertiesForKeys:nil
+																		 options:NSDirectoryEnumerationSkipsHiddenFiles
+																	errorHandler:NULL];
+
+		for (NSURL *URL in enumerator)
+			if ([[URL lastPathComponent] isEqualToString:@"DCTImageCache.bundle"])
+				bundle = [NSBundle bundleWithURL:URL];
+	});
+
+	return bundle;
 }
 
 - (id)initWithPath:(NSString *)path {
 	if (!(self = [super init])) return nil;
 	
-	_queue = [NSOperationQueue new];
-	[_queue setMaxConcurrentOperationCount:1];
-	
-	[self _performBlock:^{
-		_path = [path copy];
-		_hashStore = [[_DCTImageCacheHashStore alloc] initWithPath:path];
-		_fileManager = [NSFileManager new];
-		[_fileManager createDirectoryAtPath:_path withIntermediateDirectories:YES attributes:nil error:nil];
-	}];
+	NSURL *storeURL = [[[NSURL alloc] initFileURLWithPath:path] URLByAppendingPathComponent:@"store"];
+	NSURL *modelURL = [[[self class] bundle] URLForResource:@"DCTImageCache" withExtension:@"momd"];
+	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+	[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:NULL];
+	_managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	_managedObjectContext.persistentStoreCoordinator = coordinator;
 	
 	return self;
 }
 
 - (void)removeAllImages {
-	[self _performBlock:^{
-		[_fileManager removeItemAtPath:_path error:nil];
-		[_fileManager createDirectoryAtPath:_path withIntermediateDirectories:YES attributes:nil error:nil];
+	[_managedObjectContext performBlock:^{
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
 	}];
 }
 
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
-	[self _performBlock:^{
-		NSString *path = [self _pathForKey:key size:size];
-		[_fileManager removeItemAtPath:path error:nil];
+	[_managedObjectContext performBlock:^{
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
+		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
+		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
+		fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
 	}];
 }
 
 - (void)removeAllImagesForKey:(NSString *)key {
-	[self _performBlock:^{
-		NSString *directoryPath = [self _pathForKey:key];
-		[_fileManager removeItemAtPath:directoryPath error:nil];
-		[_hashStore removeHashForKey:key];
+	[_managedObjectContext performBlock:^{
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
+		fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
 	}];
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	
-	__block UIImage *image = nil;
-	
-	[self _performBlockAndWait:^{
-		image = [self _imageForKey:key size:size];
+	__block UIImage *image;
+	[_managedObjectContext performBlockAndWait:^{
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
+		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
+		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
+		fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		_DCTImageCacheItem *item = [items lastObject];
+		image = [UIImage imageWithData:item.imageData];
 	}];
-	
 	return image;
 }
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
-	
 	__block BOOL hasImage = NO;
-	
-	[self _performBlockAndWait:^{
-		NSString *imagePath = [self _pathForKey:key size:size];
-		hasImage = [_fileManager fileExistsAtPath:imagePath];
+	[_managedObjectContext performBlockAndWait:^{
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
+		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
+		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
+		fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		hasImage = items.count > 0;
 	}];
-	
-	return hasImage;	
+	return hasImage;
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
-	[self _performWithPriority:NSOperationQueuePriorityVeryHigh block:^{
-		UIImage *image = [self _imageForKey:key size:size];
+	[_managedObjectContext performBlock:^{
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
+		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
+		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
+		fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		_DCTImageCacheItem *item = [items lastObject];
+		UIImage *image = [UIImage imageWithData:item.imageData];
 		handler(image);
 	}];
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
-	[self _performBlock:^{
-		NSString *path = [self _pathForKey:key];
-		NSString *imagePath = [self _pathForKey:key size:size];
-		
-		if (![_fileManager fileExistsAtPath:path])
-			[_fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
-
-		[_fileManager createFileAtPath:imagePath contents:UIImagePNGRepresentation(image) attributes:nil];
+	[_managedObjectContext performBlock:^{
+		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
+		item.key = key;
+		item.sizeString = NSStringFromCGSize(size);
+		item.imageData = UIImagePNGRepresentation(image);
+		[_managedObjectContext save:NULL];
 	}];
 }
-
+/*
 - (void)fetchAttributesForImageWithKey:(NSString *)key size:(CGSize)size handler:(void (^)(NSDictionary *))handler {
 	[self _performBlock:^{
 		NSString *path = [self _pathForKey:key size:size];
@@ -121,41 +152,6 @@
 			block(CGSizeFromString(filename), stop);
 		}];
 	}];
-}
-
-#pragma mark Internal
-
-- (void)_performBlock:(void(^)())block {
-	[_queue addOperationWithBlock:block];
-}
-
-- (void)_performWithPriority:(NSOperationQueuePriority)priority block:(void(^)())block {
-	NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:block];
-	[blockOperation setQueuePriority:priority];
-	[_queue addOperation:blockOperation];
-}
-
-- (void)_performBlockAndWait:(void(^)())block {
-	NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:block];
-	[blockOperation setQueuePriority:NSOperationQueuePriorityVeryHigh];
-	[_queue addOperation:blockOperation];
-	[blockOperation waitUntilFinished];
-}
-
-- (UIImage *)_imageForKey:(NSString *)key size:(CGSize)size {
-	NSString *imagePath = [self _pathForKey:key size:size];
-	NSData *data = [_fileManager contentsAtPath:imagePath];
-	return [UIImage imageWithData:data];
-}
-
-- (NSString *)_pathForKey:(NSString *)key size:(CGSize)size {
-	NSString *path = [self _pathForKey:key];
-	return [path stringByAppendingPathComponent:NSStringFromCGSize(size)];
-}
-
-- (NSString *)_pathForKey:(NSString *)key {
-	NSString *hash = [_hashStore hashForKey:key];
-	return [_path stringByAppendingPathComponent:hash];
-}
+}*/
 
 @end
