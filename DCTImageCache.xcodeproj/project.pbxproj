@@ -22,6 +22,9 @@
 		24B3EECF15A2EB1F00D5E63C /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24B3EECD15A2EB1F00D5E63C /* ViewController.xib */; };
 		24F2DB23165FED99008F58D5 /* _DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F2DB22165FED99008F58D5 /* _DCTImageCacheItem.m */; };
 		24F2DB27165FEDDC008F58D5 /* __DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F2DB26165FEDDC008F58D5 /* __DCTImageCacheItem.m */; };
+		24F2DB5C166029B9008F58D5 /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437B67715B97BA600750117 /* libDCTImageCache.a */; };
+		24F2DB5E166029B9008F58D5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB5D166029B9008F58D5 /* CoreData.framework */; };
+		24F2DB5F166029CE008F58D5 /* DCTImageCache.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */; };
 		24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */; };
 		24F7CB54158A1B9D00B2E33E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB53158A1B9D00B2E33E /* UIKit.framework */; };
 		24F7CB55158A1B9D00B2E33E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
@@ -56,12 +59,11 @@
 
 /* Begin PBXFileReference section */
 		2437B67715B97BA600750117 /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		24B3EEB815A2EB1F00D5E63C /* DCTImageCaccheDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTImageCaccheDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTImageCacheDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		24B3EEC015A2EB1F00D5E63C /* DCTImageCaccheDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCaccheDemo-Info.plist"; sourceTree = "<group>"; };
+		24B3EEC015A2EB1F00D5E63C /* DCTImageCacheDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCacheDemo-Info.plist"; sourceTree = "<group>"; };
 		24B3EEC215A2EB1F00D5E63C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		24B3EEC415A2EB1F00D5E63C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		24B3EEC615A2EB1F00D5E63C /* DCTImageCaccheDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DCTImageCaccheDemo-Prefix.pch"; sourceTree = "<group>"; };
 		24B3EEC715A2EB1F00D5E63C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		24B3EEC815A2EB1F00D5E63C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		24B3EECA15A2EB1F00D5E63C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 		24F2DB22165FED99008F58D5 /* _DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheItem.m; sourceTree = "<group>"; };
 		24F2DB25165FEDDC008F58D5 /* __DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = __DCTImageCacheItem.h; sourceTree = "<group>"; };
 		24F2DB26165FEDDC008F58D5 /* __DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = __DCTImageCacheItem.m; sourceTree = "<group>"; };
+		24F2DB5D166029B9008F58D5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		24F7CB42158A1B9D00B2E33E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCTImageCache.h; sourceTree = "<group>"; };
 		24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCTImageCache.m; sourceTree = "<group>"; };
@@ -104,6 +107,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24F2DB5E166029B9008F58D5 /* CoreData.framework in Frameworks */,
+				24F2DB5C166029B9008F58D5 /* libDCTImageCache.a in Frameworks */,
 				24B3EEBA15A2EB1F00D5E63C /* UIKit.framework in Frameworks */,
 				24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */,
 				24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */,
@@ -131,7 +136,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		24B3EEBE15A2EB1F00D5E63C /* DCTImageCaccheDemo */ = {
+		24B3EEBE15A2EB1F00D5E63C /* DCTImageCacheDemo */ = {
 			isa = PBXGroup;
 			children = (
 				24B3EEC715A2EB1F00D5E63C /* AppDelegate.h */,
@@ -141,16 +146,15 @@
 				24B3EECD15A2EB1F00D5E63C /* ViewController.xib */,
 				24B3EEBF15A2EB1F00D5E63C /* Supporting Files */,
 			);
-			path = DCTImageCaccheDemo;
+			path = DCTImageCacheDemo;
 			sourceTree = "<group>";
 		};
 		24B3EEBF15A2EB1F00D5E63C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				24B3EEC015A2EB1F00D5E63C /* DCTImageCaccheDemo-Info.plist */,
+				24B3EEC015A2EB1F00D5E63C /* DCTImageCacheDemo-Info.plist */,
 				24B3EEC115A2EB1F00D5E63C /* InfoPlist.strings */,
 				24B3EEC415A2EB1F00D5E63C /* main.m */,
-				24B3EEC615A2EB1F00D5E63C /* DCTImageCaccheDemo-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -161,7 +165,7 @@
 				24F7CB44158A1B9D00B2E33E /* DCTImageCache */,
 				24FCFA97165FEAB3006208A7 /* DCTImageCacheBundle */,
 				24F7CB59158A1B9D00B2E33E /* DCTImageCacheTests */,
-				24B3EEBE15A2EB1F00D5E63C /* DCTImageCaccheDemo */,
+				24B3EEBE15A2EB1F00D5E63C /* DCTImageCacheDemo */,
 				24F7CB41158A1B9D00B2E33E /* Frameworks */,
 				24F7CB40158A1B9D00B2E33E /* Products */,
 			);
@@ -171,7 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				24F7CB50158A1B9D00B2E33E /* DCTImageCacheTests.octest */,
-				24B3EEB815A2EB1F00D5E63C /* DCTImageCaccheDemo.app */,
+				24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */,
 				2437B67715B97BA600750117 /* libDCTImageCache.a */,
 				24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */,
 			);
@@ -181,6 +185,7 @@
 		24F7CB41158A1B9D00B2E33E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				24F2DB5D166029B9008F58D5 /* CoreData.framework */,
 				24F7CB42158A1B9D00B2E33E /* Foundation.framework */,
 				24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */,
 				24F7CB53158A1B9D00B2E33E /* UIKit.framework */,
@@ -264,9 +269,9 @@
 			productReference = 2437B67715B97BA600750117 /* libDCTImageCache.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		24B3EEB715A2EB1F00D5E63C /* DCTImageCaccheDemo */ = {
+		24B3EEB715A2EB1F00D5E63C /* DCTImageCacheDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCaccheDemo" */;
+			buildConfigurationList = 24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCacheDemo" */;
 			buildPhases = (
 				24B3EEB415A2EB1F00D5E63C /* Sources */,
 				24B3EEB515A2EB1F00D5E63C /* Frameworks */,
@@ -276,9 +281,9 @@
 			);
 			dependencies = (
 			);
-			name = DCTImageCaccheDemo;
+			name = DCTImageCacheDemo;
 			productName = DCTImageCaccheDemo;
-			productReference = 24B3EEB815A2EB1F00D5E63C /* DCTImageCaccheDemo.app */;
+			productReference = 24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 		24F7CB4F158A1B9D00B2E33E /* DCTImageCacheTests */ = {
@@ -340,7 +345,7 @@
 				2437B67615B97BA600750117 /* DCTImageCache */,
 				24FCFA93165FEAB3006208A7 /* DCTImageCacheBundle */,
 				24F7CB4F158A1B9D00B2E33E /* DCTImageCacheTests */,
-				24B3EEB715A2EB1F00D5E63C /* DCTImageCaccheDemo */,
+				24B3EEB715A2EB1F00D5E63C /* DCTImageCacheDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -352,6 +357,7 @@
 			files = (
 				24B3EEC315A2EB1F00D5E63C /* InfoPlist.strings in Resources */,
 				24B3EECF15A2EB1F00D5E63C /* ViewController.xib in Resources */,
+				24F2DB5F166029CE008F58D5 /* DCTImageCache.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,8 +506,7 @@
 					"\"$(SYSTEM_APPS_DIR)/Xcode45-DP2.app/Contents/Developer/Library/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCTImageCaccheDemo/DCTImageCaccheDemo-Prefix.pch";
-				INFOPLIST_FILE = "DCTImageCaccheDemo/DCTImageCaccheDemo-Info.plist";
+				INFOPLIST_FILE = "DCTImageCacheDemo/DCTImageCacheDemo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -521,8 +526,7 @@
 					"\"$(SYSTEM_APPS_DIR)/Xcode45-DP2.app/Contents/Developer/Library/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCTImageCaccheDemo/DCTImageCaccheDemo-Prefix.pch";
-				INFOPLIST_FILE = "DCTImageCaccheDemo/DCTImageCaccheDemo-Info.plist";
+				INFOPLIST_FILE = "DCTImageCacheDemo/DCTImageCacheDemo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = (
@@ -654,7 +658,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCaccheDemo" */ = {
+		24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCacheDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				24B3EED015A2EB1F00D5E63C /* Debug */,
