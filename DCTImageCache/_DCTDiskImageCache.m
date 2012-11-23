@@ -68,31 +68,28 @@
 
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
 	[_managedObjectContext performBlock:^{
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
-		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
-		fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
 		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
+		for (_DCTImageCacheItem *item in items)
+			[_managedObjectContext deleteObject:item];
+		[_managedObjectContext save:NULL];
 	}];
 }
 
 - (void)removeAllImagesForKey:(NSString *)key {
 	[_managedObjectContext performBlock:^{
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-		fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key];
 		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
+		for (_DCTImageCacheItem *item in items)
+			[_managedObjectContext deleteObject:item];
+		[_managedObjectContext save:NULL];
 	}];
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
 	__block UIImage *image;
 	[_managedObjectContext performBlockAndWait:^{
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
-		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
-		fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
 		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		_DCTImageCacheItem *item = [items lastObject];
 		image = [UIImage imageWithData:item.imageData];
@@ -103,23 +100,17 @@
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
 	__block BOOL hasImage = NO;
 	[_managedObjectContext performBlockAndWait:^{
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
-		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
-		fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
-		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-		hasImage = items.count > 0;
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+		NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
+		hasImage = count > 0;
 	}];
 	return hasImage;
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 	[_fetchingContext performBlock:^{
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
-		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
-		fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
-		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+		NSArray *items = [_fetchingContext executeFetchRequest:fetchRequest error:NULL];
 		_DCTImageCacheItem *item = [items lastObject];
 		UIImage *image = [UIImage imageWithData:item.imageData];
 		handler(image);
@@ -134,8 +125,26 @@
 		item.imageData = UIImagePNGRepresentation(image);
 		item.date = [NSDate new];
 		[_savingContext save:NULL];
+		[_managedObjectContext performBlock:^{
+			[_managedObjectContext save:NULL];
+		}];
 	}];
 }
+
+- (NSFetchRequest *)_fetchRequestForKey:(NSString *)key {
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
+	fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
+	return fetchRequest;
+}
+
+- (NSFetchRequest *)_fetchRequestForKey:(NSString *)key size:(CGSize)size {
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
+	NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
+	NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
+	fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
+	return fetchRequest;
+}
+
 /*
 - (void)fetchAttributesForImageWithKey:(NSString *)key size:(CGSize)size handler:(void (^)(NSDictionary *))handler {
 	[self _performBlock:^{
