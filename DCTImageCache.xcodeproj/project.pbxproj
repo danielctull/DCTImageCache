@@ -76,7 +76,6 @@
 		24F2DB25165FEDDC008F58D5 /* __DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = __DCTImageCacheItem.h; sourceTree = "<group>"; };
 		24F2DB26165FEDDC008F58D5 /* __DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = __DCTImageCacheItem.m; sourceTree = "<group>"; };
 		24F7CB42158A1B9D00B2E33E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		24F7CB46158A1B9D00B2E33E /* DCTImageCache-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DCTImageCache-Prefix.pch"; sourceTree = "<group>"; };
 		24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCTImageCache.h; sourceTree = "<group>"; };
 		24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCTImageCache.m; sourceTree = "<group>"; };
 		24F7CB50158A1B9D00B2E33E /* DCTImageCacheTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCTImageCacheTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -204,17 +203,8 @@
 				24F2DB22165FED99008F58D5 /* _DCTImageCacheItem.m */,
 				24B3EEDD15A311D400D5E63C /* _DCTMemoryImageCache.h */,
 				24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */,
-				24F7CB45158A1B9D00B2E33E /* Supporting Files */,
 			);
 			path = DCTImageCache;
-			sourceTree = "<group>";
-		};
-		24F7CB45158A1B9D00B2E33E /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				24F7CB46158A1B9D00B2E33E /* DCTImageCache-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		24F7CB59158A1B9D00B2E33E /* DCTImageCacheTests */ = {
@@ -481,7 +471,6 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/DCTImageCache.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -495,7 +484,6 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/DCTImageCache.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
