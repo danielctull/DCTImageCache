@@ -12,7 +12,6 @@
 		2437B68415B97BD700750117 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
 		2437B68515B97BD700750117 /* _DCTDiskImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EED615A30EEB00D5E63C /* _DCTDiskImageCache.m */; };
 		2437B68615B97BD700750117 /* _DCTMemoryImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */; };
-		2437B68715B97BD700750117 /* _DCTImageCacheHashStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDA15A30F6600D5E63C /* _DCTImageCacheHashStore.m */; };
 		24B3EEBA15A2EB1F00D5E63C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB53158A1B9D00B2E33E /* UIKit.framework */; };
 		24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */; };
@@ -70,8 +69,6 @@
 		24B3EECE15A2EB1F00D5E63C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		24B3EED515A30EEB00D5E63C /* _DCTDiskImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTDiskImageCache.h; sourceTree = "<group>"; };
 		24B3EED615A30EEB00D5E63C /* _DCTDiskImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTDiskImageCache.m; sourceTree = "<group>"; };
-		24B3EED915A30F6600D5E63C /* _DCTImageCacheHashStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheHashStore.h; sourceTree = "<group>"; };
-		24B3EEDA15A30F6600D5E63C /* _DCTImageCacheHashStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheHashStore.m; sourceTree = "<group>"; };
 		24B3EEDD15A311D400D5E63C /* _DCTMemoryImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTMemoryImageCache.h; sourceTree = "<group>"; };
 		24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTMemoryImageCache.m; sourceTree = "<group>"; };
 		24F2DB21165FED99008F58D5 /* _DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheItem.h; sourceTree = "<group>"; };
@@ -207,8 +204,6 @@
 				24F2DB22165FED99008F58D5 /* _DCTImageCacheItem.m */,
 				24B3EEDD15A311D400D5E63C /* _DCTMemoryImageCache.h */,
 				24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */,
-				24B3EED915A30F6600D5E63C /* _DCTImageCacheHashStore.h */,
-				24B3EEDA15A30F6600D5E63C /* _DCTImageCacheHashStore.m */,
 				24F7CB45158A1B9D00B2E33E /* Supporting Files */,
 			);
 			path = DCTImageCache;
@@ -411,7 +406,6 @@
 				2437B68415B97BD700750117 /* DCTImageCache.m in Sources */,
 				2437B68515B97BD700750117 /* _DCTDiskImageCache.m in Sources */,
 				2437B68615B97BD700750117 /* _DCTMemoryImageCache.m in Sources */,
-				2437B68715B97BD700750117 /* _DCTImageCacheHashStore.m in Sources */,
 				24F2DB23165FED99008F58D5 /* _DCTImageCacheItem.m in Sources */,
 				24F2DB27165FEDDC008F58D5 /* __DCTImageCacheItem.m in Sources */,
 			);
