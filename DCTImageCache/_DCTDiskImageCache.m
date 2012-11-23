@@ -68,53 +68,28 @@
 }
 
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
-	[_managedObjectContext performBlock:^{
+	[_savingContext performBlock:^{
 		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		NSArray *items = [_savingContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items)
-			[_managedObjectContext deleteObject:item];
-		[_managedObjectContext save:NULL];
+			[_savingContext deleteObject:item];
+		[_savingContext save:NULL];
+		[_managedObjectContext performBlock:^{
+			[_managedObjectContext save:NULL];
+		}];
 	}];
 }
 
 - (void)removeAllImagesForKey:(NSString *)key {
-	[_managedObjectContext performBlock:^{
+	[_savingContext performBlock:^{
 		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key];
-		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		NSArray *items = [_savingContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items)
-			[_managedObjectContext deleteObject:item];
-		[_managedObjectContext save:NULL];
-	}];
-}
-
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	__block UIImage *image;
-	[_managedObjectContext performBlockAndWait:^{
-		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-		_DCTImageCacheItem *item = [items lastObject];
-		image = [UIImage imageWithData:item.imageData];
-	}];
-	return image;
-}
-
-- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
-	__block BOOL hasImage = NO;
-	[_managedObjectContext performBlockAndWait:^{
-		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-		NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
-		hasImage = count > 0;
-	}];
-	return hasImage;
-}
-
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
-	[_fetchingContext performBlock:^{
-		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-		NSArray *items = [_fetchingContext executeFetchRequest:fetchRequest error:NULL];
-		_DCTImageCacheItem *item = [items lastObject];
-		UIImage *image = [UIImage imageWithData:item.imageData];
-		handler(image);
+			[_savingContext deleteObject:item];
+		[_savingContext save:NULL];
+		[_managedObjectContext performBlock:^{
+			[_managedObjectContext save:NULL];
+		}];
 	}];
 }
 
@@ -129,6 +104,37 @@
 		[_managedObjectContext performBlock:^{
 			[_managedObjectContext save:NULL];
 		}];
+	}];
+}
+
+- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
+	__block UIImage *image;
+	[_fetchingContext performBlockAndWait:^{
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+		NSArray *items = [_fetchingContext executeFetchRequest:fetchRequest error:NULL];
+		_DCTImageCacheItem *item = [items lastObject];
+		image = [UIImage imageWithData:item.imageData];
+	}];
+	return image;
+}
+
+- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
+	__block BOOL hasImage = NO;
+	[_fetchingContext performBlockAndWait:^{
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+		NSUInteger count = [_fetchingContext countForFetchRequest:fetchRequest error:NULL];
+		hasImage = count > 0;
+	}];
+	return hasImage;
+}
+
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
+	[_fetchingContext performBlock:^{
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+		NSArray *items = [_fetchingContext executeFetchRequest:fetchRequest error:NULL];
+		_DCTImageCacheItem *item = [items lastObject];
+		UIImage *image = [UIImage imageWithData:item.imageData];
+		handler(image);
 	}];
 }
 
