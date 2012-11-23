@@ -12,7 +12,6 @@
 		2437B68415B97BD700750117 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
 		2437B68515B97BD700750117 /* _DCTDiskImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EED615A30EEB00D5E63C /* _DCTDiskImageCache.m */; };
 		2437B68615B97BD700750117 /* _DCTMemoryImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */; };
-		24B3EEBA15A2EB1F00D5E63C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB53158A1B9D00B2E33E /* UIKit.framework */; };
 		24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */; };
 		24B3EEC315A2EB1F00D5E63C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 24B3EEC115A2EB1F00D5E63C /* InfoPlist.strings */; };
@@ -25,8 +24,10 @@
 		24F2DB5C166029B9008F58D5 /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437B67715B97BA600750117 /* libDCTImageCache.a */; };
 		24F2DB5E166029B9008F58D5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB5D166029B9008F58D5 /* CoreData.framework */; };
 		24F2DB5F166029CE008F58D5 /* DCTImageCache.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */; };
+		24F2DB6316602B71008F58D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB6216602B71008F58D5 /* UIKit.framework */; };
+		24F2DB6416602D47008F58D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB6216602B71008F58D5 /* UIKit.framework */; };
+		24F2DB6516602D4D008F58D5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB5D166029B9008F58D5 /* CoreData.framework */; };
 		24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */; };
-		24F7CB54158A1B9D00B2E33E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB53158A1B9D00B2E33E /* UIKit.framework */; };
 		24F7CB55158A1B9D00B2E33E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		24F7CB5E158A1B9D00B2E33E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 24F7CB5C158A1B9D00B2E33E /* InfoPlist.strings */; };
 		24F7CB61158A1B9D00B2E33E /* DCTImageCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB60158A1B9D00B2E33E /* DCTImageCacheTests.m */; };
@@ -78,12 +79,12 @@
 		24F2DB25165FEDDC008F58D5 /* __DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = __DCTImageCacheItem.h; sourceTree = "<group>"; };
 		24F2DB26165FEDDC008F58D5 /* __DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = __DCTImageCacheItem.m; sourceTree = "<group>"; };
 		24F2DB5D166029B9008F58D5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		24F2DB6216602B71008F58D5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		24F7CB42158A1B9D00B2E33E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCTImageCache.h; sourceTree = "<group>"; };
 		24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCTImageCache.m; sourceTree = "<group>"; };
 		24F7CB50158A1B9D00B2E33E /* DCTImageCacheTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCTImageCacheTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		24F7CB53158A1B9D00B2E33E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		24F7CB5B158A1B9D00B2E33E /* DCTImageCacheTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCacheTests-Info.plist"; sourceTree = "<group>"; };
 		24F7CB5D158A1B9D00B2E33E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		24F7CB5F158A1B9D00B2E33E /* DCTImageCacheTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheTests.h; sourceTree = "<group>"; };
@@ -99,6 +100,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24F2DB6516602D4D008F58D5 /* CoreData.framework in Frameworks */,
+				24F2DB6416602D47008F58D5 /* UIKit.framework in Frameworks */,
 				2437B67815B97BA600750117 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -107,9 +110,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24F2DB6316602B71008F58D5 /* UIKit.framework in Frameworks */,
 				24F2DB5E166029B9008F58D5 /* CoreData.framework in Frameworks */,
 				24F2DB5C166029B9008F58D5 /* libDCTImageCache.a in Frameworks */,
-				24B3EEBA15A2EB1F00D5E63C /* UIKit.framework in Frameworks */,
 				24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */,
 				24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */,
 			);
@@ -120,7 +123,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */,
-				24F7CB54158A1B9D00B2E33E /* UIKit.framework in Frameworks */,
 				24F7CB55158A1B9D00B2E33E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,10 +187,10 @@
 		24F7CB41158A1B9D00B2E33E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				24F2DB6216602B71008F58D5 /* UIKit.framework */,
 				24F2DB5D166029B9008F58D5 /* CoreData.framework */,
 				24F7CB42158A1B9D00B2E33E /* Foundation.framework */,
 				24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */,
-				24F7CB53158A1B9D00B2E33E /* UIKit.framework */,
 				24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */,
 				24FCFA95165FEAB3006208A7 /* CoreFoundation.framework */,
 			);
@@ -501,10 +503,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SYSTEM_APPS_DIR)/Xcode45-DP2.app/Contents/Developer/Library/Frameworks\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = "DCTImageCacheDemo/DCTImageCacheDemo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
@@ -521,10 +520,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SYSTEM_APPS_DIR)/Xcode45-DP2.app/Contents/Developer/Library/Frameworks\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = "DCTImageCacheDemo/DCTImageCacheDemo-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;

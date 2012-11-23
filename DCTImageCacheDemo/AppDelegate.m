@@ -10,26 +10,10 @@
 #import "ViewController.h"
 #import <DCTImageCache/DCTImageCache.h>
 
-
-// setDelegateQueue was broken on iOS 5...
-BOOL CanSetDelegateQueue() {
-
-	Class collectionViewClass = NSClassFromString(@"UICollectionView");
-	Class tableViewClass = NSClassFromString(@"UITableView");
-
-	if (tableViewClass && !collectionViewClass) return NO;
-
-	return YES;
-}
-
-@implementation AppDelegate {
-	__strong NSMutableDictionary *_datas;
-}
+@implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	
-	_datas = [NSMutableDictionary new];
-
 	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
 	imageCache.imageFetcher = ^(NSString *key, CGSize size) {
 		[self fetchImageForKey:key size:size];
@@ -47,51 +31,18 @@ BOOL CanSetDelegateQueue() {
 	if (CGSizeEqualToSize(size, CGSizeZero)) {
 		NSURL *URL = [NSURL URLWithString:key];
 		NSURLRequest *request = [[NSURLRequest alloc] initWithURL:URL];
-		NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
-
-		if (CanSetDelegateQueue())
-			[connection setDelegateQueue:[NSOperationQueue currentQueue]];
-
-		[connection start];
-		[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-
-		if (!CanSetDelegateQueue())
-			CFRunLoopRun();
-
-		return;
+		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+			UIImage *image = [UIImage imageWithData:data];
+			[[DCTImageCache defaultImageCache] setImage:image forKey:key size:CGSizeZero];
+			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+		}];
 	}
 	
 	[[DCTImageCache defaultImageCache] fetchImageForKey:key size:CGSizeZero handler:^(UIImage *image) {
 		UIImage *scaledImage = [self imageFromImage:image toFitSize:size];
 		[[DCTImageCache defaultImageCache] setImage:scaledImage forKey:key size:size];
 	}];
-}
-
-#pragma mark - NSURLConnectionDownloadDelegate
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-	
-	NSURL *URL = connection.originalRequest.URL;
-	
-	NSMutableData *imageData = [_datas objectForKey:URL];
-	if (!imageData) {
-		imageData = [NSMutableData new];
-		[_datas setObject:imageData forKey:URL];
-	}
-	
-	[imageData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-	NSURL *URL = connection.originalRequest.URL;
-	NSData *data = [_datas objectForKey:URL];
-	UIImage *image = [UIImage imageWithData:data];
-	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
-	[imageCache setImage:image forKey:[URL absoluteString] size:CGSizeZero];
-
-	[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-	if (!CanSetDelegateQueue())
-		CFRunLoopStop(CFRunLoopGetCurrent());
 }
 
 - (UIImage *)imageFromImage:(UIImage *)image toFitSize:(CGSize)size {
