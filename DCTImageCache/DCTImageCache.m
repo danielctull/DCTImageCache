@@ -144,8 +144,6 @@
 	// Check if there's a network fetch in the queue, if there is, a disk fetch is on the disk queue, or failed.
 	_DCTImageCacheFetchOperation *networkFetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_queue withKey:key size:size];
 
-	NSLog(@"%@:%@ %@", self, NSStringFromSelector(_cmd), networkFetchOperation);
-
 	if (!networkFetchOperation) {
 
 		_DCTImageCacheFetchOperation *diskFetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
