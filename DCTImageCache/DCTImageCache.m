@@ -122,7 +122,7 @@
 	}];
 }
 
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
+- (NSOperation *)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 
 	BOOL hasHandler = (handler != NULL);
 
@@ -130,7 +130,7 @@
 	UIImage *image = [_memoryCache imageForKey:key size:size];
 	if (image) {
 		if (hasHandler) handler(image);
-		return;
+		return nil;
 	}
 
 	// If the image is in the disk queue to be saved, pull it out and use it
@@ -138,7 +138,7 @@
 	image = diskSaveOperation.image;
 	if (image) {
 		if (hasHandler) handler(image);
-		return;
+		return nil;
 	}
 
 	// Check if there's a network fetch in the queue, if there is, a disk fetch is on the disk queue, or failed.
@@ -191,12 +191,13 @@
 		[_diskQueue addOperation:diskFetchOperation];
 	}
 
-	if (!hasHandler) return;
+	if (!hasHandler) return nil;
 
 	// Create a handler operation to be executed once an operation is finished
 	_DCTImageCacheImageOperation *handlerOperation = [[_DCTImageCacheImageOperation alloc] initWithKey:key size:size imageHandler:handler];
 	[handlerOperation addDependency:fetchOperation];
 	[_queue addOperation:handlerOperation];
+	return handlerOperation;
 }
 
 #pragma mark Internal
