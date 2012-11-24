@@ -12,9 +12,9 @@
 
 - (id)initWithKey:(NSString *)key
 			 size:(CGSize)size
-			block:(UIImage *(^)())block;
+			block:(void(^)(void(^)(UIImage *fetchedImage)))block;
 
-@property (readonly, copy) UIImage *(^block)();
+@property (readonly, copy) void(^block)(void(^)(UIImage *fetchedImage));
 @property (readonly, strong) UIImage *fetchedImage;
 
 @end
