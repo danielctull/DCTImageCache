@@ -10,12 +10,18 @@
 #import "_DCTDiskImageCache.h"
 #import "_DCTMemoryImageCache.h"
 
+#import "_DCTImageCacheFetchOperation.h"
+#import "_DCTImageCacheSaveOperation.h"
+
 @implementation DCTImageCache {
 	__strong _DCTDiskImageCache *_diskCache;
 	__strong _DCTMemoryImageCache *_memoryCache;
 	__strong NSMutableDictionary *_imageHandlers;
 	__strong NSOperationQueue *_queue;
 	__strong NSMutableSet *_fetchingKeySizes;
+
+	NSOperationQueue *_diskQueue;
+	NSOperationQueue *_fetchQueue;
 }
 
 #pragma mark NSObject
@@ -88,7 +94,7 @@
 	
 	NSString *queueName = [NSString stringWithFormat:@"uk.co.danieltull.DCTImageCache.%@", name];
 	_queue = [NSOperationQueue new];
-	[_queue setMaxConcurrentOperationCount:1];
+	[_fetchQueue setMaxConcurrentOperationCount:NSOperationQueueDefaultMaxConcurrentOperationCount];
 	[_queue setName:queueName];
 	
 	[self _performWithPriority:NSOperationQueuePriorityNormal block:^{
