@@ -13,8 +13,6 @@
 @implementation _DCTDiskImageCache {
 	NSURL *_storeURL;
 	NSManagedObjectContext *_managedObjectContext;
-	NSManagedObjectContext *_savingContext;
-	NSManagedObjectContext *_fetchingContext;
 }
 
 + (NSBundle *)bundle {
@@ -54,12 +52,6 @@
 
 	_managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
 	_managedObjectContext.persistentStoreCoordinator = coordinator;
-
-	_savingContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-	_savingContext.parentContext = _managedObjectContext;
-
-	_fetchingContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-	_fetchingContext.parentContext = _managedObjectContext;
 }
 
 - (void)removeAllImages {
@@ -68,12 +60,12 @@
 }
 
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
-	[_savingContext performBlock:^{
+	[_managedObjectContext performBlock:^{
 		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-		NSArray *items = [_savingContext executeFetchRequest:fetchRequest error:NULL];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items)
-			[_savingContext deleteObject:item];
-		[_savingContext save:NULL];
+			[_managedObjectContext deleteObject:item];
+		[_managedObjectContext save:NULL];
 		[_managedObjectContext performBlock:^{
 			[_managedObjectContext save:NULL];
 		}];
@@ -81,12 +73,12 @@
 }
 
 - (void)removeAllImagesForKey:(NSString *)key {
-	[_savingContext performBlock:^{
+	[_managedObjectContext performBlock:^{
 		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key];
-		NSArray *items = [_savingContext executeFetchRequest:fetchRequest error:NULL];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items)
-			[_savingContext deleteObject:item];
-		[_savingContext save:NULL];
+			[_managedObjectContext deleteObject:item];
+		[_managedObjectContext save:NULL];
 		[_managedObjectContext performBlock:^{
 			[_managedObjectContext save:NULL];
 		}];
@@ -94,13 +86,13 @@
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
-	[_savingContext performBlock:^{
-		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_savingContext];
+	[_managedObjectContext performBlock:^{
+		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
 		item.key = key;
 		item.sizeString = NSStringFromCGSize(size);
 		item.imageData = UIImagePNGRepresentation(image);
 		item.date = [NSDate new];
-		[_savingContext save:NULL];
+		[_managedObjectContext save:NULL];
 		[_managedObjectContext performBlock:^{
 			[_managedObjectContext save:NULL];
 		}];
@@ -109,9 +101,9 @@
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
 	__block UIImage *image;
-	[_fetchingContext performBlockAndWait:^{
+	[_managedObjectContext performBlockAndWait:^{
 		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-		NSArray *items = [_fetchingContext executeFetchRequest:fetchRequest error:NULL];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		_DCTImageCacheItem *item = [items lastObject];
 		image = [UIImage imageWithData:item.imageData];
 	}];
@@ -120,18 +112,18 @@
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
 	__block BOOL hasImage = NO;
-	[_fetchingContext performBlockAndWait:^{
+	[_managedObjectContext performBlockAndWait:^{
 		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-		NSUInteger count = [_fetchingContext countForFetchRequest:fetchRequest error:NULL];
+		NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
 		hasImage = count > 0;
 	}];
 	return hasImage;
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
-	[_fetchingContext performBlock:^{
+	[_managedObjectContext performBlock:^{
 		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-		NSArray *items = [_fetchingContext executeFetchRequest:fetchRequest error:NULL];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		_DCTImageCacheItem *item = [items lastObject];
 		UIImage *image = [UIImage imageWithData:item.imageData];
 		handler(image);
