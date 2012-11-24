@@ -144,14 +144,24 @@
 	// Check if there's a network fetch in the queue, if there is, a disk fetch is on the disk queue, or failed.
 	_DCTImageCacheFetchOperation *fetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_queue withKey:key size:size];
 
-	if (!fetchOperation) {
+	NSOperationQueuePriority priority = hasHandler ? NSOperationQueuePriorityVeryHigh : NSOperationQueuePriorityNormal;
+
+	if (fetchOperation) {
+
+		// Make sure existing disk fetch operation is very high
+		if (hasHandler) {
+			_DCTImageCacheFetchOperation *diskFetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_diskQueue withKey:key size:size];
+			diskFetchOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
+		}
+		
+	} else {
 
 		_DCTImageCacheFetchOperation *diskFetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
 			UIImage *image = [_diskCache imageForKey:key size:size];
 			imageHander(image);
 			if (image && hasHandler) [_memoryCache setImage:image forKey:key size:size];
 		}];
-		diskFetchOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
+		diskFetchOperation.queuePriority = priority;
 
 		fetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
 
@@ -174,6 +184,7 @@
 				[_diskQueue addOperation:diskSave];
 			});
 		}];
+		fetchOperation.queuePriority = priority;
 
 		[fetchOperation addDependency:diskFetchOperation];
 		[_queue addOperation:fetchOperation];
