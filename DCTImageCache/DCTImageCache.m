@@ -142,9 +142,9 @@
 	}
 
 	// Check if there's a network fetch in the queue, if there is, a disk fetch is on the disk queue, or failed.
-	_DCTImageCacheFetchOperation *networkFetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_queue withKey:key size:size];
+	_DCTImageCacheFetchOperation *fetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_queue withKey:key size:size];
 
-	if (!networkFetchOperation) {
+	if (!fetchOperation) {
 
 		_DCTImageCacheFetchOperation *diskFetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
 			UIImage *image = [_diskCache imageForKey:key size:size];
@@ -153,16 +153,20 @@
 		}];
 		diskFetchOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
 
-		networkFetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
+		fetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
+
+			UIImage *image = diskFetchOperation.fetchedImage;
+			if (image) {
+				imageHander(image);
+				return;
+			}
 
 			self.imageFetcher(key, size, ^(UIImage *image) {
 
 				if (!image) return;
 
 				imageHander(image);
-				if (hasHandler) {
-					[_memoryCache setImage:image forKey:key size:size];
-				}
+				if (hasHandler) [_memoryCache setImage:image forKey:key size:size];
 				_DCTImageCacheSaveOperation *diskSave = [[_DCTImageCacheSaveOperation alloc] initWithKey:key size:size image:image block:^{
 					[_diskCache setImage:image forKey:key size:size];
 				}];
@@ -171,8 +175,8 @@
 			});
 		}];
 
-		[networkFetchOperation addDependency:diskFetchOperation];
-		[_queue addOperation:networkFetchOperation];
+		[fetchOperation addDependency:diskFetchOperation];
+		[_queue addOperation:fetchOperation];
 		[_diskQueue addOperation:diskFetchOperation];
 	}
 
@@ -180,7 +184,7 @@
 
 	// Create a handler operation to be executed once an operation is finished
 	_DCTImageCacheImageOperation *handlerOperation = [[_DCTImageCacheImageOperation alloc] initWithKey:key size:size imageHandler:handler];
-	[handlerOperation addDependency:networkFetchOperation];
+	[handlerOperation addDependency:fetchOperation];
 	[_queue addOperation:handlerOperation];
 }
 

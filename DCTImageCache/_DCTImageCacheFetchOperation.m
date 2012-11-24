@@ -45,28 +45,16 @@
 
 	_isExecuting = YES;
 
-	_DCTImageCacheFetchOperation *fetchOperation = [self.dependencies lastObject];
-	UIImage *image = fetchOperation.fetchedImage;
-	if (image) {
-		[self _finishWithImage:image];
-		return;
-	}
-
 	__weak _DCTImageCacheFetchOperation *weakSelf = self;
 	self.block(^(UIImage *image) {
-		[weakSelf _finishWithImage:image];
+		_fetchedImage = image;
+		[weakSelf willChangeValueForKey:@"isExecuting"];
+		[weakSelf willChangeValueForKey:@"isFinished"];
+		_isExecuting = NO;
+		_isFinished = YES;
+		[weakSelf didChangeValueForKey:@"isExecuting"];
+		[weakSelf didChangeValueForKey:@"isFinished"];
 	});
-}
-
-- (void)_finishWithImage:(UIImage *)image {
-	_fetchedImage = image;
-
-	[self willChangeValueForKey:@"isExecuting"];
-	[self willChangeValueForKey:@"isFinished"];
-	_isExecuting = NO;
-	_isFinished = YES;
-	[self didChangeValueForKey:@"isExecuting"];
-	[self didChangeValueForKey:@"isFinished"];
 }
 
 @end
