@@ -122,14 +122,64 @@
 	}];
 }
 
+- (void)prefetchImageForKey:(NSString *)key size:(CGSize)size {
+	return;
+	NSLog(@"%@:%@ %@", self, NSStringFromSelector(_cmd), key);
+	[self _performVeryLowPriorityBlockOnDiskQueue:^{
+		NSLog(@"ON BACKGROUND%@:%@ %@", self, NSStringFromSelector(_cmd), key);
+		BOOL hasImage = [_diskCache hasImageForKey:key size:size];
+		if (hasImage) return;
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			_DCTImageCacheSaveOperation *diskSaveOperation = [self _operationOfClass:[_DCTImageCacheSaveOperation class] onQueue:_diskQueue withKey:key size:size];
+			if (diskSaveOperation) return;
+			_DCTImageCacheFetchOperation *fetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_queue withKey:key size:size];
+			if (fetchOperation) return;
+			fetchOperation = [self _createFetchOperationWithKey:key size:size diskFetchOperation:nil];
+			fetchOperation.queuePriority = NSOperationQueuePriorityVeryLow;
+			[_queue addOperation:fetchOperation];
+		});
+	}];
+}
+
+- (_DCTImageCacheFetchOperation *)_createFetchOperationWithKey:(NSString *)key size:(CGSize)size diskFetchOperation:(_DCTImageCacheFetchOperation *)diskFetchOperation {
+
+	_DCTImageCacheFetchOperation *fetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
+
+		UIImage *image = diskFetchOperation.fetchedImage;
+		if (image) {
+			NSLog(@"FETCHED FROM DISK: %@", key);
+			imageHander(image);
+			return;
+		}
+
+		self.imageFetcher(key, size, ^(UIImage *image) {
+
+			if (!image) return;
+
+			NSLog(@"FETCHED FROM NETWORK: %@", key);
+			imageHander(image);
+			if (diskFetchOperation) [_memoryCache setImage:image forKey:key size:size];
+			_DCTImageCacheSaveOperation *diskSave = [[_DCTImageCacheSaveOperation alloc] initWithKey:key size:size image:image block:^{
+				[_diskCache setImage:image forKey:key size:size];
+			}];
+			diskSave.queuePriority = NSOperationQueuePriorityVeryLow;
+			[_diskQueue addOperation:diskSave];
+		});
+	}];
+	return fetchOperation;
+}
+
 - (NSOperation *)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 
-	BOOL hasHandler = (handler != NULL);
-
+	if (handler == NULL) {
+		[self prefetchImageForKey:key size:size];
+		return nil;
+	}
+	
 	// If the image exists in the memory cache, use it!
 	UIImage *image = [_memoryCache imageForKey:key size:size];
 	if (image) {
-		if (hasHandler) handler(image);
+		handler(image);
 		return nil;
 	}
 
@@ -137,61 +187,35 @@
 	_DCTImageCacheSaveOperation *diskSaveOperation = [self _operationOfClass:[_DCTImageCacheSaveOperation class] onQueue:_diskQueue withKey:key size:size];
 	image = diskSaveOperation.image;
 	if (image) {
-		if (hasHandler) handler(image);
+		handler(image);
 		return nil;
 	}
 
 	// Check if there's a network fetch in the queue, if there is, a disk fetch is on the disk queue, or failed.
 	_DCTImageCacheFetchOperation *fetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_queue withKey:key size:size];
 
-	NSOperationQueuePriority priority = hasHandler ? NSOperationQueuePriorityVeryHigh : NSOperationQueuePriorityNormal;
-
 	if (fetchOperation) {
 
 		// Make sure existing disk fetch operation is very high
-		if (hasHandler) {
-			_DCTImageCacheFetchOperation *diskFetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_diskQueue withKey:key size:size];
-			diskFetchOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
-		}
+		_DCTImageCacheFetchOperation *diskFetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_diskQueue withKey:key size:size];
+		diskFetchOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
 		
 	} else {
-
+		
 		_DCTImageCacheFetchOperation *diskFetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
+			NSLog(@"DISK FETCH OPERATION: %@", key);
 			UIImage *image = [_diskCache imageForKey:key size:size];
 			imageHander(image);
-			if (image && hasHandler) [_memoryCache setImage:image forKey:key size:size];
+			if (image) [_memoryCache setImage:image forKey:key size:size];
 		}];
-		diskFetchOperation.queuePriority = priority;
+		diskFetchOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
 
-		fetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
-
-			UIImage *image = diskFetchOperation.fetchedImage;
-			if (image) {
-				imageHander(image);
-				return;
-			}
-
-			self.imageFetcher(key, size, ^(UIImage *image) {
-
-				if (!image) return;
-
-				imageHander(image);
-				if (hasHandler) [_memoryCache setImage:image forKey:key size:size];
-				_DCTImageCacheSaveOperation *diskSave = [[_DCTImageCacheSaveOperation alloc] initWithKey:key size:size image:image block:^{
-					[_diskCache setImage:image forKey:key size:size];
-				}];
-				diskSave.queuePriority = NSOperationQueuePriorityVeryLow;
-				[_diskQueue addOperation:diskSave];
-			});
-		}];
-		fetchOperation.queuePriority = priority;
-
+		fetchOperation = [self _createFetchOperationWithKey:key size:size diskFetchOperation:diskFetchOperation];
+		fetchOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
 		[fetchOperation addDependency:diskFetchOperation];
 		[_queue addOperation:fetchOperation];
 		[_diskQueue addOperation:diskFetchOperation];
 	}
-
-	if (!hasHandler) return nil;
 
 	// Create a handler operation to be executed once an operation is finished
 	_DCTImageCacheImageOperation *handlerOperation = [[_DCTImageCacheImageOperation alloc] initWithKey:key size:size imageHandler:handler];
