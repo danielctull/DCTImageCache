@@ -123,10 +123,7 @@
 }
 
 - (void)prefetchImageForKey:(NSString *)key size:(CGSize)size {
-	return;
-	NSLog(@"%@:%@ %@", self, NSStringFromSelector(_cmd), key);
 	[self _performVeryLowPriorityBlockOnDiskQueue:^{
-		NSLog(@"ON BACKGROUND%@:%@ %@", self, NSStringFromSelector(_cmd), key);
 		BOOL hasImage = [_diskCache hasImageForKey:key size:size];
 		if (hasImage) return;
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
@@ -147,7 +144,6 @@
 
 		UIImage *image = diskFetchOperation.fetchedImage;
 		if (image) {
-			NSLog(@"FETCHED FROM DISK: %@", key);
 			imageHander(image);
 			return;
 		}
@@ -156,7 +152,6 @@
 
 			if (!image) return;
 
-			NSLog(@"FETCHED FROM NETWORK: %@", key);
 			imageHander(image);
 			if (diskFetchOperation) [_memoryCache setImage:image forKey:key size:size];
 			_DCTImageCacheSaveOperation *diskSave = [[_DCTImageCacheSaveOperation alloc] initWithKey:key size:size image:image block:^{
@@ -203,7 +198,6 @@
 	} else {
 		
 		_DCTImageCacheFetchOperation *diskFetchOperation = [[_DCTImageCacheFetchOperation alloc] initWithKey:key size:size block:^(void(^imageHander)(UIImage *image)) {
-			NSLog(@"DISK FETCH OPERATION: %@", key);
 			UIImage *image = [_diskCache imageForKey:key size:size];
 			imageHander(image);
 			if (image) [_memoryCache setImage:image forKey:key size:size];
