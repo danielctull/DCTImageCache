@@ -26,6 +26,8 @@
 - (void)removeAllImages;
 - (void)removeAllImagesForKey:(NSString *)key;
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size;
+
+- (void)prefetchImageForKey:(NSString *)key size:(CGSize)size;
 - (NSOperation *)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *image))handler;
 
 @end
