@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		241FDEAD1663A48100EBF959 /* _DCTImageCacheAverager.m in Sources */ = {isa = PBXBuildFile; fileRef = 241FDEAC1663A48100EBF959 /* _DCTImageCacheAverager.m */; };
 		2437B67815B97BA600750117 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
 		2437B68415B97BD700750117 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
@@ -63,6 +64,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		241FDEAB1663A48100EBF959 /* _DCTImageCacheAverager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheAverager.h; sourceTree = "<group>"; };
+		241FDEAC1663A48100EBF959 /* _DCTImageCacheAverager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheAverager.m; sourceTree = "<group>"; };
 		2437B67715B97BA600750117 /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTImageCacheDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -230,6 +233,8 @@
 				24DBE27B16612F0F00687358 /* _DCTImageCacheFetchOperation.m */,
 				24DBE27D1661302F00687358 /* _DCTImageCacheImageOperation.h */,
 				24DBE27E1661302F00687358 /* _DCTImageCacheImageOperation.m */,
+				241FDEAB1663A48100EBF959 /* _DCTImageCacheAverager.h */,
+				241FDEAC1663A48100EBF959 /* _DCTImageCacheAverager.m */,
 			);
 			path = DCTImageCache;
 			sourceTree = "<group>";
@@ -430,6 +435,7 @@
 				24DBE2761661295000687358 /* _DCTImageCacheSaveOperation.m in Sources */,
 				24DBE27C16612F0F00687358 /* _DCTImageCacheFetchOperation.m in Sources */,
 				24DBE27F1661302F00687358 /* _DCTImageCacheImageOperation.m in Sources */,
+				241FDEAD1663A48100EBF959 /* _DCTImageCacheAverager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

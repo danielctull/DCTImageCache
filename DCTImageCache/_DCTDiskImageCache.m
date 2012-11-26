@@ -9,10 +9,12 @@
 #import "_DCTDiskImageCache.h"
 #import "_DCTImageCacheItem.h"
 #import <CoreData/CoreData.h>
+#import "_DCTImageCacheAverager.h"
 
 @implementation _DCTDiskImageCache {
 	NSURL *_storeURL;
 	NSManagedObjectContext *_managedObjectContext;
+	_DCTImageCacheAverager *_averager;
 }
 
 + (NSBundle *)bundle {
@@ -35,6 +37,7 @@
 - (id)initWithPath:(NSString *)path {
 	if (!(self = [super init])) return nil;
 	_storeURL = [[[NSURL alloc] initFileURLWithPath:path] URLByAppendingPathComponent:@"store"];
+	_averager = [_DCTImageCacheAverager new];
 	[self _createStack];
 	return self;
 }
@@ -74,12 +77,14 @@
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+	NSDate *date = [NSDate new];
 	_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
 	item.key = key;
 	item.sizeString = NSStringFromCGSize(size);
 	item.imageData = UIImagePNGRepresentation(image);
 	item.date = [NSDate new];
 	[_managedObjectContext save:NULL];
+	//[_averager addTimeInterval:[[NSDate new] timeIntervalSinceDate:date]];
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
