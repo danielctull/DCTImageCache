@@ -223,7 +223,7 @@
 - (void)_performVeryLowPriorityBlockOnDiskQueue:(void(^)())block {
 	NSBlockOperation *blockOperation = [NSBlockOperation blockOperationWithBlock:block];
 	[blockOperation setQueuePriority:NSOperationQueuePriorityVeryLow];
-	[_queue addOperation:blockOperation];
+	[_diskQueue addOperation:blockOperation];
 }
 
 - (id)_operationOfClass:(Class)class onQueue:(NSOperationQueue *)queue withKey:(NSString *)key size:(CGSize)size {
