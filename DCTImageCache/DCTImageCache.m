@@ -140,20 +140,27 @@
 		fetchOperation = [_DCTImageCacheOperation fetchOperationWithKey:key size:size block:^(void(^completion)(UIImage *image)) {
 			self.imageFetcher(key, size, ^(UIImage *image) {
 				if (!image) return;
-				completion(image);
-				[_memoryCache setImage:image forKey:key size:size];
 				[_diskCache setImageOperationWithImage:image forKey:key size:size];
+				completion(image);
 			});
 		}];
 		fetchOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
 		[fetchOperation addDependency:diskFetchOperation];
 		[_queue addOperation:fetchOperation];
+
+		_DCTImageCacheOperation *handlerOperation = [_DCTImageCacheOperation handlerOperationWithKey:key size:size handler:^(BOOL hasImage, UIImage *image) {
+			[_memoryCache setImage:image forKey:key size:size];
+		}];
+		handlerOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
+		[handlerOperation addDependency:fetchOperation];
+		[_queue addOperation:handlerOperation];
 	}
 
 	// Create a handler operation to be executed once an operation is finished
 	_DCTImageCacheOperation *handlerOperation = [_DCTImageCacheOperation handlerOperationWithKey:key size:size handler:^(BOOL hasImage, UIImage *image) {
 		handler(image);
 	}];
+	handlerOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
 	[handlerOperation addDependency:fetchOperation];
 	[_queue addOperation:handlerOperation];
 
