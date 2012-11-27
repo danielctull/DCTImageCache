@@ -8,11 +8,15 @@
 
 #import "_DCTDiskImageCache.h"
 #import "_DCTImageCacheItem.h"
+#import "NSOperationQueue+_DCTImageCache.h"
 #import <CoreData/CoreData.h>
+
+#import "_DCTImageCacheOperation.h"
 
 @implementation _DCTDiskImageCache {
 	NSURL *_storeURL;
 	NSManagedObjectContext *_managedObjectContext;
+	NSOperationQueue *_queue;
 }
 
 + (NSBundle *)bundle {
@@ -35,7 +39,12 @@
 - (id)initWithPath:(NSString *)path {
 	if (!(self = [super init])) return nil;
 	_storeURL = [[[NSURL alloc] initFileURLWithPath:path] URLByAppendingPathComponent:@"store"];
-	[self _createStack];
+	_queue = [[NSOperationQueue alloc] init];
+	_queue.name = NSStringFromClass([self class]);
+	_queue.maxConcurrentOperationCount = 1;
+	[_queue addOperationWithBlock:^{
+		[self _createStack];
+	}];
 	return self;
 }
 
@@ -54,45 +63,77 @@
 	_managedObjectContext.persistentStoreCoordinator = coordinator;
 }
 
+- (_DCTImageCacheOperation *)setImageOperationWithKey:(NSString *)key size:(CGSize)size {
+	return [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSet withKey:key size:size];
+}
+
+- (_DCTImageCacheOperation *)setImageOperationWithImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation setOperationWithKey:key size:size image:image block:^{
+		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
+		item.key = key;
+		item.sizeString = NSStringFromCGSize(size);
+		item.imageData = UIImagePNGRepresentation(image);
+		item.date = [NSDate new];
+		[self _setNeedsSave];
+	}];
+	operation.queuePriority = NSOperationQueuePriorityLow;
+	[_queue addOperation:operation];
+	return operation;
+}
+
+- (_DCTImageCacheOperation *)fetchImageOperationForKey:(NSString *)key size:(CGSize)size {
+	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeFetch withKey:key size:size];
+	if (!operation) {
+		operation = [_DCTImageCacheOperation fetchOperationWithKey:key size:size block:^(void(^completion)(UIImage *)) {
+			NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+			NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+			_DCTImageCacheItem *item = [items lastObject];
+			completion([UIImage imageWithData:item.imageData]);
+		}];
+		operation.queuePriority = NSOperationQueuePriorityVeryHigh;
+		[_queue addOperation:operation];
+	}
+	return operation;
+}
+
+- (_DCTImageCacheOperation *)hasImageOperationForKey:(NSString *)key size:(CGSize)size {
+	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeHasImage withKey:key size:size];
+	if (!operation) {
+		operation = [_DCTImageCacheOperation hasImageOperationWithKey:key size:size block:^(void(^completion)(BOOL)) {
+			NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+			NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
+			BOOL hasImage = (count > 0);
+			completion(hasImage);
+		}];
+		operation.queuePriority = NSOperationQueuePriorityHigh;
+		[_queue addOperation:operation];
+	}
+	return operation;
+}
+
 - (void)removeAllImages {
-	[[NSFileManager defaultManager] removeItemAtURL:_storeURL error:NULL];
-	[self _createStack];
+	[_queue addOperationWithBlock:^{
+		[[NSFileManager defaultManager] removeItemAtURL:_storeURL error:NULL];
+		[self _createStack];
+	}];
 }
 
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
-	NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-	NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-	for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
-	[_managedObjectContext save:NULL];
+	[_queue addOperationWithBlock:^{
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
+		[self _setNeedsSave];
+	}];
 }
 
 - (void)removeAllImagesForKey:(NSString *)key {
-	NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key];
-	NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-	for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
-	[_managedObjectContext save:NULL];
-}
-
-- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
-	_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
-	item.key = key;
-	item.sizeString = NSStringFromCGSize(size);
-	item.imageData = UIImagePNGRepresentation(image);
-	item.date = [NSDate new];
-	[_managedObjectContext save:NULL];
-}
-
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-	NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-	_DCTImageCacheItem *item = [items lastObject];
-	return [UIImage imageWithData:item.imageData];
-}
-
-- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {
-	NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-	NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
-	return (count > 0);
+	[_queue addOperationWithBlock:^{
+		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key];
+		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
+		[self _setNeedsSave];
+	}];
 }
 
 - (NSFetchRequest *)_fetchRequestForKey:(NSString *)key {
@@ -109,32 +150,15 @@
 	return fetchRequest;
 }
 
-/*
-- (void)fetchAttributesForImageWithKey:(NSString *)key size:(CGSize)size handler:(void (^)(NSDictionary *))handler {
-	[self _performBlock:^{
-		NSString *path = [self _pathForKey:key size:size];
-		NSDictionary *dictionary = [_fileManager attributesOfItemAtPath:path error:nil];
-		handler(dictionary);
-	}];
-}
+- (void)_setNeedsSave {
+	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSave];
+	if (operation) return;
 
-- (void)enumerateKeysUsingBlock:(void (^)(NSString *key, BOOL *stop))block {
-	[self _performBlock:^{
-		NSArray *filenames = [[_fileManager contentsOfDirectoryAtPath:_path error:nil] copy];
-		[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
-			NSString *key = [_hashStore keyForHash:filename];
-			block(key, stop);
-		}];
+	operation = [_DCTImageCacheOperation saveOperationWithBlock:^{
+		[_managedObjectContext save:NULL];
 	}];
+	operation.queuePriority = NSOperationQueuePriorityVeryLow;
+	[_queue addOperation:operation];
 }
-
-- (void)enumerateSizesForKey:(NSString *)key usingBlock:(void (^)(CGSize size, BOOL *stop))block {
-	[self _performBlock:^{
-		NSArray *filenames = [[_fileManager contentsOfDirectoryAtPath:[self _pathForKey:key] error:nil] copy];
-		[filenames enumerateObjectsUsingBlock:^(NSString *filename, NSUInteger i, BOOL *stop) {
-			block(CGSizeFromString(filename), stop);
-		}];
-	}];
-}*/
 
 @end

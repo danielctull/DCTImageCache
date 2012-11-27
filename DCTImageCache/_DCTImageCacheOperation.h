@@ -8,10 +8,28 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum : NSInteger {
+	_DCTImageCacheOperationTypeFetch,
+	_DCTImageCacheOperationTypeSet,
+	_DCTImageCacheOperationTypeSave,
+	_DCTImageCacheOperationTypeHasImage,
+	_DCTImageCacheOperationTypeHandler
+} _DCTImageCacheOperationType;
+
 @interface _DCTImageCacheOperation : NSOperation
 
-- (id)initWithKey:(NSString *)key size:(CGSize)size;
++ (instancetype)saveOperationWithBlock:(void(^)())block;
++ (instancetype)setOperationWithKey:(NSString *)key size:(CGSize)size image:(UIImage *)image block:(void(^)())block;
++ (instancetype)handlerOperationWithKey:(NSString *)key size:(CGSize)size handler:(void(^)(BOOL hasImage, UIImage *image))handler;
+
++ (instancetype)fetchOperationWithKey:(NSString *)key size:(CGSize)size block:(void(^)(void(^)(UIImage *image)))block;
+
++ (instancetype)hasImageOperationWithKey:(NSString *)key size:(CGSize)size block:(void(^)(void(^)(BOOL hasImage)))block;
+
+@property (readonly, assign) _DCTImageCacheOperationType type;
 @property (readonly, copy) NSString *key;
 @property (readonly, assign) CGSize size;
+@property (readonly, assign) BOOL hasImage;
+@property (readonly, strong) UIImage *image;
 
 @end
