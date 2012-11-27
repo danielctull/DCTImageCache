@@ -17,6 +17,7 @@
 	NSURL *_storeURL;
 	NSManagedObjectContext *_managedObjectContext;
 	NSOperationQueue *_queue;
+	__weak _DCTImageCacheOperation *_saveOperation;
 }
 
 + (NSBundle *)bundle {
@@ -151,14 +152,15 @@
 }
 
 - (void)_setNeedsSave {
-	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSave];
-	if (operation) return;
+	if (_saveOperation) return;
 
-	operation = [_DCTImageCacheOperation saveOperationWithBlock:^{
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation saveOperationWithBlock:^{
 		[_managedObjectContext save:NULL];
 	}];
+	_saveOperation = operation;
 	operation.queuePriority = NSOperationQueuePriorityVeryLow;
 	[_queue addOperation:operation];
+
 }
 
 @end
