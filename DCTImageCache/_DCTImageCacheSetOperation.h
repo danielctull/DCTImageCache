@@ -1,5 +1,5 @@
 //
-//  _DCTImageCacheSaveOperation.h
+//  _DCTImageCacheSetOperation.h
 //  DCTImageCache
 //
 //  Created by Daniel Tull on 24.11.2012.
@@ -9,7 +9,7 @@
 #import "_DCTImageCacheOperation.h"
 #import "_DCTDiskImageCache.h"
 
-@interface _DCTImageCacheSaveOperation : _DCTImageCacheOperation
+@interface _DCTImageCacheSetOperation : _DCTImageCacheOperation
 
 - (id)initWithKey:(NSString *)key
 			 size:(CGSize)size

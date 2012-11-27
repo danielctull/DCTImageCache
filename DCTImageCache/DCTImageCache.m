@@ -11,7 +11,7 @@
 #import "_DCTMemoryImageCache.h"
 
 #import "_DCTImageCacheFetchOperation.h"
-#import "_DCTImageCacheSaveOperation.h"
+#import "_DCTImageCacheSetOperation.h"
 #import "_DCTImageCacheImageOperation.h"
 
 @implementation DCTImageCache {
@@ -127,7 +127,7 @@
 		BOOL hasImage = [_diskCache hasImageForKey:key size:size];
 		if (hasImage) return;
 		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-			_DCTImageCacheSaveOperation *diskSaveOperation = [self _operationOfClass:[_DCTImageCacheSaveOperation class] onQueue:_diskQueue withKey:key size:size];
+			_DCTImageCacheSetOperation *diskSaveOperation = [self _operationOfClass:[_DCTImageCacheSetOperation class] onQueue:_diskQueue withKey:key size:size];
 			if (diskSaveOperation) return;
 			_DCTImageCacheFetchOperation *fetchOperation = [self _operationOfClass:[_DCTImageCacheFetchOperation class] onQueue:_queue withKey:key size:size];
 			if (fetchOperation) return;
@@ -154,7 +154,7 @@
 
 			imageHander(image);
 			if (diskFetchOperation) [_memoryCache setImage:image forKey:key size:size];
-			_DCTImageCacheSaveOperation *diskSave = [[_DCTImageCacheSaveOperation alloc] initWithKey:key size:size image:image block:^{
+			_DCTImageCacheSetOperation *diskSave = [[_DCTImageCacheSetOperation alloc] initWithKey:key size:size image:image block:^{
 				[_diskCache setImage:image forKey:key size:size];
 			}];
 			diskSave.queuePriority = NSOperationQueuePriorityVeryLow;
@@ -179,7 +179,7 @@
 	}
 
 	// If the image is in the disk queue to be saved, pull it out and use it
-	_DCTImageCacheSaveOperation *diskSaveOperation = [self _operationOfClass:[_DCTImageCacheSaveOperation class] onQueue:_diskQueue withKey:key size:size];
+	_DCTImageCacheSetOperation *diskSaveOperation = [self _operationOfClass:[_DCTImageCacheSetOperation class] onQueue:_diskQueue withKey:key size:size];
 	image = diskSaveOperation.image;
 	if (image) {
 		handler(image);
