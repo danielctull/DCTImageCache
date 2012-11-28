@@ -16,6 +16,7 @@
 	_DCTMemoryImageCache *_memoryCache;
 	_DCTDiskImageCache *_diskCache;
 	NSOperationQueue *_queue;
+	NSMutableDictionary *_completions;
 }
 
 #pragma mark DCTImageCache
@@ -56,6 +57,8 @@
 	_queue.maxConcurrentOperationCount = 10;
 	_queue.name = [NSString stringWithFormat:@"uk.co.danieltull.DCTImageCacheQueue.%@", name];
 
+	_completions = [NSMutableDictionary new];
+
 	_name = [name copy];
 	_memoryCache = [_DCTMemoryImageCache new];
 	
@@ -92,11 +95,8 @@
 		if (fetchOperation) return;
 
 		fetchOperation = [_DCTImageCacheOperation fetchOperationWithKey:key size:size block:^(void(^completion)(UIImage *image)) {
-			self.imageFetcher(key, size, ^(UIImage *image) {
-				if (!image) return;
-				completion(image);
-				[_diskCache setImageOperationWithImage:image forKey:key size:size];
-			});
+			self.imageFetcher(key, size);
+			[_completions setObject:completion forKey:[self _accessKeyForKey:key size:size]];
 		}];
 		fetchOperation.queuePriority = NSOperationQueuePriorityVeryLow;
 		[_queue addOperation:fetchOperation];
@@ -138,11 +138,8 @@
 		_DCTImageCacheOperation *diskFetchOperation = [_diskCache fetchImageOperationForKey:key size:size];
 
 		fetchOperation = [_DCTImageCacheOperation fetchOperationWithKey:key size:size block:^(void(^completion)(UIImage *image)) {
-			self.imageFetcher(key, size, ^(UIImage *image) {
-				if (!image) return;
-				[_diskCache setImageOperationWithImage:image forKey:key size:size];
-				completion(image);
-			});
+			[_completions setObject:completion forKey:[self _accessKeyForKey:key size:size]];
+			self.imageFetcher(key, size);
 		}];
 		fetchOperation.queuePriority = NSOperationQueuePriorityVeryHigh;
 		[fetchOperation addDependency:diskFetchOperation];
@@ -165,6 +162,20 @@
 	[_queue addOperation:handlerOperation];
 
 	return handlerOperation;
+}
+
+- (NSString *)_accessKeyForKey:(NSString *)key size:(CGSize)size {
+	return [NSString stringWithFormat:@"%@.%@", key, NSStringFromCGSize(size)];
+}
+
+- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+	NSString *accessKey = [self _accessKeyForKey:key size:size];
+	void(^completion)(UIImage *image) = [_completions objectForKey:accessKey];
+	if (completion != NULL) {
+		completion(image);
+		[_completions removeObjectForKey:accessKey];
+	}
+	[_diskCache setImageOperationWithImage:image forKey:key size:size];
 }
 
 #pragma mark Internal
