@@ -94,8 +94,9 @@ typedef enum : NSInteger {
 	_managedObjectContext.persistentStoreCoordinator = coordinator;
 }
 
-- (_DCTImageCacheOperation *)setImageOperationWithKey:(NSString *)key size:(CGSize)size {
-	return [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSet withKey:key size:size];
+- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
+	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSet withKey:key size:size];
+	return operation.image;
 }
 
 - (_DCTImageCacheOperation *)setImageOperationWithImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {

@@ -13,7 +13,8 @@
 
 - (id)initWithPath:(NSString *)path;
 
-- (_DCTImageCacheOperation *)setImageOperationWithKey:(NSString *)key size:(CGSize)size;
+- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
+
 - (_DCTImageCacheOperation *)setImageOperationWithImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
 
 - (_DCTImageCacheOperation *)fetchImageOperationForKey:(NSString *)key size:(CGSize)size;

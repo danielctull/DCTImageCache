@@ -88,8 +88,7 @@
 
 		if (hasImage) return;
 		
-		_DCTImageCacheOperation *setOperation = [_diskCache setImageOperationWithKey:key size:size];
-		if (setOperation) return;
+		if ([_diskCache imageForKey:key size:size]) return;
 
 		_DCTImageCacheOperation *fetchOperation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeFetch withKey:key size:size];
 		if (fetchOperation) return;
@@ -121,13 +120,10 @@
 	}
 
 	// If the image is in the disk queue to be saved, pull it out and use it
-	_DCTImageCacheOperation *setOperation = [_diskCache setImageOperationWithKey:key size:size];
-	if (setOperation) {
-		image = setOperation.image;
-		if (image) {
-			handler(image);
-			return nil;
-		}
+	image = [_diskCache imageForKey:key size:size];
+	if (image) {
+		handler(image);
+		return nil;
 	}
 
 	// Check if there's a network fetch in the queue, if there is, a disk fetch is on the disk queue, or failed.
