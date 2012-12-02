@@ -30,7 +30,7 @@
 	return self;
 }
 
-- (id<DCTImageCacheHandler>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler {
+- (id<DCTImageCacheCanceller>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler {
 
 	if (self.imageFetcher == NULL) return nil;
 

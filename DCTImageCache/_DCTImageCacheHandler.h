@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DCTImageCache.h"
 
-@interface _DCTImageCacheHandler : NSObject <DCTImageCacheHandler>
-@property (nonatomic, strong) id<DCTImageCacheHandler> handler;
+@interface _DCTImageCacheHandler : NSObject <DCTImageCacheCanceller>
+@property (nonatomic, strong) id<DCTImageCacheCanceller> handler;
 @end

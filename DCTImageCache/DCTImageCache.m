@@ -61,11 +61,11 @@
 	return self;
 }
 
-- (void)setImageFetcher:(id<DCTImageCacheHandler> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
+- (void)setImageFetcher:(id<DCTImageCacheCanceller> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
 	[_fetcher setImageFetcher:imageFetcher];
 }
 
-- (id<DCTImageCacheHandler> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
+- (id<DCTImageCacheCanceller> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
 	return [_fetcher imageFetcher];
 }
 
@@ -96,7 +96,7 @@
 	}];
 }
 
-- (id<DCTImageCacheHandler>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
+- (id<DCTImageCacheCanceller>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 
 	if (handler == NULL) {
 		[self prefetchImageForKey:key size:size];
