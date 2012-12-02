@@ -10,6 +10,7 @@
 
 
 NSString * const _DCTImageCacheOperationTypeString[] = {
+	@"None",
 	@"Fetch",
 	@"Set",
 	@"Save",
@@ -31,6 +32,12 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 @end
 
 @implementation _DCTImageCacheOperation
+
++ (instancetype)operationWithBlock:(void(^)())block {
+	_DCTImageCacheOperation *operation = [self new];
+	operation.block = block;
+	return operation;
+}
 
 + (instancetype)saveOperationWithBlock:(void(^)())block {
 	_DCTImageCacheOperation *operation = [self new];

@@ -13,6 +13,15 @@
 
 #import "_DCTImageCacheOperation.h"
 
+typedef enum : NSInteger {
+	_DCTDiskImageCachePrioritySave = NSOperationQueuePriorityVeryLow,
+	_DCTDiskImageCachePrioritySet = NSOperationQueuePriorityLow,
+	_DCTDiskImageCachePriorityHasImage = NSOperationQueuePriorityLow,
+	_DCTDiskImageCachePriorityFetch = NSOperationQueuePriorityNormal,
+	_DCTDiskImageCachePrioritySaveMemoryWarning = NSOperationQueuePriorityHigh,
+	_DCTDiskImageCachePrioritySetMemoryWarning = NSOperationQueuePriorityVeryHigh
+} _DCTDiskImageCachePriority;
+
 @implementation _DCTDiskImageCache {
 	NSURL *_storeURL;
 	NSManagedObjectContext *_managedObjectContext;
@@ -46,7 +55,28 @@
 	[_queue addOperationWithBlock:^{
 		[self _createStack];
 	}];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didReceiveMemoryWarningNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 	return self;
+}
+
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+}
+
+- (void)_didReceiveMemoryWarningNotification:(NSNotification *)notification {
+	NSLog(@"%@:%@", self, NSStringFromSelector(_cmd));
+	[_queue.operations enumerateObjectsUsingBlock:^(_DCTImageCacheOperation *operation, NSUInteger i, BOOL *stop) {
+
+		if (![operation isKindOfClass:[_DCTImageCacheOperation class]]) return;
+
+		//NSLog(@"%@", operation);
+
+		if (operation.type == _DCTImageCacheOperationTypeSet)
+			operation.queuePriority = _DCTDiskImageCachePrioritySetMemoryWarning;
+
+		else if (operation.type == _DCTImageCacheOperationTypeSave)
+			operation.queuePriority = _DCTDiskImageCachePrioritySaveMemoryWarning;
+	}];
 }
 
 - (void)_createStack {
@@ -77,12 +107,13 @@
 		item.date = [NSDate new];
 		[self _setNeedsSave];
 	}];
-	operation.queuePriority = NSOperationQueuePriorityLow;
+	operation.queuePriority = _DCTDiskImageCachePrioritySet;
 	[_queue addOperation:operation];
 	return operation;
 }
 
 - (_DCTImageCacheOperation *)fetchImageOperationForKey:(NSString *)key size:(CGSize)size {
+	NSLog(@"%@ %i", _storeURL, _queue.operations.count);
 	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeFetch withKey:key size:size];
 	if (!operation) {
 		operation = [_DCTImageCacheOperation fetchOperationWithKey:key size:size block:^(void(^completion)(UIImage *)) {
@@ -91,7 +122,7 @@
 			_DCTImageCacheItem *item = [items lastObject];
 			completion([UIImage imageWithData:item.imageData]);
 		}];
-		operation.queuePriority = NSOperationQueuePriorityVeryHigh;
+		operation.queuePriority = _DCTDiskImageCachePriorityFetch;
 		[_queue addOperation:operation];
 	}
 	return operation;
@@ -158,7 +189,7 @@
 		[_managedObjectContext save:NULL];
 	}];
 	_saveOperation = operation;
-	operation.queuePriority = NSOperationQueuePriorityVeryLow;
+	operation.queuePriority = _DCTDiskImageCachePrioritySave;
 	[_queue addOperation:operation];
 
 }

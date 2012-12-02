@@ -40,12 +40,10 @@
 	return returnOperation;
 }
 
-- (NSArray *)dctImageCache_operationsOfClass:(Class)class withKey:(NSString *)key size:(CGSize)size {
-
+- (NSArray *)dctImageCache_operationsOfType:(_DCTImageCacheOperationType)type {
 	NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(_DCTImageCacheOperation *operation, NSDictionary *bindings) {
-		if (![operation isKindOfClass:class]) return NO;
-		if (!CGSizeEqualToSize(operation.size, size)) return NO;
-		return [operation.key isEqualToString:key];
+		if (![operation isKindOfClass:[_DCTImageCacheOperation class]]) return NO;
+		return operation.type == type;
 	}];
 
 	return [self.operations filteredArrayUsingPredicate:predicate];

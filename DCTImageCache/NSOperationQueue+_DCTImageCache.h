@@ -14,6 +14,7 @@
 
 - (id)dctImageCache_operationOfType:(_DCTImageCacheOperationType)type;
 - (id)dctImageCache_operationOfType:(_DCTImageCacheOperationType)type withKey:(NSString *)key size:(CGSize)size;
-- (NSArray *)dctImageCache_operationsOfClass:(Class)class withKey:(NSString *)key size:(CGSize)size;
+
+- (NSArray *)dctImageCache_operationsOfType:(_DCTImageCacheOperationType)type;
 
 @end

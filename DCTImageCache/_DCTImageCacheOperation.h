@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 typedef enum : NSInteger {
+	_DCTImageCacheOperationTypeNone,
 	_DCTImageCacheOperationTypeFetch,
 	_DCTImageCacheOperationTypeSet,
 	_DCTImageCacheOperationTypeSave,
@@ -18,6 +19,7 @@ typedef enum : NSInteger {
 
 @interface _DCTImageCacheOperation : NSOperation
 
++ (instancetype)operationWithBlock:(void(^)())block;
 + (instancetype)saveOperationWithBlock:(void(^)())block;
 + (instancetype)setOperationWithKey:(NSString *)key size:(CGSize)size image:(UIImage *)image block:(void(^)())block;
 + (instancetype)handlerOperationWithKey:(NSString *)key size:(CGSize)size handler:(void(^)(BOOL hasImage, UIImage *image))handler;
