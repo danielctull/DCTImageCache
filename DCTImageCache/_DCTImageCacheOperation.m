@@ -8,7 +8,6 @@
 
 #import "_DCTImageCacheOperation.h"
 
-
 NSString * const _DCTImageCacheOperationTypeString[] = {
 	@"None",
 	@"Fetch",
@@ -31,9 +30,17 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 @property (readwrite, copy) void(^block)(void(^completion)());
 @end
 
+@interface _DCTImageCacheHandlerOperation : NSOperation
++ (NSOperationQueue *)sharedQueue;
+- (id)initWithHandler:(void (^)(BOOL hasImage, UIImage *image))handler;
+@end
+
+@interface NSOperation (_DCTImageCacheOperation) <DCTImageCacheHandler>
+@end
+
 @implementation _DCTImageCacheOperation
 
-+ (instancetype)operationWithBlock:(void(^)())block {
++ (instancetype)operationWithKey:(NSString *)key size:(CGSize)size block:(void(^)())block {
 	_DCTImageCacheOperation *operation = [self new];
 	operation.block = block;
 	return operation;
@@ -61,10 +68,11 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 	operation.type = _DCTImageCacheOperationTypeFetch;
 	operation.key = key;
 	operation.size = size;
+	__weak _DCTImageCacheConcurrentOperation *weakOperation = operation;
 	operation.block = ^(void(^completion)()) {
 		block(^(UIImage *image) {
-			operation.hasImage = (image != nil);
-			operation.image = image;
+			weakOperation.hasImage = (image != nil);
+			weakOperation.image = image;
 			completion();
 		});
 	};
@@ -76,9 +84,10 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 	operation.type = _DCTImageCacheOperationTypeHasImage;
 	operation.key = key;
 	operation.size = size;
+	__weak _DCTImageCacheConcurrentOperation *weakOperation = operation;
 	operation.block = ^(void(^completion)()) {
 		block(^(BOOL hasImage) {
-			operation.hasImage = hasImage;
+			weakOperation.hasImage = hasImage;
 			completion();
 		});
 	};
@@ -96,10 +105,29 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 	return operation;
 }
 
+- (id<DCTImageCacheHandler>)addHasImageHandler:(void (^)(BOOL hasImage))handler {
+	if (handler == NULL) return nil;
+	return  [self _addHandler:^(BOOL hasImage, UIImage *image) {
+		handler(hasImage);
+	}];
+}
+
+- (id<DCTImageCacheHandler>)addImageHandler:(void (^)(UIImage *image))handler {
+	if (handler == NULL) return nil;
+	return [self _addHandler:^(BOOL hasImage, UIImage *image) {
+		handler(image);
+	}];
+
+}
+
+- (id<DCTImageCacheHandler>)_addHandler:(void (^)(BOOL hasImage, UIImage *image))handler {
+	_DCTImageCacheHandlerOperation *operation = [[_DCTImageCacheHandlerOperation alloc] initWithHandler:handler];
+	[operation addDependency:self];
+	[[_DCTImageCacheHandlerOperation sharedQueue] addOperation:operation];
+	return operation;
+}
+
 - (void)main {
-	_DCTImageCacheOperation *operation = [self.dependencies lastObject];
-	self.image = operation.image;
-	self.hasImage = operation.hasImage;
 	self.block();
 }
 
@@ -155,3 +183,43 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 }
 
 @end
+
+
+
+@implementation _DCTImageCacheHandlerOperation {
+	void (^_handler)(BOOL hasImage, UIImage *image);
+}
+
++ (NSOperationQueue *)sharedQueue {
+	static NSOperationQueue *queue;
+	static dispatch_once_t queueToken;
+	dispatch_once(&queueToken, ^{
+		queue = [NSOperationQueue new];
+		queue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
+	});
+	return queue;
+}
+
+- (id)initWithHandler:(void (^)(BOOL hasImage, UIImage *image))handler {
+	self = [super init];
+	if (!self) return nil;
+	_handler = handler;
+	return self;
+}
+
+- (void)main {
+	_DCTImageCacheOperation *operation = [self.dependencies lastObject];
+	_handler(operation.hasImage, operation.image);
+}
+
+@end
+
+
+
+
+
+
+
+
+
+

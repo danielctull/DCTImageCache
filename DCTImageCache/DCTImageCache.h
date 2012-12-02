@@ -14,6 +14,12 @@
 #define dctimagecache         dctimagecache_1_0
 #endif
 
+
+@protocol DCTImageCacheHandler <NSObject>
+- (void)cancel;
+@end
+
+
 @interface DCTImageCache : NSObject
 
 + (DCTImageCache *)defaultImageCache;
@@ -29,6 +35,6 @@
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size;
 
 - (void)prefetchImageForKey:(NSString *)key size:(CGSize)size;
-- (NSOperation *)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *image))handler;
+- (id<DCTImageCacheHandler>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler;
 
 @end

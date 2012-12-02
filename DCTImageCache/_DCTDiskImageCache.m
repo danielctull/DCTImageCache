@@ -99,23 +99,52 @@ typedef enum : NSInteger {
 	return operation.image;
 }
 
-- (_DCTImageCacheOperation *)setImageOperationWithImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
-	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation setOperationWithKey:key size:size image:image block:^{
+- (void)hasImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(BOOL hasImage))handler {
+
+	if (handler == NULL) return;
+
+	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSet withKey:key size:size];
+	if (operation) handler(YES);
+
+	operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeHasImage withKey:key size:size];
+
+	if (!operation) {
+		operation = [_DCTImageCacheOperation hasImageOperationWithKey:key size:size block:^(void(^completion)(BOOL)) {
+			NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+			NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
+			BOOL hasImage = (count > 0);
+			completion(hasImage);
+		}];
+		operation.queuePriority = _DCTDiskImageCachePriorityHasImage;
+		[_queue addOperation:operation];
+	}
+
+	[operation addHasImageHandler:handler];
+}
+
+- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+
+	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSet withKey:key size:size];
+	[operation cancel];
+
+	__weak _DCTDiskImageCache *weakSelf = self;
+
+	operation = [_DCTImageCacheOperation setOperationWithKey:key size:size image:image block:^{
 		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
 		item.key = key;
 		item.sizeString = NSStringFromCGSize(size);
 		item.imageData = UIImagePNGRepresentation(image);
 		item.date = [NSDate new];
-		[self _setNeedsSave];
+		[weakSelf _setNeedsSave];
 	}];
 	operation.queuePriority = _DCTDiskImageCachePrioritySet;
 	[_queue addOperation:operation];
-	return operation;
 }
 
-- (_DCTImageCacheOperation *)fetchImageOperationForKey:(NSString *)key size:(CGSize)size {
-	NSLog(@"%@ %i", _storeURL, _queue.operations.count);
+- (id<DCTImageCacheHandler>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler {
+
 	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeFetch withKey:key size:size];
+
 	if (!operation) {
 		operation = [_DCTImageCacheOperation fetchOperationWithKey:key size:size block:^(void(^completion)(UIImage *)) {
 			NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
@@ -126,22 +155,8 @@ typedef enum : NSInteger {
 		operation.queuePriority = _DCTDiskImageCachePriorityFetch;
 		[_queue addOperation:operation];
 	}
-	return operation;
-}
-
-- (_DCTImageCacheOperation *)hasImageOperationForKey:(NSString *)key size:(CGSize)size {
-	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeHasImage withKey:key size:size];
-	if (!operation) {
-		operation = [_DCTImageCacheOperation hasImageOperationWithKey:key size:size block:^(void(^completion)(BOOL)) {
-			NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
-			NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
-			BOOL hasImage = (count > 0);
-			completion(hasImage);
-		}];
-		operation.queuePriority = NSOperationQueuePriorityHigh;
-		[_queue addOperation:operation];
-	}
-	return operation;
+	
+	return [operation addImageHandler:handler];
 }
 
 - (void)removeAllImages {

@@ -9,15 +9,20 @@
 #import "_DCTMemoryImageCache.h"
 
 @implementation _DCTMemoryImageCache {
-	__strong NSCache *_cache;
-	__strong NSMutableDictionary *_cacheKeys;
+	NSCache *_cache;
+	NSMutableDictionary *_cacheKeys;
+	NSOperationQueue *_queue;
 }
 
 - (id)init {
     self = [super init];
     if (!self) return nil;
 	_cache = [NSCache new];
-	_cacheKeys = [NSMutableDictionary new];
+	_queue = [NSOperationQueue new];
+	_queue.maxConcurrentOperationCount = 1;
+	[_queue addOperationWithBlock:^{
+		_cacheKeys = [NSMutableDictionary new];
+	}];
     return self;
 }
 
@@ -26,21 +31,24 @@
 }
 
 - (void)removeAllImagesForKey:(NSString *)key {
-	[[self _cacheKeysForKey:key] enumerateObjectsUsingBlock:^(NSString *cacheKey, NSUInteger idx, BOOL *stop) {
-		[_cache removeObjectForKey:cacheKey];
+	[_queue addOperationWithBlock:^{
+		[[self _cacheKeysForKey:key] enumerateObjectsUsingBlock:^(NSString *cacheKey, NSUInteger idx, BOOL *stop) {
+			[_cache removeObjectForKey:cacheKey];
+		}];
 	}];
 }
 
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size {
 	NSString *cacheKey = [self _cacheNameForKey:key size:size];
-	[[self _cacheKeysForKey:key] removeObject:cacheKey];
 	[_cache removeObjectForKey:cacheKey];
 }
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
 	NSString *cacheKey = [self _cacheNameForKey:key size:size];
-	[[self _cacheKeysForKey:key] addObject:cacheKey];
 	[_cache setObject:image forKey:cacheKey];
+	[_queue addOperationWithBlock:^{
+		[[self _cacheKeysForKey:key] addObject:cacheKey];
+	}];
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
@@ -49,9 +57,7 @@
 }
 
 - (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler {
-	
 	if (handler == NULL) return;
-	
 	handler([self imageForKey:key size:size]);
 }
 
