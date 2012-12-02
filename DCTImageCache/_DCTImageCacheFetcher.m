@@ -9,7 +9,7 @@
 #import "_DCTImageCacheFetcher.h"
 #import "_DCTImageCacheOperation.h"
 #import "NSOperationQueue+_DCTImageCache.h"
-#import "_DCTImageCacheHandler.h"
+#import "_DCTImageCacheCanceller.h"
 
 @implementation _DCTImageCacheFetcher {
 	NSOperationQueue *_queue;
@@ -34,7 +34,7 @@
 
 	if (self.imageFetcher == NULL) return nil;
 
-	_DCTImageCacheHandler *cacheHandler = [_DCTImageCacheHandler new];
+	_DCTImageCacheCanceller *cacheHandler = [_DCTImageCacheCanceller new];
 
 	[_queue addOperationWithBlock:^{
 

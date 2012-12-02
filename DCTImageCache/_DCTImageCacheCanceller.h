@@ -1,5 +1,5 @@
 //
-//  _DCTImageCacheHandler.h
+//  _DCTImageCacheCanceller.h
 //  DCTImageCache
 //
 //  Created by Daniel Tull on 02.12.2012.
@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DCTImageCache.h"
 
-@interface _DCTImageCacheHandler : NSObject <DCTImageCacheCanceller>
+@interface _DCTImageCacheCanceller : NSObject <DCTImageCacheCanceller>
 @property (nonatomic, strong) id<DCTImageCacheCanceller> handler;
 @end

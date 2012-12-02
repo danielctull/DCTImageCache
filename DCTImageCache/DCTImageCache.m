@@ -10,7 +10,7 @@
 #import "_DCTDiskImageCache.h"
 #import "_DCTMemoryImageCache.h"
 #import "_DCTImageCacheFetcher.h"
-#import "_DCTImageCacheHandler.h"
+#import "_DCTImageCacheCanceller.h"
 
 #import "_DCTImageCacheOperation.h"
 #import "NSOperationQueue+_DCTImageCache.h"
@@ -117,7 +117,7 @@
 		return nil;
 	}
 
-	_DCTImageCacheHandler *cacheHandler = [_DCTImageCacheHandler new];
+	_DCTImageCacheCanceller *cacheHandler = [_DCTImageCacheCanceller new];
 	cacheHandler.handler = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
 
 		if (image) {
