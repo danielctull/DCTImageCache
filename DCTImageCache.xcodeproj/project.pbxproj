@@ -24,8 +24,7 @@
 		24B3EECC15A2EB1F00D5E63C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EECB15A2EB1F00D5E63C /* ViewController.m */; };
 		24B3EECF15A2EB1F00D5E63C /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24B3EECD15A2EB1F00D5E63C /* ViewController.xib */; };
 		24DBE2721661283000687358 /* _DCTImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DBE2711661283000687358 /* _DCTImageCacheOperation.m */; };
-		24F2DB23165FED99008F58D5 /* _DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F2DB22165FED99008F58D5 /* _DCTImageCacheItem.m */; };
-		24F2DB27165FEDDC008F58D5 /* __DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F2DB26165FEDDC008F58D5 /* __DCTImageCacheItem.m */; };
+		24F2DB27165FEDDC008F58D5 /* _DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */; };
 		24F2DB5C166029B9008F58D5 /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437B67715B97BA600750117 /* libDCTImageCache.a */; };
 		24F2DB5E166029B9008F58D5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB5D166029B9008F58D5 /* CoreData.framework */; };
 		24F2DB5F166029CE008F58D5 /* DCTImageCache.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */; };
@@ -89,10 +88,8 @@
 		24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTMemoryImageCache.m; sourceTree = "<group>"; };
 		24DBE2701661282F00687358 /* _DCTImageCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheOperation.h; sourceTree = "<group>"; };
 		24DBE2711661283000687358 /* _DCTImageCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheOperation.m; sourceTree = "<group>"; };
-		24F2DB21165FED99008F58D5 /* _DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheItem.h; sourceTree = "<group>"; };
-		24F2DB22165FED99008F58D5 /* _DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheItem.m; sourceTree = "<group>"; };
-		24F2DB25165FEDDC008F58D5 /* __DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = __DCTImageCacheItem.h; sourceTree = "<group>"; };
-		24F2DB26165FEDDC008F58D5 /* __DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = __DCTImageCacheItem.m; sourceTree = "<group>"; };
+		24F2DB25165FEDDC008F58D5 /* _DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheItem.h; sourceTree = "<group>"; };
+		24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheItem.m; sourceTree = "<group>"; };
 		24F2DB5D166029B9008F58D5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		24F2DB6216602B71008F58D5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		24F7CB42158A1B9D00B2E33E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -221,10 +218,8 @@
 				242AFA4A166BBFA400AC2B9F /* _DCTImageCacheHandler.m */,
 				24B3EED515A30EEB00D5E63C /* _DCTDiskImageCache.h */,
 				24B3EED615A30EEB00D5E63C /* _DCTDiskImageCache.m */,
-				24F2DB25165FEDDC008F58D5 /* __DCTImageCacheItem.h */,
-				24F2DB26165FEDDC008F58D5 /* __DCTImageCacheItem.m */,
-				24F2DB21165FED99008F58D5 /* _DCTImageCacheItem.h */,
-				24F2DB22165FED99008F58D5 /* _DCTImageCacheItem.m */,
+				24F2DB25165FEDDC008F58D5 /* _DCTImageCacheItem.h */,
+				24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */,
 				24B3EEDD15A311D400D5E63C /* _DCTMemoryImageCache.h */,
 				24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */,
 				24DBE2701661282F00687358 /* _DCTImageCacheOperation.h */,
@@ -429,8 +424,7 @@
 				2437B68415B97BD700750117 /* DCTImageCache.m in Sources */,
 				2437B68515B97BD700750117 /* _DCTDiskImageCache.m in Sources */,
 				2437B68615B97BD700750117 /* _DCTMemoryImageCache.m in Sources */,
-				24F2DB23165FED99008F58D5 /* _DCTImageCacheItem.m in Sources */,
-				24F2DB27165FEDDC008F58D5 /* __DCTImageCacheItem.m in Sources */,
+				24F2DB27165FEDDC008F58D5 /* _DCTImageCacheItem.m in Sources */,
 				24DBE2721661283000687358 /* _DCTImageCacheOperation.m in Sources */,
 				241FDEAD1663A48100EBF959 /* _DCTImageCacheAverager.m in Sources */,
 				2416B4911664B73A007458B1 /* NSOperationQueue+_DCTImageCache.m in Sources */,

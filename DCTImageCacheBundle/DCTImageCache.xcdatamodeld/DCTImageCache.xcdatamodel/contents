@@ -7,6 +7,6 @@
         <attribute name="sizeString" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="DCTImageCacheItem" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="DCTImageCacheItem" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>
