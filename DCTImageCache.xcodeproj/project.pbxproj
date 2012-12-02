@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		2416B4911664B73A007458B1 /* NSOperationQueue+_DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 2416B4901664B73A007458B1 /* NSOperationQueue+_DCTImageCache.m */; };
 		241FDEAD1663A48100EBF959 /* _DCTImageCacheAverager.m in Sources */ = {isa = PBXBuildFile; fileRef = 241FDEAC1663A48100EBF959 /* _DCTImageCacheAverager.m */; };
+		242AFA47166BB78F00AC2B9F /* _DCTImageCacheFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */; };
+		242AFA4B166BBFA400AC2B9F /* _DCTImageCacheHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 242AFA4A166BBFA400AC2B9F /* _DCTImageCacheHandler.m */; };
 		2437B67815B97BA600750117 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
 		2437B68415B97BD700750117 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
@@ -66,6 +68,10 @@
 		2416B4901664B73A007458B1 /* NSOperationQueue+_DCTImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSOperationQueue+_DCTImageCache.m"; sourceTree = "<group>"; };
 		241FDEAB1663A48100EBF959 /* _DCTImageCacheAverager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheAverager.h; sourceTree = "<group>"; };
 		241FDEAC1663A48100EBF959 /* _DCTImageCacheAverager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheAverager.m; sourceTree = "<group>"; };
+		242AFA45166BB78F00AC2B9F /* _DCTImageCacheFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheFetcher.h; sourceTree = "<group>"; };
+		242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheFetcher.m; sourceTree = "<group>"; };
+		242AFA49166BBFA400AC2B9F /* _DCTImageCacheHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheHandler.h; sourceTree = "<group>"; };
+		242AFA4A166BBFA400AC2B9F /* _DCTImageCacheHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheHandler.m; sourceTree = "<group>"; };
 		2437B67715B97BA600750117 /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTImageCacheDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -211,6 +217,8 @@
 			children = (
 				24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */,
 				24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */,
+				242AFA49166BBFA400AC2B9F /* _DCTImageCacheHandler.h */,
+				242AFA4A166BBFA400AC2B9F /* _DCTImageCacheHandler.m */,
 				24B3EED515A30EEB00D5E63C /* _DCTDiskImageCache.h */,
 				24B3EED615A30EEB00D5E63C /* _DCTDiskImageCache.m */,
 				24F2DB25165FEDDC008F58D5 /* __DCTImageCacheItem.h */,
@@ -225,6 +233,8 @@
 				241FDEAC1663A48100EBF959 /* _DCTImageCacheAverager.m */,
 				2416B48F1664B73A007458B1 /* NSOperationQueue+_DCTImageCache.h */,
 				2416B4901664B73A007458B1 /* NSOperationQueue+_DCTImageCache.m */,
+				242AFA45166BB78F00AC2B9F /* _DCTImageCacheFetcher.h */,
+				242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */,
 			);
 			path = DCTImageCache;
 			sourceTree = "<group>";
@@ -424,6 +434,8 @@
 				24DBE2721661283000687358 /* _DCTImageCacheOperation.m in Sources */,
 				241FDEAD1663A48100EBF959 /* _DCTImageCacheAverager.m in Sources */,
 				2416B4911664B73A007458B1 /* NSOperationQueue+_DCTImageCache.m in Sources */,
+				242AFA47166BB78F00AC2B9F /* _DCTImageCacheFetcher.m in Sources */,
+				242AFA4B166BBFA400AC2B9F /* _DCTImageCacheHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

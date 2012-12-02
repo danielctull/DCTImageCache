@@ -20,6 +20,13 @@
 @end
 
 
+
+@protocol DCTImageCacheSetter <NSObject>
+- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
+@end
+
+
+
 @interface DCTImageCache : NSObject
 
 + (DCTImageCache *)defaultImageCache;
@@ -27,8 +34,7 @@
 + (DCTImageCache *)imageCacheWithName:(NSString *)name;
 @property (nonatomic, readonly) NSString *name;
 
-@property (nonatomic, copy) void(^imageFetcher)(NSString *key, CGSize size);
-- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
+@property (nonatomic, copy) id<DCTImageCacheHandler> (^imageFetcher)(NSString *key, CGSize size, id<DCTImageCacheSetter> setter);
 
 - (void)removeAllImages;
 - (void)removeAllImagesForKey:(NSString *)key;
