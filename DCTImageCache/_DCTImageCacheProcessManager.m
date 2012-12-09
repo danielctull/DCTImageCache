@@ -12,10 +12,10 @@
 @implementation _DCTImageCacheProcessManager {
 	NSMutableArray *_proxies;
 	NSMutableArray *_handlers;
-	__weak id<DCTImageCacheCanceller> _process;
+	__weak id<DCTImageCacheProcess> _process;
 }
 
-+ (instancetype)processManagerForProcess:(id<DCTImageCacheCanceller>)process {
++ (instancetype)processManagerForProcess:(id<DCTImageCacheProcess>)process {
 
 	_DCTImageCacheProcessManager *manager = objc_getAssociatedObject(process, _cmd);
 	if (manager) return manager;
@@ -25,7 +25,7 @@
 	return manager;
 }
 
-- (id)initWithProcess:(id<DCTImageCacheCanceller>)process {
+- (id)initWithProcess:(id<DCTImageCacheProcess>)process {
 	self = [self init];
 	if (!self) return nil;
 	_process = process;

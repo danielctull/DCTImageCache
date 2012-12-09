@@ -10,6 +10,6 @@
 #import "DCTImageCache.h"
 @class _DCTImageCacheProcessManager;
 
-@interface _DCTImageCacheCancelProxy : NSObject <DCTImageCacheCanceller>
+@interface _DCTImageCacheCancelProxy : NSObject <DCTImageCacheProcess>
 - (void)addProcessManager:(_DCTImageCacheProcessManager *)processManager;
 @end

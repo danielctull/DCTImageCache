@@ -62,11 +62,11 @@
 	return self;
 }
 
-- (void)setImageFetcher:(id<DCTImageCacheCanceller> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
+- (void)setImageFetcher:(id<DCTImageCacheProcess> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
 	[_fetcher setImageFetcher:imageFetcher];
 }
 
-- (id<DCTImageCacheCanceller> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
+- (id<DCTImageCacheProcess> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
 	return [_fetcher imageFetcher];
 }
 
@@ -97,7 +97,7 @@
 	}];
 }
 
-- (id<DCTImageCacheCanceller>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
+- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
 
 	if (handler == NULL) {
 		[self prefetchImageForKey:key size:size];
@@ -120,7 +120,7 @@
 
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
 	
-	id<DCTImageCacheCanceller> diskFetchProcess = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
+	id<DCTImageCacheProcess> diskFetchProcess = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
 
 		if (image) {
 			[_memoryCache setImage:image forKey:key size:size];
@@ -128,7 +128,7 @@
 			return;
 		}
 
-		id<DCTImageCacheCanceller> networkFetchProcess = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
+		id<DCTImageCacheProcess> networkFetchProcess = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
 			handler(image);
 			[_memoryCache setImage:image forKey:key size:size];
 			[_diskCache setImage:image forKey:key size:size];

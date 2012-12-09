@@ -10,6 +10,6 @@
 #import "DCTImageCache.h"
 
 @interface _DCTImageCacheFetcher : NSObject
-@property (nonatomic, copy) id<DCTImageCacheCanceller> (^imageFetcher)(NSString *key, CGSize size, id<DCTImageCacheSetter> setter);
-- (id<DCTImageCacheCanceller>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler;
+@property (nonatomic, copy) id<DCTImageCacheProcess> (^imageFetcher)(NSString *key, CGSize size, id<DCTImageCacheSetter> setter);
+- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler;
 @end

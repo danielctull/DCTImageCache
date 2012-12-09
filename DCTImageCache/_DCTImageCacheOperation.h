@@ -34,7 +34,7 @@ typedef enum : NSInteger {
 @property (readonly, assign) BOOL hasImage;
 @property (readonly, strong) UIImage *image;
 
-- (id<DCTImageCacheCanceller>)addHasImageHandler:(void (^)(BOOL hasImage))handler;
-- (id<DCTImageCacheCanceller>)addImageHandler:(void (^)(UIImage *image))handler;
+- (id<DCTImageCacheProcess>)addHasImageHandler:(void (^)(BOOL hasImage))handler;
+- (id<DCTImageCacheProcess>)addImageHandler:(void (^)(UIImage *image))handler;
 
 @end

@@ -35,7 +35,7 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 - (id)initWithHandler:(void (^)(BOOL hasImage, UIImage *image))handler;
 @end
 
-@interface NSOperation (_DCTImageCacheOperation) <DCTImageCacheCanceller>
+@interface NSOperation (_DCTImageCacheOperation) <DCTImageCacheProcess>
 @end
 
 @implementation _DCTImageCacheOperation
@@ -105,14 +105,14 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 	return operation;
 }
 
-- (id<DCTImageCacheCanceller>)addHasImageHandler:(void (^)(BOOL hasImage))handler {
+- (id<DCTImageCacheProcess>)addHasImageHandler:(void (^)(BOOL hasImage))handler {
 	if (handler == NULL) return nil;
 	return  [self _addHandler:^(BOOL hasImage, UIImage *image) {
 		handler(hasImage);
 	}];
 }
 
-- (id<DCTImageCacheCanceller>)addImageHandler:(void (^)(UIImage *image))handler {
+- (id<DCTImageCacheProcess>)addImageHandler:(void (^)(UIImage *image))handler {
 	if (handler == NULL) return nil;
 	return [self _addHandler:^(BOOL hasImage, UIImage *image) {
 		handler(image);
@@ -120,7 +120,7 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 
 }
 
-- (id<DCTImageCacheCanceller>)_addHandler:(void (^)(BOOL hasImage, UIImage *image))handler {
+- (id<DCTImageCacheProcess>)_addHandler:(void (^)(BOOL hasImage, UIImage *image))handler {
 	_DCTImageCacheHandlerOperation *operation = [[_DCTImageCacheHandlerOperation alloc] initWithHandler:handler];
 	[operation addDependency:self];
 	[[_DCTImageCacheHandlerOperation sharedQueue] addOperation:operation];

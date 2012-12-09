@@ -14,7 +14,7 @@
 - (id)initWithPath:(NSString *)path;
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
-- (id<DCTImageCacheCanceller>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *image))handler;
+- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *image))handler;
 - (void)hasImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(BOOL hasImage))handler;
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;

@@ -32,7 +32,7 @@
 	return self;
 }
 
-- (id<DCTImageCacheCanceller>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler {
+- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler {
 
 	if (self.imageFetcher == NULL) return nil;
 
@@ -49,7 +49,7 @@
 		_DCTImageCacheProcessManager *manager = [_processManagers objectForKey:accessKey];
 
 		if (!manager) {
-			id<DCTImageCacheCanceller> process = self.imageFetcher(key, size, manager);
+			id<DCTImageCacheProcess> process = self.imageFetcher(key, size, manager);
 			manager = [_DCTImageCacheProcessManager processManagerForProcess:process];
 			[_processManagers setObject:manager forKey:accessKey];
 		}

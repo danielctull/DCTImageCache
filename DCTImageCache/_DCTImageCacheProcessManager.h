@@ -12,7 +12,7 @@
 
 @interface _DCTImageCacheProcessManager : NSObject <DCTImageCacheSetter>
 
-+ (instancetype)processManagerForProcess:(id<DCTImageCacheCanceller>)process;
++ (instancetype)processManagerForProcess:(id<DCTImageCacheProcess>)process;
 
 @property (nonatomic, strong) UIImage *image;
 
