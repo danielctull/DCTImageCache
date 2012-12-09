@@ -10,7 +10,7 @@
 #import "_DCTImageCacheCancelProxy.h"
 #import "DCTImageCache.h"
 
-@interface _DCTImageCacheProcessManager : NSObject <DCTImageCacheSetter>
+@interface _DCTImageCacheProcessManager : NSObject <DCTImageCacheCompletion>
 
 + (instancetype)processManagerForProcess:(id<DCTImageCacheProcess>)process;
 @property (nonatomic, weak) id<DCTImageCacheProcess> process;

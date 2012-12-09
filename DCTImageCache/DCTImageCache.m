@@ -62,11 +62,11 @@
 	return self;
 }
 
-- (void)setImageFetcher:(id<DCTImageCacheProcess> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
+- (void)setImageFetcher:(id<DCTImageCacheProcess> (^)(NSString *, CGSize, id<DCTImageCacheCompletion>))imageFetcher {
 	[_fetcher setImageFetcher:imageFetcher];
 }
 
-- (id<DCTImageCacheProcess> (^)(NSString *, CGSize, id<DCTImageCacheSetter>))imageFetcher {
+- (id<DCTImageCacheProcess> (^)(NSString *, CGSize, id<DCTImageCacheCompletion>))imageFetcher {
 	return [_fetcher imageFetcher];
 }
 
