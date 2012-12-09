@@ -49,8 +49,8 @@
 		_DCTImageCacheProcessManager *manager = [_processManagers objectForKey:accessKey];
 
 		if (!manager) {
-			id<DCTImageCacheProcess> process = self.imageFetcher(key, size, manager);
-			manager = [_DCTImageCacheProcessManager processManagerForProcess:process];
+			manager = [_DCTImageCacheProcessManager new];
+			manager.process = self.imageFetcher(key, size, manager);
 			[_processManagers setObject:manager forKey:accessKey];
 		}
 

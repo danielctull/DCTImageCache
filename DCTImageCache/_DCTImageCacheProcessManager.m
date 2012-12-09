@@ -9,6 +9,8 @@
 #import "_DCTImageCacheProcessManager.h"
 #import <objc/runtime.h>
 
+void* _DCTImageCacheProcessManagerContext = &_DCTImageCacheProcessManagerContext;
+
 @implementation _DCTImageCacheProcessManager {
 	NSMutableArray *_proxies;
 	NSMutableArray *_handlers;
@@ -17,20 +19,25 @@
 
 + (instancetype)processManagerForProcess:(id<DCTImageCacheProcess>)process {
 
-	_DCTImageCacheProcessManager *manager = objc_getAssociatedObject(process, _cmd);
+	_DCTImageCacheProcessManager *manager = objc_getAssociatedObject(process, _DCTImageCacheProcessManagerContext);
 	if (manager) return manager;
 
-	manager = [[self alloc] initWithProcess:process];
-	objc_setAssociatedObject(process, _cmd, manager, OBJC_ASSOCIATION_RETAIN);
+	manager = [self new];
+	manager.process = process;
 	return manager;
 }
 
-- (id)initWithProcess:(id<DCTImageCacheProcess>)process {
-	self = [self init];
+- (id)init {
+	self = [super init];
 	if (!self) return nil;
-	_process = process;
 	_proxies = [NSMutableArray new];
 	return self;
+}
+
+- (void)setProcess:(id<DCTImageCacheProcess>)process {
+	if (_process) objc_setAssociatedObject(_process, _DCTImageCacheProcessManagerContext, nil, OBJC_ASSOCIATION_RETAIN);
+	_process = process;
+	if (_process) objc_setAssociatedObject(_process, _DCTImageCacheProcessManagerContext, self, OBJC_ASSOCIATION_RETAIN);
 }
 
 - (void)addCancelProxy:(_DCTImageCacheCancelProxy *)proxy {
