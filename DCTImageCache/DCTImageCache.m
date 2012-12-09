@@ -119,7 +119,7 @@
 	}
 
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
-	cancelProxy.handler = handler;
+	cancelProxy.imageHandler = handler;
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager new];
 	[processManager addCancelProxy:cancelProxy];
 	

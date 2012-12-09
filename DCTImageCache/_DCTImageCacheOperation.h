@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "DCTImageCache.h"
+#import "_DCTImageCacheProcessManager.h"
 
 typedef enum : NSInteger {
 	_DCTImageCacheOperationTypeNone,
@@ -18,23 +19,12 @@ typedef enum : NSInteger {
 	_DCTImageCacheOperationTypeHandler
 } _DCTImageCacheOperationType;
 
-@interface _DCTImageCacheOperation : NSOperation
+@interface _DCTImageCacheOperation : NSOperation <DCTImageCacheProcess>
 
-+ (instancetype)saveOperationWithBlock:(void(^)())block;
-+ (instancetype)setOperationWithKey:(NSString *)key size:(CGSize)size image:(UIImage *)image block:(void(^)())block;
-+ (instancetype)handlerOperationWithKey:(NSString *)key size:(CGSize)size handler:(void(^)(BOOL hasImage, UIImage *image))handler;
+@property (assign) _DCTImageCacheOperationType type;
+@property (copy) NSString *key;
+@property (assign) CGSize size;
 
-+ (instancetype)fetchOperationWithKey:(NSString *)key size:(CGSize)size block:(void(^)(void(^)(UIImage *image)))block;
-
-+ (instancetype)hasImageOperationWithKey:(NSString *)key size:(CGSize)size block:(void(^)(void(^)(BOOL hasImage)))block;
-
-@property (readonly, assign) _DCTImageCacheOperationType type;
-@property (readonly, copy) NSString *key;
-@property (readonly, assign) CGSize size;
-@property (readonly, assign) BOOL hasImage;
-@property (readonly, strong) UIImage *image;
-
-- (id<DCTImageCacheProcess>)addHasImageHandler:(void (^)(BOOL hasImage))handler;
-- (id<DCTImageCacheProcess>)addImageHandler:(void (^)(UIImage *image))handler;
+@property (copy) void(^block)();
 
 @end

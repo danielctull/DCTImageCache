@@ -15,9 +15,9 @@
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
 - (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *image))handler;
-- (void)hasImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(BOOL hasImage))handler;
+- (id<DCTImageCacheProcess>)hasImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(BOOL hasImage))handler;
 
-- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
+- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
 
 - (void)removeAllImages;
 - (void)removeAllImagesForKey:(NSString *)key;

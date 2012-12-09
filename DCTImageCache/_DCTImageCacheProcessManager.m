@@ -19,6 +19,8 @@ void* _DCTImageCacheProcessManagerContext = &_DCTImageCacheProcessManagerContext
 
 + (instancetype)processManagerForProcess:(id<DCTImageCacheProcess>)process {
 
+	if (!process) return nil;
+
 	_DCTImageCacheProcessManager *manager = objc_getAssociatedObject(process, _DCTImageCacheProcessManagerContext);
 	if (manager) return manager;
 
@@ -51,10 +53,15 @@ void* _DCTImageCacheProcessManagerContext = &_DCTImageCacheProcessManagerContext
 	if (_proxies.count == 0) [_process cancel];
 }
 
+- (void)setImage:(UIImage *)image {
+	_image = image;
+	if (_image) self.hasImage = YES;
+}
+
 - (void)dealloc {
 	[_proxies enumerateObjectsUsingBlock:^(_DCTImageCacheCancelProxy *proxy, NSUInteger i, BOOL *stop) {
-		if (proxy.handler == NULL) return;
-		proxy.handler(self.image);
+		if (proxy.imageHandler != NULL) proxy.imageHandler(self.image);
+		if (proxy.hasImageHandler != NULL) proxy.hasImageHandler(self.hasImage);
 	}];
 }
 

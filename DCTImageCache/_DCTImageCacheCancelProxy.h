@@ -13,6 +13,7 @@
 @interface _DCTImageCacheCancelProxy : NSObject <DCTImageCacheProcess>
 
 - (void)addProcessManager:(_DCTImageCacheProcessManager *)processManager;
-@property (nonatomic, copy) void (^handler)(UIImage *);
+@property (nonatomic, copy) void (^imageHandler)(UIImage *);
+@property (nonatomic, copy) void (^hasImageHandler)(BOOL);
 
 @end

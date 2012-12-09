@@ -35,7 +35,7 @@
 	if (self.imageFetcher == NULL) return nil;
 
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
-	cancelProxy.handler = handler;
+	cancelProxy.imageHandler = handler;
 
 	[_queue addOperationWithBlock:^{
 
