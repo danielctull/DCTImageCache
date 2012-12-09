@@ -7,7 +7,7 @@
 //
 
 #import "DCTImageCache.h"
-#import "_DCTDiskImageCache.h"
+#import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheMemoryCache.h"
 #import "_DCTImageCacheFetcher.h"
 #import "_DCTImageCacheProcessManager.h"
@@ -15,7 +15,7 @@
 
 @implementation DCTImageCache {
 	_DCTImageCacheMemoryCache *_memoryCache;
-	_DCTDiskImageCache *_diskCache;
+	_DCTImageCacheDiskCache *_diskCache;
 	_DCTImageCacheFetcher *_fetcher;
 }
 
@@ -51,7 +51,7 @@
 	if (!self) return nil;
 
 	NSString *path = [[[self class] _defaultCachePath] stringByAppendingPathComponent:name];
-	_diskCache = [[_DCTDiskImageCache alloc] initWithPath:path];
+	_diskCache = [[_DCTImageCacheDiskCache alloc] initWithPath:path];
 	_fetcher = [_DCTImageCacheFetcher new];
 	_name = [name copy];
 	_memoryCache = [_DCTImageCacheMemoryCache new];

@@ -7,20 +7,20 @@
 //
 
 #import <CoreData/CoreData.h>
-#import "_DCTDiskImageCache.h"
+#import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheItem.h"
 #import "_DCTImageCacheOperation.h"
 
 typedef enum : NSInteger {
-	_DCTDiskImageCachePrioritySave = NSOperationQueuePriorityVeryLow,
-	_DCTDiskImageCachePrioritySet = NSOperationQueuePriorityLow,
-	_DCTDiskImageCachePriorityHasImage = NSOperationQueuePriorityLow,
-	_DCTDiskImageCachePriorityFetch = NSOperationQueuePriorityNormal,
-	_DCTDiskImageCachePrioritySaveMemoryWarning = NSOperationQueuePriorityHigh,
-	_DCTDiskImageCachePrioritySetMemoryWarning = NSOperationQueuePriorityVeryHigh
-} _DCTDiskImageCachePriority;
+	_DCTImageCacheDiskCachePrioritySave = NSOperationQueuePriorityVeryLow,
+	_DCTImageCacheDiskCachePrioritySet = NSOperationQueuePriorityLow,
+	_DCTImageCacheDiskCachePriorityHasImage = NSOperationQueuePriorityLow,
+	_DCTImageCacheDiskCachePriorityFetch = NSOperationQueuePriorityNormal,
+	_DCTImageCacheDiskCachePrioritySaveMemoryWarning = NSOperationQueuePriorityHigh,
+	_DCTImageCacheDiskCachePrioritySetMemoryWarning = NSOperationQueuePriorityVeryHigh
+} _DCTImageCacheDiskCachePriority;
 
-@implementation _DCTDiskImageCache {
+@implementation _DCTImageCacheDiskCache {
 	NSURL *_storeURL;
 	NSManagedObjectContext *_managedObjectContext;
 	NSOperationQueue *_queue;
@@ -70,10 +70,10 @@ typedef enum : NSInteger {
 		//NSLog(@"%@", operation);
 
 		if (operation.type == _DCTImageCacheOperationTypeSet)
-			operation.queuePriority = _DCTDiskImageCachePrioritySetMemoryWarning;
+			operation.queuePriority = _DCTImageCacheDiskCachePrioritySetMemoryWarning;
 
 		else if (operation.type == _DCTImageCacheOperationTypeSave)
-			operation.queuePriority = _DCTDiskImageCachePrioritySaveMemoryWarning;
+			operation.queuePriority = _DCTImageCacheDiskCachePrioritySaveMemoryWarning;
 	}];
 }
 
@@ -117,7 +117,7 @@ typedef enum : NSInteger {
 		processManager.process = operation;
 		operation.key = key;
 		operation.size = size;
-		operation.queuePriority = _DCTDiskImageCachePriorityHasImage;
+		operation.queuePriority = _DCTImageCacheDiskCachePriorityHasImage;
 		operation.block = ^{
 			NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
 			NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
@@ -138,7 +138,7 @@ typedef enum : NSInteger {
 	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet key:key size:size onQueue:_queue];
 	[operation cancel];
 
-	__weak _DCTDiskImageCache *weakSelf = self;
+	__weak _DCTImageCacheDiskCache *weakSelf = self;
 
 	operation = [_DCTImageCacheOperation new];
 	operation.key = key;
@@ -151,7 +151,7 @@ typedef enum : NSInteger {
 		item.date = [NSDate new];
 		[weakSelf _setNeedsSave];
 	};
-	operation.queuePriority = _DCTDiskImageCachePrioritySet;
+	operation.queuePriority = _DCTImageCacheDiskCachePrioritySet;
 	[_queue addOperation:operation];
 	return operation;
 }
@@ -173,7 +173,7 @@ typedef enum : NSInteger {
 			_DCTImageCacheItem *item = [items lastObject];
 			processManager.image = [UIImage imageWithData:item.imageData];
 		};
-		operation.queuePriority = _DCTDiskImageCachePriorityFetch;
+		operation.queuePriority = _DCTImageCacheDiskCachePriorityFetch;
 		[_queue addOperation:operation];
 	}
 
@@ -230,7 +230,7 @@ typedef enum : NSInteger {
 	saveOperation.block = ^{
 		[_managedObjectContext save:NULL];
 	};
-	saveOperation.queuePriority = _DCTDiskImageCachePrioritySave;
+	saveOperation.queuePriority = _DCTImageCacheDiskCachePrioritySave;
 	[_queue addOperation:saveOperation];
 	_saveOperation = saveOperation;
 }

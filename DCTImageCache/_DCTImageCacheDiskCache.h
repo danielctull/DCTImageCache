@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "DCTImageCache.h"
 
-@interface _DCTDiskImageCache : NSObject
+@interface _DCTImageCacheDiskCache : NSObject
 
 - (id)initWithPath:(NSString *)path;
 
