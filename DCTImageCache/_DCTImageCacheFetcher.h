@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DCTImageCache.h"
 
-@interface _DCTImageCacheFetcher : NSObject <DCTImageCacheSetter>
+@interface _DCTImageCacheFetcher : NSObject
 @property (nonatomic, copy) id<DCTImageCacheCanceller> (^imageFetcher)(NSString *key, CGSize size, id<DCTImageCacheSetter> setter);
 - (id<DCTImageCacheCanceller>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler;
 @end

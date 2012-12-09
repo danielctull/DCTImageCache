@@ -10,7 +10,8 @@
 #import "_DCTDiskImageCache.h"
 #import "_DCTMemoryImageCache.h"
 #import "_DCTImageCacheFetcher.h"
-#import "_DCTImageCacheCancelProxy.h"
+
+#import "_DCTImageCacheProcessManager.h"
 
 #import "_DCTImageCacheOperation.h"
 #import "NSOperationQueue+_DCTImageCache.h"
@@ -118,7 +119,8 @@
 	}
 
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
-	id<DCTImageCacheCanceller> diskFetchCancelObject = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
+	
+	id<DCTImageCacheCanceller> diskFetchProcess = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
 
 		if (image) {
 			[_memoryCache setImage:image forKey:key size:size];
@@ -126,15 +128,19 @@
 			return;
 		}
 
-		id<DCTImageCacheCanceller> networkFetchCancelObject = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
+		id<DCTImageCacheCanceller> networkFetchProcess = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
 			handler(image);
 			[_memoryCache setImage:image forKey:key size:size];
 			[_diskCache setImage:image forKey:key size:size];
 		}];
-		[cancelProxy addCancelObject:networkFetchCancelObject];
+
+		_DCTImageCacheProcessManager *networkFetchProcessManager = [_DCTImageCacheProcessManager processManagerForProcess:networkFetchProcess];
+		[networkFetchProcessManager addCancelProxy:cancelProxy];
 	}];
 
-	[cancelProxy addCancelObject:diskFetchCancelObject];
+	_DCTImageCacheProcessManager *diskFetchProcessManager = [_DCTImageCacheProcessManager processManagerForProcess:diskFetchProcess];
+	[diskFetchProcessManager addCancelProxy:cancelProxy];
+
 	return cancelProxy;
 }
 

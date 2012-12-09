@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "DCTImageCache.h"
+@class _DCTImageCacheProcessManager;
 
 @interface _DCTImageCacheCancelProxy : NSObject <DCTImageCacheCanceller>
-- (void)addCancelObject:(id<DCTImageCacheCanceller>)cancelObject;
+- (void)addProcessManager:(_DCTImageCacheProcessManager *)processManager;
 @end

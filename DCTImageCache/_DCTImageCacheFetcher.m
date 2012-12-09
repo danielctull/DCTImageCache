@@ -11,10 +11,11 @@
 #import "NSOperationQueue+_DCTImageCache.h"
 #import "_DCTImageCacheCancelProxy.h"
 #import "_DCTImageCacheWeakMutableDictionary.h"
+#import "_DCTImageCacheProcessManager.h"
 
 @implementation _DCTImageCacheFetcher {
 	NSOperationQueue *_queue;
-	_DCTImageCacheWeakMutableDictionary *_cancelObjects;
+	_DCTImageCacheWeakMutableDictionary *_processManagers;
 	NSMutableDictionary *_handlers;
 }
 
@@ -26,7 +27,7 @@
 	_queue.maxConcurrentOperationCount = 1;
 	[_queue addOperationWithBlock:^{
 		_handlers = [NSMutableDictionary new];
-		_cancelObjects = [_DCTImageCacheWeakMutableDictionary new];
+		_processManagers = [_DCTImageCacheWeakMutableDictionary new];
 	}];
 	return self;
 }
@@ -44,13 +45,16 @@
 			[handlers addObject:handler];
 		}
 
-		NSString *accessKey = [self _accessKeyForKey:key size:size];
-		id<DCTImageCacheCanceller> networkFetchCancelObject = [_cancelObjects objectForKey:accessKey];
+		NSString *accessKey = [NSString stringWithFormat:@"%@.%@", key, NSStringFromCGSize(size)];
+		_DCTImageCacheProcessManager *manager = [_processManagers objectForKey:accessKey];
 
-		if (!networkFetchCancelObject)
-			networkFetchCancelObject = self.imageFetcher(key, size, self);
+		if (!manager) {
+			id<DCTImageCacheCanceller> process = self.imageFetcher(key, size, manager);
+			manager = [_DCTImageCacheProcessManager processManagerForProcess:process];
+			[_processManagers setObject:manager forKey:accessKey];
+		}
 
-		[cancelProxy addCancelObject:networkFetchCancelObject];
+		[manager addCancelProxy:cancelProxy];
 	}];
 
 	return cancelProxy;

@@ -22,7 +22,7 @@
 
 
 @protocol DCTImageCacheSetter <NSObject>
-- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
+- (void)setImage:(UIImage *)image;
 @end
 
 
