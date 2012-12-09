@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "DCTImageCacheAttributes.h"
 
 #ifndef dctimagecache
 #define dctimagecache_1_0     10000
@@ -31,7 +32,7 @@
 
 typedef void (^DCTImageCacheImageHandler)(UIImage *, NSError *);
 
-typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(NSString *key, CGSize size, id<DCTImageCacheCompletion> completion);
+typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(DCTImageCacheAttributes *attributes, id<DCTImageCacheCompletion> completion);
 
 
 
@@ -45,10 +46,9 @@ typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(NSString *key, CGSize s
 @property (nonatomic, copy) DCTImageCacheFetcher imageFetcher;
 
 - (void)removeAllImages;
-- (void)removeAllImagesForKey:(NSString *)key;
-- (void)removeImageForKey:(NSString *)key size:(CGSize)size;
+- (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes;
 
-- (void)prefetchImageForKey:(NSString *)key size:(CGSize)size;
-- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler;
+- (void)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes;
+- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
 
 @end

@@ -11,11 +11,10 @@
 
 @interface _DCTImageCacheMemoryCache : NSObject
 
-- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
+- (void)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes;
 - (void)removeAllImages;
-- (void)removeAllImagesForKey:(NSString *)key;
-- (void)removeImageForKey:(NSString *)key size:(CGSize)size;
-- (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size;
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
+- (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes;
+- (BOOL)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes;
+- (UIImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes;
 
 @end

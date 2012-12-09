@@ -13,14 +13,13 @@
 
 - (id)initWithPath:(NSString *)path;
 
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size;
-- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler;
-- (id<DCTImageCacheProcess>)hasImageForKey:(NSString *)key size:(CGSize)size handler:(_DCTImageCacheHasImageHandler)handler;
+- (UIImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes;
+- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
+- (id<DCTImageCacheProcess>)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler;
 
-- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
+- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes;
 
 - (void)removeAllImages;
-- (void)removeAllImagesForKey:(NSString *)key;
-- (void)removeImageForKey:(NSString *)key size:(CGSize)size;
+- (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes;
 
 @end

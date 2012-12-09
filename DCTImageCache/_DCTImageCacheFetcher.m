@@ -29,7 +29,7 @@
 	return self;
 }
 
-- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler {
+- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
 	if (self.imageFetcher == NULL) return nil;
 
@@ -38,13 +38,12 @@
 
 	[_queue addOperationWithBlock:^{
 
-		NSString *accessKey = [NSString stringWithFormat:@"%@.%@", key, NSStringFromCGSize(size)];
-		_DCTImageCacheProcessManager *manager = [_processManagers objectForKey:accessKey];
+		_DCTImageCacheProcessManager *manager = [_processManagers objectForKey:attributes.identifier];
 
 		if (!manager) {
 			manager = [_DCTImageCacheProcessManager new];
-			manager.process = self.imageFetcher(key, size, manager);
-			[_processManagers setObject:manager forKey:accessKey];
+			manager.process = self.imageFetcher(attributes, manager);
+			[_processManagers setObject:manager forKey:attributes.identifier];
 		}
 
 		[manager addCancelProxy:cancelProxy];

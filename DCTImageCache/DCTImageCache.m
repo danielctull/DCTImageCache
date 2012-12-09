@@ -59,12 +59,12 @@
 	return self;
 }
 
-- (void)setImageFetcher:(id<DCTImageCacheProcess> (^)(NSString *, CGSize, id<DCTImageCacheCompletion>))imageFetcher {
-	[_fetcher setImageFetcher:imageFetcher];
+- (void)setImageFetcher:(DCTImageCacheFetcher)imageFetcher {
+	_fetcher.imageFetcher = imageFetcher;
 }
 
-- (id<DCTImageCacheProcess> (^)(NSString *, CGSize, id<DCTImageCacheCompletion>))imageFetcher {
-	return [_fetcher imageFetcher];
+- (DCTImageCacheFetcher)imageFetcher {
+	return _fetcher.imageFetcher;
 }
 
 - (void)removeAllImages {
@@ -72,44 +72,39 @@
 	[_diskCache removeAllImages];
 }
 
-- (void)removeAllImagesForKey:(NSString *)key {
-	[_memoryCache removeAllImagesForKey:key];
-	[_diskCache removeAllImagesForKey:key];
+- (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes {
+	[_memoryCache removeImagesWithAttributes:attributes];
+	[_diskCache removeImagesWithAttributes:attributes];
 }
 
-- (void)removeImageForKey:(NSString *)key size:(CGSize)size {
-	[_memoryCache removeImageForKey:key size:size];
-	[_diskCache removeImageForKey:key size:size];
-}
-
-- (void)prefetchImageForKey:(NSString *)key size:(CGSize)size {
+- (void)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes {
 	
-	[_diskCache hasImageForKey:key size:size handler:^(BOOL hasImage, NSError *error) {
+	[_diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *error) {
 
 		if (hasImage) return;
 
-		[_fetcher fetchImageForKey:key size:size handler:^(UIImage *image, NSError *error) {
-			[_diskCache setImage:image forKey:key size:size];
+		[_fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+			[_diskCache setImage:image forAttributes:attributes];
 		}];
 	}];
 }
 
-- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler {
+- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
 	if (handler == NULL) {
-		[self prefetchImageForKey:key size:size];
+		[self prefetchImageWithAttributes:attributes];
 		return nil;
 	}
 	
 	// If the image exists in the memory cache, use it!
-	UIImage *image = [_memoryCache imageForKey:key size:size];
+	UIImage *image = [_memoryCache imageWithAttributes:attributes];
 	if (image) {
 		handler(image, nil);
 		return nil;
 	}
 
 	// If the image is in the disk queue to be saved, pull it out and use it
-	image = [_diskCache imageForKey:key size:size];
+	image = [_diskCache imageWithAttributes:attributes];
 	if (image) {
 		handler(image, nil);
 		return nil;
@@ -120,18 +115,18 @@
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager new];
 	[processManager addCancelProxy:cancelProxy];
 	
-	processManager.process = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image, NSError *error) {
+	processManager.process = [_diskCache fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 
 		if (image) {
-			[_memoryCache setImage:image forKey:key size:size];
+			[_memoryCache setImage:image forAttributes:attributes];
 			[processManager setImage:image];
 			return;
 		}
 
-		processManager.process = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image, NSError *error) {
+		processManager.process = [_fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 			[processManager setImage:image];
-			[_memoryCache setImage:image forKey:key size:size];
-			[_diskCache setImage:image forKey:key size:size];
+			[_memoryCache setImage:image forAttributes:attributes];
+			[_diskCache setImage:image forAttributes:attributes];
 		}];
 	}];
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24244609167509D200621FFF /* DCTImageCacheAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 24244608167509D200621FFF /* DCTImageCacheAttributes.m */; };
+		2424460B16750AF000621FFF /* DCTImageCacheAttributes.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24244607167509D200621FFF /* DCTImageCacheAttributes.h */; };
 		242AFA47166BB78F00AC2B9F /* _DCTImageCacheFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */; };
 		2437B67815B97BA600750117 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
@@ -58,6 +60,7 @@
 			dstPath = "include/${PRODUCT_NAME}";
 			dstSubfolderSpec = 16;
 			files = (
+				2424460B16750AF000621FFF /* DCTImageCacheAttributes.h in CopyFiles */,
 				2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -65,6 +68,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		24244607167509D200621FFF /* DCTImageCacheAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheAttributes.h; sourceTree = "<group>"; };
+		24244608167509D200621FFF /* DCTImageCacheAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheAttributes.m; sourceTree = "<group>"; };
 		242AFA45166BB78F00AC2B9F /* _DCTImageCacheFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheFetcher.h; sourceTree = "<group>"; };
 		242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheFetcher.m; sourceTree = "<group>"; };
 		2433AA9A1674D57700D76DCF /* _DCTImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCache.h; sourceTree = "<group>"; };
@@ -221,6 +226,8 @@
 			children = (
 				24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */,
 				24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */,
+				24244607167509D200621FFF /* DCTImageCacheAttributes.h */,
+				24244608167509D200621FFF /* DCTImageCacheAttributes.m */,
 				2433AA9A1674D57700D76DCF /* _DCTImageCache.h */,
 				24B3EED515A30EEB00D5E63C /* _DCTImageCacheDiskCache.h */,
 				24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */,
@@ -444,6 +451,7 @@
 				2477E4C61674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m in Sources */,
 				2477E4CC1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m in Sources */,
 				2477E4CF1674B44200FA9A23 /* _DCTImageCacheWeakMutableDictionary.m in Sources */,
+				24244609167509D200621FFF /* DCTImageCacheAttributes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

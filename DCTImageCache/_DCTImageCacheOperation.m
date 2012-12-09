@@ -32,14 +32,13 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 	return returnOperation;
 }
 
-+ (instancetype)operationWithType:(_DCTImageCacheOperationType)type key:(NSString *)key size:(CGSize)size onQueue:(NSOperationQueue *)queue {
++ (instancetype)operationWithType:(_DCTImageCacheOperationType)type attributes:(DCTImageCacheAttributes *)attibutes onQueue:(NSOperationQueue *)queue {
 	__block id returnOperation;
 
 	[queue.operations enumerateObjectsUsingBlock:^(_DCTImageCacheOperation *operation, NSUInteger i, BOOL *stop) {
 		if (![operation isKindOfClass:self]) return;
 		if (operation.type != type) return;
-		if (!CGSizeEqualToSize(operation.size, size)) return;
-		if (![operation.key isEqualToString:key]) return;
+		if (![operation.uniqueIdentifier isEqualToString:attibutes.identifier]) return;
 		returnOperation = operation;
 		*stop = YES;
 	}];
@@ -61,7 +60,7 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 }
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"<%@: %p; type = %@; key = %@; size = %@>", NSStringFromClass([self class]), self, _DCTImageCacheOperationTypeString[self.type], self.key, NSStringFromCGSize(self.size)];
+	return [NSString stringWithFormat:@"<%@: %p; type = %@; attributes:%@>", NSStringFromClass([self class]), self, _DCTImageCacheOperationTypeString[self.type], self.uniqueIdentifier];
 }
 
 @end

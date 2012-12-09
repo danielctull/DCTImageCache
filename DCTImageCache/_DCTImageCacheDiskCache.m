@@ -92,34 +92,33 @@ typedef enum : NSInteger {
 	_managedObjectContext.persistentStoreCoordinator = coordinator;
 }
 
-- (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet key:key size:size onQueue:_queue];
+- (UIImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes {
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet attributes:attributes onQueue:_queue];
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
 	return processManager.image;
 }
 
-- (id<DCTImageCacheProcess>)hasImageForKey:(NSString *)key size:(CGSize)size handler:(_DCTImageCacheHasImageHandler)handler {
+- (id<DCTImageCacheProcess>)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler {
 
 	if (handler == NULL) return nil;
 
-	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet key:key size:size onQueue:_queue];
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet attributes:attributes onQueue:_queue];
 	if (operation) {
 		handler(YES, nil);
 		return nil;
 	}
 	
-	operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeHasImage key:key size:size onQueue:_queue];
+	operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeHasImage attributes:attributes onQueue:_queue];
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
 
 	if (!processManager) {
 		operation = [_DCTImageCacheOperation new];
 		processManager = [_DCTImageCacheProcessManager new];
 		processManager.process = operation;
-		operation.key = key;
-		operation.size = size;
+		operation.uniqueIdentifier = attributes.identifier;
 		operation.queuePriority = _DCTImageCacheDiskCachePriorityHasImage;
 		operation.block = ^{
-			NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+			NSFetchRequest *fetchRequest = [self _fetchRequestForAttributes:attributes];
 			NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
 			processManager.hasImage = (count > 0);
 		};
@@ -133,20 +132,19 @@ typedef enum : NSInteger {
 	return cancelProxy;
 }
 
-- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
+- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
 
-	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet key:key size:size onQueue:_queue];
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet attributes:attributes onQueue:_queue];
 	[operation cancel];
 
 	__weak _DCTImageCacheDiskCache *weakSelf = self;
 
 	operation = [_DCTImageCacheOperation new];
-	operation.key = key;
-	operation.size = size;
+	operation.uniqueIdentifier = attributes.identifier;
 	operation.block = ^{
 		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
-		item.key = key;
-		item.sizeString = NSStringFromCGSize(size);
+		item.key = attributes.key;
+		item.sizeString = NSStringFromCGSize(attributes.size);
 		item.imageData = UIImagePNGRepresentation(image);
 		item.date = [NSDate new];
 		[weakSelf _setNeedsSave];
@@ -156,19 +154,18 @@ typedef enum : NSInteger {
 	return operation;
 }
 
-- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler {
+- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
-	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeFetch key:key size:size onQueue:_queue];
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeFetch attributes:attributes onQueue:_queue];
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
 
 	if (!processManager) {
 		processManager = [_DCTImageCacheProcessManager new];
 		operation = [_DCTImageCacheOperation new];
 		processManager.process = operation;
-		operation.key = key;
-		operation.size = size;
+		operation.uniqueIdentifier = attributes.identifier;
 		operation.block = ^{
-			NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+			NSFetchRequest *fetchRequest = [self _fetchRequestForAttributes:attributes];
 			NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 			_DCTImageCacheItem *item = [items lastObject];
 			processManager.image = [UIImage imageWithData:item.imageData];
@@ -191,34 +188,19 @@ typedef enum : NSInteger {
 	}];
 }
 
-- (void)removeImageForKey:(NSString *)key size:(CGSize)size {
+- (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes {
 	[_queue addOperationWithBlock:^{
-		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key size:size];
+		NSFetchRequest *fetchRequest = [self _fetchRequestForAttributes:attributes];
 		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
 		[self _setNeedsSave];
 	}];
 }
 
-- (void)removeAllImagesForKey:(NSString *)key {
-	[_queue addOperationWithBlock:^{
-		NSFetchRequest *fetchRequest = [self _fetchRequestForKey:key];
-		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
-		[self _setNeedsSave];
-	}];
-}
-
-- (NSFetchRequest *)_fetchRequestForKey:(NSString *)key {
+- (NSFetchRequest *)_fetchRequestForAttributes:(DCTImageCacheAttributes *)attribtues {
 	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-	fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
-	return fetchRequest;
-}
-
-- (NSFetchRequest *)_fetchRequestForKey:(NSString *)key size:(CGSize)size {
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-	NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
-	NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(size)];
+	NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, attribtues.key];
+	NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(attribtues.size)];
 	fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
 	return fetchRequest;
 }
