@@ -15,6 +15,7 @@
 #endif
 
 
+
 @protocol DCTImageCacheProcess <NSObject>
 - (void)cancel;
 @end
@@ -27,7 +28,11 @@
 @end
 
 
+
 typedef void (^DCTImageCacheImageHandler)(UIImage *, NSError *);
+
+typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(NSString *key, CGSize size, id<DCTImageCacheCompletion> completion);
+
 
 
 @interface DCTImageCache : NSObject
@@ -37,7 +42,7 @@ typedef void (^DCTImageCacheImageHandler)(UIImage *, NSError *);
 + (DCTImageCache *)imageCacheWithName:(NSString *)name;
 @property (nonatomic, readonly) NSString *name;
 
-@property (nonatomic, copy) id<DCTImageCacheProcess> (^imageFetcher)(NSString *key, CGSize size, id<DCTImageCacheCompletion> completion);
+@property (nonatomic, copy) DCTImageCacheFetcher imageFetcher;
 
 - (void)removeAllImages;
 - (void)removeAllImagesForKey:(NSString *)key;
