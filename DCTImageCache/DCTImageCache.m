@@ -10,7 +10,7 @@
 #import "_DCTDiskImageCache.h"
 #import "_DCTMemoryImageCache.h"
 #import "_DCTImageCacheFetcher.h"
-#import "_DCTImageCacheCanceller.h"
+#import "_DCTImageCacheCancelProxy.h"
 
 #import "_DCTImageCacheOperation.h"
 #import "NSOperationQueue+_DCTImageCache.h"
@@ -117,8 +117,8 @@
 		return nil;
 	}
 
-	_DCTImageCacheCanceller *cacheHandler = [_DCTImageCacheCanceller new];
-	cacheHandler.handler = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
+	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
+	id<DCTImageCacheCanceller> diskFetchCancelObject = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
 
 		if (image) {
 			[_memoryCache setImage:image forKey:key size:size];
@@ -126,13 +126,16 @@
 			return;
 		}
 
-		cacheHandler.handler = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
+		id<DCTImageCacheCanceller> networkFetchCancelObject = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
 			handler(image);
 			[_memoryCache setImage:image forKey:key size:size];
 			[_diskCache setImage:image forKey:key size:size];
 		}];
+		[cancelProxy addCancelObject:networkFetchCancelObject];
 	}];
-	return cacheHandler;
+
+	[cancelProxy addCancelObject:diskFetchCancelObject];
+	return cancelProxy;
 }
 
 #pragma mark Internal
