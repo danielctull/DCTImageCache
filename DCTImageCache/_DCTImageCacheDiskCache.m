@@ -98,13 +98,13 @@ typedef enum : NSInteger {
 	return processManager.image;
 }
 
-- (id<DCTImageCacheProcess>)hasImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(BOOL hasImage))handler {
+- (id<DCTImageCacheProcess>)hasImageForKey:(NSString *)key size:(CGSize)size handler:(_DCTImageCacheHasImageHandler)handler {
 
 	if (handler == NULL) return nil;
 
 	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet key:key size:size onQueue:_queue];
 	if (operation) {
-		handler(YES);
+		handler(YES, nil);
 		return nil;
 	}
 	
@@ -156,7 +156,7 @@ typedef enum : NSInteger {
 	return operation;
 }
 
-- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler {
+- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler {
 
 	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeFetch key:key size:size onQueue:_queue];
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];

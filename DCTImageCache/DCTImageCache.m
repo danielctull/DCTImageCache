@@ -84,17 +84,17 @@
 
 - (void)prefetchImageForKey:(NSString *)key size:(CGSize)size {
 	
-	[_diskCache hasImageForKey:key size:size handler:^(BOOL hasImage) {
+	[_diskCache hasImageForKey:key size:size handler:^(BOOL hasImage, NSError *error) {
 
 		if (hasImage) return;
 
-		[_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
+		[_fetcher fetchImageForKey:key size:size handler:^(UIImage *image, NSError *error) {
 			[_diskCache setImage:image forKey:key size:size];
 		}];
 	}];
 }
 
-- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void (^)(UIImage *))handler {
+- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler {
 
 	if (handler == NULL) {
 		[self prefetchImageForKey:key size:size];
@@ -104,14 +104,14 @@
 	// If the image exists in the memory cache, use it!
 	UIImage *image = [_memoryCache imageForKey:key size:size];
 	if (image) {
-		handler(image);
+		handler(image, nil);
 		return nil;
 	}
 
 	// If the image is in the disk queue to be saved, pull it out and use it
 	image = [_diskCache imageForKey:key size:size];
 	if (image) {
-		handler(image);
+		handler(image, nil);
 		return nil;
 	}
 
@@ -120,7 +120,7 @@
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager new];
 	[processManager addCancelProxy:cancelProxy];
 	
-	processManager.process = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
+	processManager.process = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image, NSError *error) {
 
 		if (image) {
 			[_memoryCache setImage:image forKey:key size:size];
@@ -128,7 +128,7 @@
 			return;
 		}
 
-		processManager.process = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
+		processManager.process = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image, NSError *error) {
 			[processManager setImage:image];
 			[_memoryCache setImage:image forKey:key size:size];
 			[_diskCache setImage:image forKey:key size:size];

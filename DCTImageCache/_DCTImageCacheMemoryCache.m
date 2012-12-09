@@ -56,9 +56,9 @@
 	return [_cache objectForKey:cacheKey];
 }
 
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler {
+- (void)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler {
 	if (handler == NULL) return;
-	handler([self imageForKey:key size:size]);
+	handler([self imageForKey:key size:size], nil);
 }
 
 - (BOOL)hasImageForKey:(NSString *)key size:(CGSize)size {

@@ -17,6 +17,7 @@
 
 @property (nonatomic, assign) BOOL hasImage;
 @property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) NSError *error;
 
 - (void)addCancelProxy:(_DCTImageCacheCancelProxy *)proxy;
 - (void)removeCancelProxy:(_DCTImageCacheCancelProxy *)proxy;

@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "DCTImageCache.h"
+#import "_DCTImageCache.h"
 @class _DCTImageCacheProcessManager;
 
 @interface _DCTImageCacheCancelProxy : NSObject <DCTImageCacheProcess>
 
 - (void)addProcessManager:(_DCTImageCacheProcessManager *)processManager;
-@property (nonatomic, copy) void (^imageHandler)(UIImage *);
-@property (nonatomic, copy) void (^hasImageHandler)(BOOL);
+@property (nonatomic, copy) DCTImageCacheImageHandler imageHandler;
+@property (nonatomic, copy) _DCTImageCacheHasImageHandler hasImageHandler;
 
 @end

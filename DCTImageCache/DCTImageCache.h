@@ -23,8 +23,11 @@
 
 @protocol DCTImageCacheCompletion <NSObject>
 - (void)setImage:(UIImage *)image;
+- (void)setError:(NSError *)error;
 @end
 
+
+typedef void (^DCTImageCacheImageHandler)(UIImage *, NSError *);
 
 
 @interface DCTImageCache : NSObject
@@ -41,6 +44,6 @@
 - (void)removeImageForKey:(NSString *)key size:(CGSize)size;
 
 - (void)prefetchImageForKey:(NSString *)key size:(CGSize)size;
-- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler;
+- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler;
 
 @end

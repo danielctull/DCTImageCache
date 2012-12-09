@@ -67,6 +67,7 @@
 /* Begin PBXFileReference section */
 		242AFA45166BB78F00AC2B9F /* _DCTImageCacheFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheFetcher.h; sourceTree = "<group>"; };
 		242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheFetcher.m; sourceTree = "<group>"; };
+		2433AA9A1674D57700D76DCF /* _DCTImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCache.h; sourceTree = "<group>"; };
 		2437B67715B97BA600750117 /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2477E4881673916200FA9A23 /* _DCTImageCacheProcessManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheProcessManager.h; sourceTree = "<group>"; };
 		2477E4891673916200FA9A23 /* _DCTImageCacheProcessManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheProcessManager.m; sourceTree = "<group>"; };
@@ -220,6 +221,7 @@
 			children = (
 				24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */,
 				24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */,
+				2433AA9A1674D57700D76DCF /* _DCTImageCache.h */,
 				24B3EED515A30EEB00D5E63C /* _DCTImageCacheDiskCache.h */,
 				24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */,
 				24F2DB25165FEDDC008F58D5 /* _DCTImageCacheItem.h */,

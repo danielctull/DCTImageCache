@@ -11,5 +11,5 @@
 
 @interface _DCTImageCacheFetcher : NSObject
 @property (nonatomic, copy) id<DCTImageCacheProcess> (^imageFetcher)(NSString *key, CGSize size, id<DCTImageCacheCompletion> setter);
-- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler;
+- (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(DCTImageCacheImageHandler)handler;
 @end
