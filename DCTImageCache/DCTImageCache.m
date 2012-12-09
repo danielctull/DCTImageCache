@@ -10,11 +10,8 @@
 #import "_DCTDiskImageCache.h"
 #import "_DCTMemoryImageCache.h"
 #import "_DCTImageCacheFetcher.h"
-
 #import "_DCTImageCacheProcessManager.h"
-
 #import "_DCTImageCacheOperation.h"
-#import "NSOperationQueue+_DCTImageCache.h"
 
 @implementation DCTImageCache {
 	_DCTMemoryImageCache *_memoryCache;

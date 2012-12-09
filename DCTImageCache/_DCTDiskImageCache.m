@@ -6,11 +6,9 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
+#import <CoreData/CoreData.h>
 #import "_DCTDiskImageCache.h"
 #import "_DCTImageCacheItem.h"
-#import "NSOperationQueue+_DCTImageCache.h"
-#import <CoreData/CoreData.h>
-
 #import "_DCTImageCacheOperation.h"
 
 typedef enum : NSInteger {
@@ -95,7 +93,7 @@ typedef enum : NSInteger {
 }
 
 - (UIImage *)imageForKey:(NSString *)key size:(CGSize)size {
-	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSet withKey:key size:size];
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet key:key size:size onQueue:_queue];
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
 	return processManager.image;
 }
@@ -104,13 +102,13 @@ typedef enum : NSInteger {
 
 	if (handler == NULL) return nil;
 
-	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSet withKey:key size:size];
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet key:key size:size onQueue:_queue];
 	if (operation) {
 		handler(YES);
 		return nil;
 	}
-
-	operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeHasImage withKey:key size:size];
+	
+	operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeHasImage key:key size:size onQueue:_queue];
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
 
 	if (!processManager) {
@@ -137,7 +135,7 @@ typedef enum : NSInteger {
 
 - (id<DCTImageCacheProcess>)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
 
-	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeSet withKey:key size:size];
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet key:key size:size onQueue:_queue];
 	[operation cancel];
 
 	__weak _DCTDiskImageCache *weakSelf = self;
@@ -160,7 +158,7 @@ typedef enum : NSInteger {
 
 - (id<DCTImageCacheProcess>)fetchImageForKey:(NSString *)key size:(CGSize)size handler:(void(^)(UIImage *))handler {
 
-	_DCTImageCacheOperation *operation = [_queue dctImageCache_operationOfType:_DCTImageCacheOperationTypeFetch withKey:key size:size];
+	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeFetch key:key size:size onQueue:_queue];
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
 
 	if (!processManager) {

@@ -8,7 +8,6 @@
 
 #import "_DCTImageCacheFetcher.h"
 #import "_DCTImageCacheOperation.h"
-#import "NSOperationQueue+_DCTImageCache.h"
 #import "_DCTImageCacheCancelProxy.h"
 #import "_DCTImageCacheWeakMutableDictionary.h"
 #import "_DCTImageCacheProcessManager.h"

@@ -19,6 +19,43 @@ NSString * const _DCTImageCacheOperationTypeString[] = {
 
 @implementation _DCTImageCacheOperation
 
++ (instancetype)operationWithType:(_DCTImageCacheOperationType)type onQueue:(NSOperationQueue *)queue {
+	__block id returnOperation;
+
+	[queue.operations enumerateObjectsUsingBlock:^(_DCTImageCacheOperation *operation, NSUInteger i, BOOL *stop) {
+		if (![operation isKindOfClass:self]) return;
+		if (operation.type != type) return;
+		returnOperation = operation;
+		*stop = YES;
+	}];
+
+	return returnOperation;
+}
+
++ (instancetype)operationWithType:(_DCTImageCacheOperationType)type key:(NSString *)key size:(CGSize)size onQueue:(NSOperationQueue *)queue {
+	__block id returnOperation;
+
+	[queue.operations enumerateObjectsUsingBlock:^(_DCTImageCacheOperation *operation, NSUInteger i, BOOL *stop) {
+		if (![operation isKindOfClass:self]) return;
+		if (operation.type != type) return;
+		if (!CGSizeEqualToSize(operation.size, size)) return;
+		if (![operation.key isEqualToString:key]) return;
+		returnOperation = operation;
+		*stop = YES;
+	}];
+
+	return returnOperation;
+}
+
++ (NSArray *)operationsWithType:(_DCTImageCacheOperationType)type onQueue:(NSOperationQueue *)queue {
+	NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(_DCTImageCacheOperation *operation, NSDictionary *bindings) {
+		if (![operation isKindOfClass:self]) return NO;
+		return operation.type == type;
+	}];
+
+	return [queue.operations filteredArrayUsingPredicate:predicate];
+}
+
 - (void)main {
 	self.block();
 }

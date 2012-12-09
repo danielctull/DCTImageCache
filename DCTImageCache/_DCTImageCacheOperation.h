@@ -21,6 +21,11 @@ typedef enum : NSInteger {
 
 @interface _DCTImageCacheOperation : NSOperation <DCTImageCacheProcess>
 
++ (instancetype)operationWithType:(_DCTImageCacheOperationType)type onQueue:(NSOperationQueue *)queue;
++ (instancetype)operationWithType:(_DCTImageCacheOperationType)type key:(NSString *)key size:(CGSize)size onQueue:(NSOperationQueue *)queue;
++ (NSArray *)operationsWithType:(_DCTImageCacheOperationType)type onQueue:(NSOperationQueue *)queue;
+
+
 @property (assign) _DCTImageCacheOperationType type;
 @property (copy) NSString *key;
 @property (assign) CGSize size;
