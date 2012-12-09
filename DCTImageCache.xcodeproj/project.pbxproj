@@ -18,6 +18,8 @@
 		2437B68615B97BD700750117 /* _DCTMemoryImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* _DCTMemoryImageCache.m */; };
 		2477E48A1673916200FA9A23 /* _DCTImageCacheCancelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2477E4891673916200FA9A23 /* _DCTImageCacheCancelManager.m */; };
 		2477E48E1673917700FA9A23 /* _DCTImageCacheCancelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2477E48D1673917700FA9A23 /* _DCTImageCacheCancelProxy.m */; };
+		2477E4C61674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 2477E4C51674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m */; };
+		2477E4CC1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 2477E4CB1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m */; };
 		24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */; };
 		24B3EEC315A2EB1F00D5E63C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 24B3EEC115A2EB1F00D5E63C /* InfoPlist.strings */; };
@@ -78,6 +80,10 @@
 		2477E4891673916200FA9A23 /* _DCTImageCacheCancelManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheCancelManager.m; sourceTree = "<group>"; };
 		2477E48C1673917700FA9A23 /* _DCTImageCacheCancelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheCancelProxy.h; sourceTree = "<group>"; };
 		2477E48D1673917700FA9A23 /* _DCTImageCacheCancelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheCancelProxy.m; sourceTree = "<group>"; };
+		2477E4C41674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheWeakMutableArray.h; sourceTree = "<group>"; };
+		2477E4C51674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheWeakMutableArray.m; sourceTree = "<group>"; };
+		2477E4CA1674AD5700FA9A23 /* _DCTImageCacheWeakObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheWeakObject.h; sourceTree = "<group>"; };
+		2477E4CB1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheWeakObject.m; sourceTree = "<group>"; };
 		24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTImageCacheDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		24B3EEC015A2EB1F00D5E63C /* DCTImageCacheDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCacheDemo-Info.plist"; sourceTree = "<group>"; };
@@ -240,6 +246,10 @@
 				2477E4891673916200FA9A23 /* _DCTImageCacheCancelManager.m */,
 				2477E48C1673917700FA9A23 /* _DCTImageCacheCancelProxy.h */,
 				2477E48D1673917700FA9A23 /* _DCTImageCacheCancelProxy.m */,
+				2477E4C41674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.h */,
+				2477E4C51674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m */,
+				2477E4CA1674AD5700FA9A23 /* _DCTImageCacheWeakObject.h */,
+				2477E4CB1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m */,
 			);
 			path = DCTImageCache;
 			sourceTree = "<group>";
@@ -442,6 +452,8 @@
 				242AFA4B166BBFA400AC2B9F /* _DCTImageCacheCanceller.m in Sources */,
 				2477E48A1673916200FA9A23 /* _DCTImageCacheCancelManager.m in Sources */,
 				2477E48E1673917700FA9A23 /* _DCTImageCacheCancelProxy.m in Sources */,
+				2477E4C61674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m in Sources */,
+				2477E4CC1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -34,13 +34,17 @@
 
 - (void)addCancelProxy:(_DCTImageCacheCancelProxy *)proxy {
 	[_proxies addObject:proxy];
-	proxy.cancelManager = self;
+	[proxy addCancelManager:self];
 }
 
 - (void)removeCancelProxy:(_DCTImageCacheCancelProxy *)proxy {
 	[_proxies removeObject:proxy];
 
 	if (_proxies.count == 0) [_cancelObject cancel];
+}
+
+- (void)dealloc {
+	[_proxies makeObjectsPerformSelector:@selector(removeCancelManager:) withObject:self];
 }
 
 @end

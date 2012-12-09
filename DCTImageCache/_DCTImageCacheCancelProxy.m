@@ -8,11 +8,25 @@
 
 #import "_DCTImageCacheCancelProxy.h"
 #import "_DCTImageCacheCancelManager.h"
+#import "_DCTImageCacheWeakMutableArray.h"
 
-@implementation _DCTImageCacheCancelProxy
+@implementation _DCTImageCacheCancelProxy {
+	_DCTImageCacheWeakMutableArray *_cancelManagers;
+}
+
+- (id)init {
+	self = [super init];
+	if (!self) return nil;
+	_cancelManagers = [_DCTImageCacheWeakMutableArray new];
+	return self;
+}
+
+- (void)addCancelManager:(_DCTImageCacheCancelManager *)cancelManager {
+	[_cancelManagers addObject:cancelManager];
+}
 
 - (void)cancel {
-	[self.cancelManager removeCancelProxy:self];
+	[_cancelManagers makeObjectsPerformSelector:@selector(removeCancelProxy:) withObject:self];
 }
 
 @end

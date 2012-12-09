@@ -11,5 +11,5 @@
 @class _DCTImageCacheCancelManager;
 
 @interface _DCTImageCacheCancelProxy : NSObject <DCTImageCacheCanceller>
-@property (nonatomic, weak) _DCTImageCacheCancelManager *cancelManager;
+- (void)addCancelManager:(_DCTImageCacheCancelManager *)cancelManager;
 @end
