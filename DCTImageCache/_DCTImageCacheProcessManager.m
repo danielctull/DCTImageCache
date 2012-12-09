@@ -51,4 +51,11 @@ void* _DCTImageCacheProcessManagerContext = &_DCTImageCacheProcessManagerContext
 	if (_proxies.count == 0) [_process cancel];
 }
 
+- (void)dealloc {
+	[_proxies enumerateObjectsUsingBlock:^(_DCTImageCacheCancelProxy *proxy, NSUInteger i, BOOL *stop) {
+		if (proxy.handler == NULL) return;
+		proxy.handler(self.image);
+	}];
+}
+
 @end

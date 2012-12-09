@@ -16,7 +16,6 @@
 @implementation _DCTImageCacheFetcher {
 	NSOperationQueue *_queue;
 	_DCTImageCacheWeakMutableDictionary *_processManagers;
-	NSMutableDictionary *_handlers;
 }
 
 - (id)init {
@@ -26,7 +25,6 @@
 	_queue.name = NSStringFromClass([self class]);
 	_queue.maxConcurrentOperationCount = 1;
 	[_queue addOperationWithBlock:^{
-		_handlers = [NSMutableDictionary new];
 		_processManagers = [_DCTImageCacheWeakMutableDictionary new];
 	}];
 	return self;
@@ -37,13 +35,9 @@
 	if (self.imageFetcher == NULL) return nil;
 
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
+	cancelProxy.handler = handler;
 
 	[_queue addOperationWithBlock:^{
-
-		if (handler != NULL) {
-			NSMutableArray *handlers = [self _handlersForKey:key size:size];
-			[handlers addObject:handler];
-		}
 
 		NSString *accessKey = [NSString stringWithFormat:@"%@.%@", key, NSStringFromCGSize(size)];
 		_DCTImageCacheProcessManager *manager = [_processManagers objectForKey:accessKey];
@@ -59,31 +53,5 @@
 
 	return cancelProxy;
 }
-
-- (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size {
-	[_queue addOperationWithBlock:^{
-		NSArray *handlers = [self _handlersForKey:key size:size];
-		[handlers enumerateObjectsUsingBlock:^(void(^handler)(UIImage *), NSUInteger idx, BOOL *stop) {
-			handler(image);
-		}];
-		NSString *accessKey = [self _accessKeyForKey:key size:size];
-		[_handlers removeObjectForKey:accessKey];
-	}];
-}
-
-- (NSMutableArray *)_handlersForKey:(NSString *)key size:(CGSize)size {
-	NSString *accessKey = [self _accessKeyForKey:key size:size];
-	NSMutableArray *handlers = [_handlers objectForKey:accessKey];
-	if (!handlers) {
-		handlers = [NSMutableArray new];
-		[_handlers setObject:handlers forKey:accessKey];
-	}
-	return handlers;
-}
-
-- (NSString *)_accessKeyForKey:(NSString *)key size:(CGSize)size {
-	return [NSString stringWithFormat:@"%@.%@", key, NSStringFromCGSize(size)];
-}
-
 
 @end

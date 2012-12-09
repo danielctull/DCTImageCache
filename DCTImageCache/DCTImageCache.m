@@ -119,27 +119,24 @@
 	}
 
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
+	cancelProxy.handler = handler;
+	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager new];
+	[processManager addCancelProxy:cancelProxy];
 	
-	id<DCTImageCacheProcess> diskFetchProcess = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
+	processManager.process = [_diskCache fetchImageForKey:key size:size handler:^(UIImage *image) {
 
 		if (image) {
 			[_memoryCache setImage:image forKey:key size:size];
-			handler(image);
+			[processManager setImage:image];
 			return;
 		}
 
-		id<DCTImageCacheProcess> networkFetchProcess = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
-			handler(image);
+		processManager.process = [_fetcher fetchImageForKey:key size:size handler:^(UIImage *image) {
+			[processManager setImage:image];
 			[_memoryCache setImage:image forKey:key size:size];
 			[_diskCache setImage:image forKey:key size:size];
 		}];
-
-		_DCTImageCacheProcessManager *networkFetchProcessManager = [_DCTImageCacheProcessManager processManagerForProcess:networkFetchProcess];
-		[networkFetchProcessManager addCancelProxy:cancelProxy];
 	}];
-
-	_DCTImageCacheProcessManager *diskFetchProcessManager = [_DCTImageCacheProcessManager processManagerForProcess:diskFetchProcess];
-	[diskFetchProcessManager addCancelProxy:cancelProxy];
 
 	return cancelProxy;
 }
