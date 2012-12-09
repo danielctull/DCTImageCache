@@ -21,8 +21,10 @@
 	return self;
 }
 
-- (void)addCancelManager:(_DCTImageCacheCancelManager *)cancelManager {
-	[_cancelManagers addObject:cancelManager];
+- (void)addCancelObject:(id<DCTImageCacheCanceller>)cancelObject {
+	_DCTImageCacheCancelManager *manager = [_DCTImageCacheCancelManager cancelManagerForObject:cancelObject];
+	[_cancelManagers addObject:manager];
+	[manager addCancelProxy:self];
 }
 
 - (void)cancel {
