@@ -8,13 +8,13 @@
 
 #import "DCTImageCache.h"
 #import "_DCTDiskImageCache.h"
-#import "_DCTMemoryImageCache.h"
+#import "_DCTImageCacheMemoryCache.h"
 #import "_DCTImageCacheFetcher.h"
 #import "_DCTImageCacheProcessManager.h"
 #import "_DCTImageCacheOperation.h"
 
 @implementation DCTImageCache {
-	_DCTMemoryImageCache *_memoryCache;
+	_DCTImageCacheMemoryCache *_memoryCache;
 	_DCTDiskImageCache *_diskCache;
 	_DCTImageCacheFetcher *_fetcher;
 }
@@ -54,7 +54,7 @@
 	_diskCache = [[_DCTDiskImageCache alloc] initWithPath:path];
 	_fetcher = [_DCTImageCacheFetcher new];
 	_name = [name copy];
-	_memoryCache = [_DCTMemoryImageCache new];
+	_memoryCache = [_DCTImageCacheMemoryCache new];
 	
 	return self;
 }

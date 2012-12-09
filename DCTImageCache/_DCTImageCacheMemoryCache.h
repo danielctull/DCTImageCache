@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "DCTImageCache.h"
 
-@interface _DCTMemoryImageCache : NSObject
+@interface _DCTImageCacheMemoryCache : NSObject
 
 - (void)setImage:(UIImage *)image forKey:(NSString *)key size:(CGSize)size;
 - (void)removeAllImages;

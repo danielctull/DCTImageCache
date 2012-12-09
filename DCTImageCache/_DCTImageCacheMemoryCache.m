@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import "_DCTMemoryImageCache.h"
+#import "_DCTImageCacheMemoryCache.h"
 
-@implementation _DCTMemoryImageCache {
+@implementation _DCTImageCacheMemoryCache {
 	NSCache *_cache;
 	NSMutableDictionary *_cacheKeys;
 	NSOperationQueue *_queue;
