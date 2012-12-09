@@ -26,6 +26,8 @@
 }
 
 - (void)cancel {
+	self.imageHandler = NULL;
+	self.hasImageHandler = NULL;
 	[_processManagers makeObjectsPerformSelector:@selector(removeCancelProxy:) withObject:self];
 }
 
