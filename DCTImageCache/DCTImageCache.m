@@ -125,6 +125,8 @@
 
 		processManager.process = [_fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 			[processManager setImage:image];
+			[processManager setError:error];
+			if (!image) return;
 			[_memoryCache setImage:image forAttributes:attributes];
 			[_diskCache setImage:image forAttributes:attributes];
 		}];
