@@ -9,3 +9,7 @@
 #import "DCTImageCache.h"
 
 typedef void (^_DCTImageCacheHasImageHandler)(BOOL, NSError *);
+
+@interface DCTImageCache (Private)
++ (NSBundle *)_bundle;
+@end

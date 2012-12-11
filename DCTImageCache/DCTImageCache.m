@@ -139,10 +139,27 @@
 	return cancelProxy;
 }
 
-#pragma mark Internal
-
 + (NSURL *)cacheDirectoryURL {
 	return [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+#pragma mark Internal
+
++ (NSBundle *)_bundle {
+	static NSBundle *bundle;
+	static dispatch_once_t bundleToken;
+	dispatch_once(&bundleToken, ^{
+		NSDirectoryEnumerator *enumerator = [[NSFileManager new] enumeratorAtURL:[[NSBundle mainBundle] bundleURL]
+													  includingPropertiesForKeys:nil
+																		 options:NSDirectoryEnumerationSkipsHiddenFiles
+																	errorHandler:NULL];
+
+		for (NSURL *URL in enumerator)
+			if ([[URL lastPathComponent] isEqualToString:@"DCTImageCache.bundle"])
+				bundle = [NSBundle bundleWithURL:URL];
+	});
+
+	return bundle;
 }
 
 + (NSURL *)_defaultDirectory {

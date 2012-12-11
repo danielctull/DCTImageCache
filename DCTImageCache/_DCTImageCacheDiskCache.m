@@ -20,27 +20,13 @@ typedef enum : NSInteger {
 	_DCTImageCacheDiskCachePrioritySetMemoryWarning = NSOperationQueuePriorityVeryHigh
 } _DCTImageCacheDiskCachePriority;
 
+NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
+NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
+
 @implementation _DCTImageCacheDiskCache {
 	NSManagedObjectContext *_managedObjectContext;
 	NSOperationQueue *_queue;
 	__weak _DCTImageCacheOperation *_saveOperation;
-}
-
-+ (NSBundle *)bundle {
-	static NSBundle *bundle;
-	static dispatch_once_t bundleToken;
-	dispatch_once(&bundleToken, ^{
-		NSDirectoryEnumerator *enumerator = [[NSFileManager new] enumeratorAtURL:[[NSBundle mainBundle] bundleURL]
-													  includingPropertiesForKeys:nil
-																		 options:NSDirectoryEnumerationSkipsHiddenFiles
-																	errorHandler:NULL];
-
-		for (NSURL *URL in enumerator)
-			if ([[URL lastPathComponent] isEqualToString:@"DCTImageCache.bundle"])
-				bundle = [NSBundle bundleWithURL:URL];
-	});
-
-	return bundle;
 }
 
 - (id)initWithStoreURL:(NSURL *)storeURL {
@@ -74,7 +60,8 @@ typedef enum : NSInteger {
 }
 
 - (void)_createStack {
-	NSURL *modelURL = [[[self class] bundle] URLForResource:@"DCTImageCache" withExtension:@"momd"];
+	NSURL *modelURL = [[DCTImageCache _bundle] URLForResource:_DCTImageCacheDiskCacheModelName
+												withExtension:_DCTImageCacheDiskCacheModelExtension];
 	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 
