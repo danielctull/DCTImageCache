@@ -61,12 +61,9 @@ typedef enum : NSInteger {
 }
 
 - (void)_didReceiveMemoryWarningNotification:(NSNotification *)notification {
-	NSLog(@"%@:%@", self, NSStringFromSelector(_cmd));
 	[_queue.operations enumerateObjectsUsingBlock:^(_DCTImageCacheOperation *operation, NSUInteger i, BOOL *stop) {
 
 		if (![operation isKindOfClass:[_DCTImageCacheOperation class]]) return;
-
-		//NSLog(@"%@", operation);
 
 		if (operation.type == _DCTImageCacheOperationTypeSet)
 			operation.queuePriority = _DCTImageCacheDiskCachePrioritySetMemoryWarning;
@@ -81,9 +78,11 @@ typedef enum : NSInteger {
 	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 
-	[[NSFileManager defaultManager] createDirectoryAtURL:[self.storeURL URLByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:NULL];
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSURL *storeDirectoryURL = [self.storeURL URLByDeletingLastPathComponent];
+	[fileManager createDirectoryAtURL:storeDirectoryURL withIntermediateDirectories:YES attributes:nil error:NULL];
 	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL]) {
-		[[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:NULL];
+		[fileManager removeItemAtURL:self.storeURL error:NULL];
 		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL];
 	}
 
