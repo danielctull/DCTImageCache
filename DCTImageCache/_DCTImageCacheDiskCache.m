@@ -21,7 +21,6 @@ typedef enum : NSInteger {
 } _DCTImageCacheDiskCachePriority;
 
 @implementation _DCTImageCacheDiskCache {
-	NSURL *_storeURL;
 	NSManagedObjectContext *_managedObjectContext;
 	NSOperationQueue *_queue;
 	__weak _DCTImageCacheOperation *_saveOperation;
@@ -44,9 +43,9 @@ typedef enum : NSInteger {
 	return bundle;
 }
 
-- (id)initWithPath:(NSString *)path {
+- (id)initWithStoreURL:(NSURL *)storeURL {
 	if (!(self = [super init])) return nil;
-	_storeURL = [[[NSURL alloc] initFileURLWithPath:path] URLByAppendingPathComponent:@"store"];
+	_storeURL = [storeURL copy];
 	_queue = [[NSOperationQueue alloc] init];
 	_queue.name = NSStringFromClass([self class]);
 	_queue.maxConcurrentOperationCount = 1;
@@ -82,10 +81,10 @@ typedef enum : NSInteger {
 	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 
-	[[NSFileManager defaultManager] createDirectoryAtURL:[_storeURL URLByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:NULL];
-	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:_storeURL options:nil error:NULL]) {
-		[[NSFileManager defaultManager] removeItemAtURL:_storeURL error:NULL];
-		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:_storeURL options:nil error:NULL];
+	[[NSFileManager defaultManager] createDirectoryAtURL:[self.storeURL URLByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:NULL];
+	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL]) {
+		[[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:NULL];
+		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL];
 	}
 
 	_managedObjectContext = [NSManagedObjectContext new];
@@ -183,7 +182,7 @@ typedef enum : NSInteger {
 
 - (void)removeAllImages {
 	[_queue addOperationWithBlock:^{
-		[[NSFileManager defaultManager] removeItemAtURL:_storeURL error:NULL];
+		[[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:NULL];
 		[self _createStack];
 	}];
 }

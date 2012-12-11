@@ -38,10 +38,14 @@ typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(DCTImageCacheAttributes
 
 @interface DCTImageCache : NSObject
 
-+ (DCTImageCache *)defaultImageCache;
++ (NSURL *)cacheDirectoryURL;
 
-+ (DCTImageCache *)imageCacheWithName:(NSString *)name;
-@property (nonatomic, readonly) NSString *name;
++ (instancetype)defaultImageCache;
++ (instancetype)imageCacheWithName:(NSString *)name;
++ (instancetype)imageCacheWithURL:(NSURL *)storeURL;
+
+@property (nonatomic, copy, readonly) NSURL *storeURL;
+@property (nonatomic, copy, readonly) NSString *name;
 
 @property (nonatomic, copy) DCTImageCacheFetcher imageFetcher;
 

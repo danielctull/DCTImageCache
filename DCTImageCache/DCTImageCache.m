@@ -30,33 +30,37 @@
 	return sharedInstance;
 }
 
-+ (DCTImageCache *)defaultImageCache {
++ (instancetype)defaultImageCache {
 	return [self imageCacheWithName:@"DCTDefaultImageCache"];
 }
 
-+ (DCTImageCache *)imageCacheWithName:(NSString *)name {
-	
++ (instancetype)imageCacheWithName:(NSString *)name {
+	NSURL *URL = [[self _defaultDirectory] URLByAppendingPathComponent:name];
+	return [self imageCacheWithURL:URL];
+}
+
++ (instancetype)imageCacheWithURL:(NSURL *)storeURL {
 	NSMutableDictionary *imageCaches = [self imageCaches];
-	DCTImageCache *imageCache = [imageCaches objectForKey:name];
+	DCTImageCache *imageCache = [imageCaches objectForKey:storeURL];
 	if (!imageCache) {
-		imageCache = [[self alloc] _initWithName:name];
-		[imageCaches setObject:imageCache forKey:name];
+		imageCache = [[self alloc] _initWithStoreURL:storeURL];
+		[imageCaches setObject:imageCache forKey:storeURL];
 	}
 	return imageCache;
 }
 
-- (id)_initWithName:(NSString *)name {
-	
+- (id)_initWithStoreURL:(NSURL *)storeURL {
 	self = [self init];
 	if (!self) return nil;
-
-	NSString *path = [[[self class] _defaultCachePath] stringByAppendingPathComponent:name];
-	_diskCache = [[_DCTImageCacheDiskCache alloc] initWithPath:path];
+	_diskCache = [[_DCTImageCacheDiskCache alloc] initWithStoreURL:storeURL];
 	_fetcher = [_DCTImageCacheFetcher new];
-	_name = [name copy];
+	_name = [[storeURL lastPathComponent] copy];
 	_memoryCache = [_DCTImageCacheMemoryCache new];
-	
 	return self;
+}
+
+- (NSURL *)storeURL {
+	return _diskCache.storeURL;
 }
 
 - (void)setImageFetcher:(DCTImageCacheFetcher)imageFetcher {
@@ -137,20 +141,12 @@
 
 #pragma mark Internal
 
-+ (NSString *)_defaultCachePath {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	return [[paths objectAtIndex:0] stringByAppendingPathComponent:NSStringFromClass(self)];
++ (NSURL *)cacheDirectoryURL {
+	return [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-+ (void)_enumerateImageCachesUsingBlock:(void (^)(DCTImageCache *imageCache, BOOL *stop))block {
-	NSFileManager *fileManager = [NSFileManager new];
-	NSString *cachePath = [[self class] _defaultCachePath];
-	NSArray *caches = [[fileManager contentsOfDirectoryAtPath:cachePath error:nil] copy];
-	
-	[caches enumerateObjectsUsingBlock:^(NSString *name, NSUInteger i, BOOL *stop) {
-		DCTImageCache *imageCache = [DCTImageCache imageCacheWithName:name];
-		block(imageCache, stop);
-	}];
++ (NSURL *)_defaultDirectory {
+	return [[self cacheDirectoryURL] URLByAppendingPathComponent:NSStringFromClass(self)];
 }
 
 @end
