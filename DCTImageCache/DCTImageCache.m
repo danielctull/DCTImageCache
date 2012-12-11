@@ -13,6 +13,9 @@
 #import "_DCTImageCacheProcessManager.h"
 #import "_DCTImageCacheOperation.h"
 
+NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
+NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
+
 @implementation DCTImageCache {
 	_DCTImageCacheMemoryCache *_memoryCache;
 	_DCTImageCacheDiskCache *_diskCache;
@@ -31,7 +34,7 @@
 }
 
 + (instancetype)defaultImageCache {
-	return [self imageCacheWithName:@"DCTDefaultImageCache"];
+	return [self imageCacheWithName:DCTImageCacheDefaultCacheName];
 }
 
 + (instancetype)imageCacheWithName:(NSString *)name {
@@ -93,7 +96,8 @@
 	}];
 }
 
-- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
+- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes
+											 handler:(DCTImageCacheImageHandler)handler {
 
 	if (handler == NULL) {
 		[self prefetchImageWithAttributes:attributes];
@@ -155,7 +159,7 @@
 																	errorHandler:NULL];
 
 		for (NSURL *URL in enumerator)
-			if ([[URL lastPathComponent] isEqualToString:@"DCTImageCache.bundle"])
+			if ([[URL lastPathComponent] isEqualToString:DCTImageCacheBundleName])
 				bundle = [NSBundle bundleWithURL:URL];
 	});
 
