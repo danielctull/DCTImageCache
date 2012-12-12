@@ -22,6 +22,13 @@
 - (void)cancel;
 @end
 
+@interface NSURLConnection (DCTImageCache) <DCTImageCacheProcess>
+@end
+
+@interface NSOperation (DCTImageCache) <DCTImageCacheProcess>
+@end
+
+
 
 /** Used for an opaque object that handles the saving of images to disk. */
 @protocol DCTImageCacheCompletion <NSObject>
