@@ -152,6 +152,7 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 			NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 			fetchRequest.fetchLimit = 1;
 			NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+			if (items.count == 0) return;
 			_DCTImageCacheItem *item = [items lastObject];
 			processManager.image = [NSKeyedUnarchiver unarchiveObjectWithData:item.imageData];
 		};
