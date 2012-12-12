@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2406F9791678B38600428406 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2406F9781678B38600428406 /* TableViewCell.m */; };
+		2406F97C1678B39600428406 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2406F97B1678B39600428406 /* TableViewCell.xib */; };
+		2406F97E1678B3A900428406 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2406F97D1678B3A900428406 /* ViewController.xib */; };
 		24244609167509D200621FFF /* DCTImageCacheAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 24244608167509D200621FFF /* DCTImageCacheAttributes.m */; };
 		2424460B16750AF000621FFF /* DCTImageCacheAttributes.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24244607167509D200621FFF /* DCTImageCacheAttributes.h */; };
 		242AFA47166BB78F00AC2B9F /* _DCTImageCacheFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */; };
@@ -26,7 +29,6 @@
 		24B3EEC515A2EB1F00D5E63C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEC415A2EB1F00D5E63C /* main.m */; };
 		24B3EEC915A2EB1F00D5E63C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEC815A2EB1F00D5E63C /* AppDelegate.m */; };
 		24B3EECC15A2EB1F00D5E63C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EECB15A2EB1F00D5E63C /* ViewController.m */; };
-		24B3EECF15A2EB1F00D5E63C /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24B3EECD15A2EB1F00D5E63C /* ViewController.xib */; };
 		24DBE2721661283000687358 /* _DCTImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DBE2711661283000687358 /* _DCTImageCacheOperation.m */; };
 		24F2DB27165FEDDC008F58D5 /* _DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */; };
 		24F2DB5C166029B9008F58D5 /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437B67715B97BA600750117 /* libDCTImageCache.a */; };
@@ -69,6 +71,10 @@
 
 /* Begin PBXFileReference section */
 		2406F8F716788FCF00428406 /* _DCTImageCacheAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheAttributes.h; sourceTree = "<group>"; };
+		2406F9771678B38600428406 /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
+		2406F9781678B38600428406 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
+		2406F97B1678B39600428406 /* TableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
+		2406F97D1678B3A900428406 /* ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
 		24244607167509D200621FFF /* DCTImageCacheAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheAttributes.h; sourceTree = "<group>"; };
 		24244608167509D200621FFF /* DCTImageCacheAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheAttributes.m; sourceTree = "<group>"; };
 		242AFA45166BB78F00AC2B9F /* _DCTImageCacheFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheFetcher.h; sourceTree = "<group>"; };
@@ -94,7 +100,6 @@
 		24B3EEC815A2EB1F00D5E63C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		24B3EECA15A2EB1F00D5E63C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		24B3EECB15A2EB1F00D5E63C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		24B3EECE15A2EB1F00D5E63C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		24B3EED515A30EEB00D5E63C /* _DCTImageCacheDiskCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheDiskCache.h; sourceTree = "<group>"; };
 		24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheDiskCache.m; sourceTree = "<group>"; };
 		24B3EEDD15A311D400D5E63C /* _DCTImageCacheMemoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheMemoryCache.h; sourceTree = "<group>"; };
@@ -170,7 +175,10 @@
 				24B3EEC815A2EB1F00D5E63C /* AppDelegate.m */,
 				24B3EECA15A2EB1F00D5E63C /* ViewController.h */,
 				24B3EECB15A2EB1F00D5E63C /* ViewController.m */,
-				24B3EECD15A2EB1F00D5E63C /* ViewController.xib */,
+				2406F97D1678B3A900428406 /* ViewController.xib */,
+				2406F9771678B38600428406 /* TableViewCell.h */,
+				2406F9781678B38600428406 /* TableViewCell.m */,
+				2406F97B1678B39600428406 /* TableViewCell.xib */,
 				24B3EEBF15A2EB1F00D5E63C /* Supporting Files */,
 			);
 			path = DCTImageCacheDemo;
@@ -399,8 +407,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				24B3EEC315A2EB1F00D5E63C /* InfoPlist.strings in Resources */,
-				24B3EECF15A2EB1F00D5E63C /* ViewController.xib in Resources */,
 				24F2DB5F166029CE008F58D5 /* DCTImageCache.bundle in Resources */,
+				2406F97C1678B39600428406 /* TableViewCell.xib in Resources */,
+				2406F97E1678B3A900428406 /* ViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -464,6 +473,7 @@
 				24B3EEC515A2EB1F00D5E63C /* main.m in Sources */,
 				24B3EEC915A2EB1F00D5E63C /* AppDelegate.m in Sources */,
 				24B3EECC15A2EB1F00D5E63C /* ViewController.m in Sources */,
+				2406F9791678B38600428406 /* TableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,14 +510,6 @@
 				24B3EEC215A2EB1F00D5E63C /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		24B3EECD15A2EB1F00D5E63C /* ViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				24B3EECE15A2EB1F00D5E63C /* en */,
-			);
-			name = ViewController.xib;
 			sourceTree = "<group>";
 		};
 		24F7CB5C158A1B9D00B2E33E /* InfoPlist.strings */ = {
