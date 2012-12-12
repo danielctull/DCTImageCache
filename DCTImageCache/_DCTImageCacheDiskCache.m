@@ -129,7 +129,7 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	operation.block = ^{
 		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
 		[attributes _setupCacheItemProperties:item];
-		item.imageData = UIImagePNGRepresentation(image);
+		item.imageData = [NSKeyedArchiver archivedDataWithRootObject:image];
 		item.date = [NSDate new];
 		[weakSelf _setNeedsSave];
 	};
@@ -153,7 +153,7 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 			fetchRequest.fetchLimit = 1;
 			NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 			_DCTImageCacheItem *item = [items lastObject];
-			processManager.image = [UIImage imageWithData:item.imageData];
+			processManager.image = [NSKeyedUnarchiver unarchiveObjectWithData:item.imageData];
 		};
 		operation.queuePriority = _DCTImageCacheDiskCachePriorityFetch;
 		[_queue addOperation:operation];
