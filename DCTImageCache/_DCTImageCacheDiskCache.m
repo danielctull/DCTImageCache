@@ -103,7 +103,7 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		operation.uniqueIdentifier = attributes.identifier;
 		operation.queuePriority = _DCTImageCacheDiskCachePriorityHasImage;
 		operation.block = ^{
-			NSFetchRequest *fetchRequest = [self _fetchRequestForAttributes:attributes];
+			NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 			NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
 			processManager.hasImage = (count > 0);
 		};
@@ -128,8 +128,7 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	operation.uniqueIdentifier = attributes.identifier;
 	operation.block = ^{
 		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
-		item.key = attributes.key;
-		item.sizeString = NSStringFromCGSize(attributes.size);
+		[attributes _setupCacheItemProperties:item];
 		item.imageData = UIImagePNGRepresentation(image);
 		item.date = [NSDate new];
 		[weakSelf _setNeedsSave];
@@ -150,7 +149,8 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		processManager.process = operation;
 		operation.uniqueIdentifier = attributes.identifier;
 		operation.block = ^{
-			NSFetchRequest *fetchRequest = [self _fetchRequestForAttributes:attributes];
+			NSFetchRequest *fetchRequest = [attributes _fetchRequest];
+			fetchRequest.fetchLimit = 1;
 			NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 			_DCTImageCacheItem *item = [items lastObject];
 			processManager.image = [UIImage imageWithData:item.imageData];
@@ -175,19 +175,11 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes {
 	[_queue addOperationWithBlock:^{
-		NSFetchRequest *fetchRequest = [self _fetchRequestForAttributes:attributes];
+		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
 		[self _setNeedsSave];
 	}];
-}
-
-- (NSFetchRequest *)_fetchRequestForAttributes:(DCTImageCacheAttributes *)attribtues {
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-	NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, attribtues.key];
-	NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(attribtues.size)];
-	fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[keyPredicate, sizePredicate]];
-	return fetchRequest;
 }
 
 - (void)_setNeedsSave {

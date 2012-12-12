@@ -7,6 +7,7 @@
 //
 
 #import "DCTImageCache.h"
+#import "_DCTImageCacheAttributes.h"
 
 typedef void (^_DCTImageCacheHasImageHandler)(BOOL, NSError *);
 

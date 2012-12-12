@@ -68,6 +68,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2406F8F716788FCF00428406 /* _DCTImageCacheAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheAttributes.h; sourceTree = "<group>"; };
 		24244607167509D200621FFF /* DCTImageCacheAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheAttributes.h; sourceTree = "<group>"; };
 		24244608167509D200621FFF /* DCTImageCacheAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheAttributes.m; sourceTree = "<group>"; };
 		242AFA45166BB78F00AC2B9F /* _DCTImageCacheFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheFetcher.h; sourceTree = "<group>"; };
@@ -229,6 +230,7 @@
 				24244607167509D200621FFF /* DCTImageCacheAttributes.h */,
 				24244608167509D200621FFF /* DCTImageCacheAttributes.m */,
 				2433AA9A1674D57700D76DCF /* _DCTImageCache.h */,
+				2406F8F716788FCF00428406 /* _DCTImageCacheAttributes.h */,
 				24B3EED515A30EEB00D5E63C /* _DCTImageCacheDiskCache.h */,
 				24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */,
 				24F2DB25165FEDDC008F58D5 /* _DCTImageCacheItem.h */,

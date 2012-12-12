@@ -6,15 +6,54 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import "DCTImageCacheAttributes.h"
+#import "_DCTImageCacheAttributes.h"
+
+CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 
 @implementation DCTImageCacheAttributes {
 	NSString *_identifier;
 }
 
+- (id)init {
+	self = [super init];
+	if (!self) return nil;
+	_size = DCTImageCacheAttributesNullSize;
+	return self;
+}
+
 - (NSString *)identifier {
 	if (!_identifier) _identifier = [NSString stringWithFormat:@"key:%@.size:%@", self.key, NSStringFromCGSize(self.size)];
 	return _identifier;
+}
+
+- (NSFetchRequest *)_fetchRequest {
+
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
+
+	NSMutableArray *predicates = [[NSMutableArray alloc] initWithCapacity:3];
+
+	if (self.key) {
+		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, self.key];
+		[predicates addObject:keyPredicate];
+	}
+
+	if (!CGSizeEqualToSize(self.size, DCTImageCacheAttributesNullSize)) {
+		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(self.size)];
+		[predicates addObject:sizePredicate];
+	}
+
+	if (self.createdBefore) {
+		NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"%K < %@", _DCTImageCacheItemAttributes.date, self.createdBefore];
+		[predicates addObject:datePredicate];
+	}
+
+	fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
+	return fetchRequest;
+}
+
+- (void)_setupCacheItemProperties:(_DCTImageCacheItem *)cacheItem {
+	cacheItem.key = self.key;
+	cacheItem.sizeString = NSStringFromCGSize(self.size);
 }
 
 @end
