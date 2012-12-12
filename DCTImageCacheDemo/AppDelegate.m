@@ -15,8 +15,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	
 	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
-	imageCache.imageFetcher = ^(NSString *key, CGSize size) {
-		[self fetchImageForKey:key size:size];
+	imageCache.imageFetcher = ^(DCTImageCacheAttributes *attributes, id<DCTImageCacheCompletion> completion) {
+		return [self fetchImageForAttributes:attributes completion:completion];
 	};	
 	
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -26,22 +26,30 @@
     return YES;
 }
 
-- (void)fetchImageForKey:(NSString *)key size:(CGSize)size {
-	
-	if (CGSizeEqualToSize(size, CGSizeZero)) {
-		NSURL *URL = [NSURL URLWithString:key];
+- (id<DCTImageCacheProcess>)fetchImageForAttributes:(DCTImageCacheAttributes *)attributes completion:(id<DCTImageCacheCompletion>)completion {
+
+	NSLog(@"%@:%@ %@", self, NSStringFromSelector(_cmd), attributes);
+
+	if (CGSizeEqualToSize(attributes.size, CGSizeZero)) {
+		NSURL *URL = [NSURL URLWithString:attributes.key];
 		NSURLRequest *request = [[NSURLRequest alloc] initWithURL:URL];
 		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
 			UIImage *image = [UIImage imageWithData:data];
-			[[DCTImageCache defaultImageCache] setImage:image forKey:key size:CGSizeZero];
+			[completion setImage:image];
+			[completion setError:error];
 			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 		}];
+		return nil;
 	}
-	
-	[[DCTImageCache defaultImageCache] fetchImageForKey:key size:CGSizeZero handler:^(UIImage *image) {
-		UIImage *scaledImage = [self imageFromImage:image toFitSize:size];
-		[[DCTImageCache defaultImageCache] setImage:scaledImage forKey:key size:size];
+
+	DCTImageCacheAttributes *zeroAttributes = [DCTImageCacheAttributes new];
+	zeroAttributes.key = attributes.key;
+	zeroAttributes.size = CGSizeZero;
+	return [[DCTImageCache defaultImageCache] fetchImageWithAttributes:zeroAttributes handler:^(UIImage *image, NSError *error) {
+		UIImage *scaledImage = [self imageFromImage:image toFitSize:attributes.size];
+		[completion setImage:scaledImage];
+		[completion setError:error];
 	}];
 }
 

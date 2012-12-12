@@ -20,15 +20,14 @@
 	
 	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
 
-	NSString *URLString = @"http://apod.nasa.gov/apod/image/1207/saturntitan2_cassini_960.jpg";
-
 	CGFloat width = self.imageView.contentScaleFactor * self.imageView.bounds.size.width;
 	CGFloat height = self.imageView.contentScaleFactor * self.imageView.bounds.size.height;
+
+	DCTImageCacheAttributes *attributes = [DCTImageCacheAttributes new];
+	attributes.key = @"http://apod.nasa.gov/apod/image/1207/saturntitan2_cassini_960.jpg";
+	attributes.size = CGSizeMake(width, height);
 	
-	[imageCache fetchImageForKey:URLString
-							size:CGSizeMake(width, height)
-						 handler:^(UIImage *image) {
-							 
+	[imageCache fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			self.imageView.image = image;
 		});
