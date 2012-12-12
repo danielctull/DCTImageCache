@@ -22,8 +22,12 @@ CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 }
 
 - (NSString *)identifier {
-	if (!_identifier) _identifier = [NSString stringWithFormat:@"key:%@.size:%@", self.key, NSStringFromCGSize(self.size)];
+	if (!_identifier) _identifier = [NSString stringWithFormat:@"key:%@.size:%@.createdBefore:%@", self.key, NSStringFromCGSize(self.size), @([self.createdBefore timeIntervalSinceReferenceDate])];
 	return _identifier;
+}
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"<%@: %p; key = %@; size = %@; createdBefore = %@>", NSStringFromClass([self class]), self, self.key, NSStringFromCGSize(self.size), self.createdBefore];
 }
 
 - (NSFetchRequest *)_fetchRequest {
