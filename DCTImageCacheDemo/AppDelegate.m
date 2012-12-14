@@ -35,8 +35,7 @@
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 	[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
 		UIImage *image = [UIImage imageWithData:data];
-		[completion setImage:image];
-		[completion setError:error];
+		[completion setImage:image error:error];
 		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	}];
 	return nil;

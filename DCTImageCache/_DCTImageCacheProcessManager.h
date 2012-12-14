@@ -15,9 +15,10 @@
 + (instancetype)processManagerForProcess:(id<DCTImageCacheProcess>)process;
 @property (nonatomic, weak) id<DCTImageCacheProcess> process;
 
-@property (nonatomic, assign) BOOL hasImage;
-@property (nonatomic, strong) UIImage *image;
-@property (nonatomic, strong) NSError *error;
+@property (nonatomic, readonly, assign) BOOL hasImage;
+@property (nonatomic, readonly, strong) UIImage *image;
+@property (nonatomic, readonly, strong) NSError *error;
+- (void)setHasImage:(BOOL)hasImage error:(NSError *)error;
 
 - (void)addCancelProxy:(_DCTImageCacheCancelProxy *)proxy;
 - (void)removeCancelProxy:(_DCTImageCacheCancelProxy *)proxy;

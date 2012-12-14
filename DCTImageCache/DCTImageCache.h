@@ -35,12 +35,7 @@
 /** Set the image.
  @param image The image to save.
  */
-- (void)setImage:(UIImage *)image;
-
-/** Set the error.
- @param image The error to give to the fetch handler.
- */
-- (void)setError:(NSError *)error;
+- (void)setImage:(UIImage *)image error:(NSError *)error;
 @end
 
 

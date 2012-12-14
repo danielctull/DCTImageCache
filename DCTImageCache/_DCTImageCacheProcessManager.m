@@ -15,6 +15,7 @@ void* _DCTImageCacheProcessManagerContext = &_DCTImageCacheProcessManagerContext
 	NSMutableArray *_proxies;
 	NSMutableArray *_handlers;
 	__weak id<DCTImageCacheProcess> _process;
+	BOOL _finished;
 }
 
 + (instancetype)processManagerForProcess:(id<DCTImageCacheProcess>)process {
@@ -43,6 +44,10 @@ void* _DCTImageCacheProcessManagerContext = &_DCTImageCacheProcessManagerContext
 }
 
 - (void)addCancelProxy:(_DCTImageCacheCancelProxy *)proxy {
+	if (_finished) {
+		[self callProxy:proxy];
+		return;
+	}
 	[_proxies addObject:proxy];
 	[proxy addProcessManager:self];
 }
@@ -53,16 +58,30 @@ void* _DCTImageCacheProcessManagerContext = &_DCTImageCacheProcessManagerContext
 	if (_proxies.count == 0) [_process cancel];
 }
 
-- (void)setImage:(UIImage *)image {
-	_image = image;
-	if (_image) self.hasImage = YES;
+- (void)setHasImage:(BOOL)hasImage error:(NSError *)error {
+	_error = error;
+	_hasImage = hasImage;
+	_finished = YES;
+	[self callProxies];
 }
 
-- (void)dealloc {
+- (void)setImage:(UIImage *)image error:(NSError *)error {
+	_image = image;
+	_error = error;
+	_hasImage = (_image != nil);
+	_finished = YES;
+	[self callProxies];
+}
+
+- (void)callProxies {
 	[_proxies enumerateObjectsUsingBlock:^(_DCTImageCacheCancelProxy *proxy, NSUInteger i, BOOL *stop) {
-		if (proxy.imageHandler != NULL) proxy.imageHandler(self.image, self.error);
-		if (proxy.hasImageHandler != NULL) proxy.hasImageHandler(self.hasImage, self.error);
+		[self callProxy:proxy];
 	}];
+}
+
+- (void)callProxy:(_DCTImageCacheCancelProxy *)proxy {
+	if (proxy.imageHandler != NULL) proxy.imageHandler(self.image, self.error);
+	if (proxy.hasImageHandler != NULL) proxy.hasImageHandler(self.hasImage, self.error);
 }
 
 @end

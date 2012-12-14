@@ -127,13 +127,13 @@ NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 		if (image) {
 			[_memoryCache setImage:image forAttributes:attributes];
-			[processManager setImage:image];
+			NSLog(@"%@:%@", self, NSStringFromSelector(_cmd));
+			[processManager setImage:image error:error];
 			return;
 		}
 
 		processManager.process = [_fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
-			[processManager setImage:image];
-			[processManager setError:error];
+			[processManager setImage:image error:error];
 			if (!image) return;
 			[_memoryCache setImage:image forAttributes:attributes];
 			[_diskCache setImage:image forAttributes:attributes];
