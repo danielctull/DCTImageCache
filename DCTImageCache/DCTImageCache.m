@@ -127,7 +127,6 @@ NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 		if (image) {
 			[_memoryCache setImage:image forAttributes:attributes];
-			NSLog(@"%@:%@", self, NSStringFromSelector(_cmd));
 			[processManager setImage:image error:error];
 			return;
 		}
