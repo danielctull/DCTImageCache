@@ -35,11 +35,11 @@
 /** Set the image.
  @param image The image to save.
  */
-- (void)setImage:(UIImage *)image error:(NSError *)error;
+- (void)finishWithImage:(UIImage *)image error:(NSError *)error;
 @end
 
 
-
+typedef void (^DCTImageCacheHandler)(NSError *);
 typedef void (^DCTImageCacheImageHandler)(UIImage *, NSError *);
 
 typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(DCTImageCacheAttributes *attributes, id<DCTImageCacheCompletion> completion);
@@ -92,7 +92,7 @@ typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(DCTImageCacheAttributes
 
 /** Checks whether an image is found on disk with the given attributes, 
  if not the imageFetcher is executed to fetch the image. */
-- (void)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes;
+- (id<DCTImageCacheProcess>)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheHandler)handler;
 
 /** Retrieves an image with the given attributes, looking in the memory cache, 
  disk cache and finally calling the imageFetcher. 

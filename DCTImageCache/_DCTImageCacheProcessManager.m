@@ -58,18 +58,27 @@ void* _DCTImageCacheProcessManagerContext = &_DCTImageCacheProcessManagerContext
 	if (_proxies.count == 0) [_process cancel];
 }
 
-- (void)setHasImage:(BOOL)hasImage error:(NSError *)error {
+- (void)finishWithHasImage:(BOOL)hasImage error:(NSError *)error {
+	if (_finished) return;
+	_finished = YES;
 	_error = error;
 	_hasImage = hasImage;
-	_finished = YES;
 	[self callProxies];
 }
 
-- (void)setImage:(UIImage *)image error:(NSError *)error {
-	_image = image;
-	_error = error;
-	_hasImage = (_image != nil);
+- (void)finishWithImage:(UIImage *)image error:(NSError *)error {
+	if (_finished) return;
 	_finished = YES;
+	_error = error;
+	_image = image;
+	_hasImage = (_image != nil);
+	[self callProxies];
+}
+
+- (void)finishWithError:(NSError *)error {
+	if (_finished) return;
+	_finished = YES;
+	_error = error;
 	[self callProxies];
 }
 
@@ -80,6 +89,7 @@ void* _DCTImageCacheProcessManagerContext = &_DCTImageCacheProcessManagerContext
 }
 
 - (void)callProxy:(_DCTImageCacheCancelProxy *)proxy {
+	if (proxy.handler != NULL) proxy.handler(self.error);
 	if (proxy.imageHandler != NULL) proxy.imageHandler(self.image, self.error);
 	if (proxy.hasImageHandler != NULL) proxy.hasImageHandler(self.hasImage, self.error);
 }
