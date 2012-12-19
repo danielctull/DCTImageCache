@@ -12,11 +12,9 @@
 #import "_DCTImageCacheOperation.h"
 
 typedef enum : NSInteger {
-	_DCTImageCacheDiskCachePrioritySave = NSOperationQueuePriorityVeryLow,
-	_DCTImageCacheDiskCachePrioritySet = NSOperationQueuePriorityLow,
+	_DCTImageCacheDiskCachePrioritySet = NSOperationQueuePriorityVeryLow,
 	_DCTImageCacheDiskCachePriorityHasImage = NSOperationQueuePriorityLow,
 	_DCTImageCacheDiskCachePriorityFetch = NSOperationQueuePriorityNormal,
-	_DCTImageCacheDiskCachePrioritySaveMemoryWarning = NSOperationQueuePriorityHigh,
 	_DCTImageCacheDiskCachePrioritySetMemoryWarning = NSOperationQueuePriorityVeryHigh
 } _DCTImageCacheDiskCachePriority;
 
@@ -53,9 +51,6 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 
 		if (operation.type == _DCTImageCacheOperationTypeSet)
 			operation.queuePriority = _DCTImageCacheDiskCachePrioritySetMemoryWarning;
-
-		else if (operation.type == _DCTImageCacheOperationTypeSave)
-			operation.queuePriority = _DCTImageCacheDiskCachePrioritySaveMemoryWarning;
 	}];
 }
 
@@ -122,8 +117,6 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet attributes:attributes onQueue:_queue];
 	[operation cancel];
 
-	__weak _DCTImageCacheDiskCache *weakSelf = self;
-
 	operation = [_DCTImageCacheOperation new];
 	operation.uniqueIdentifier = attributes.identifier;
 	operation.block = ^{
@@ -131,7 +124,8 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		[attributes _setupCacheItemProperties:item];
 		item.imageData = [NSKeyedArchiver archivedDataWithRootObject:image];
 		item.date = [NSDate new];
-		[weakSelf _setNeedsSave];
+		[_managedObjectContext save:NULL];
+		[_managedObjectContext refreshObject:item mergeChanges:NO];
 	};
 
 	operation.queuePriority = _DCTImageCacheDiskCachePrioritySet;
@@ -164,6 +158,9 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 			_DCTImageCacheItem *item = [items lastObject];
 			UIImage *image = [NSKeyedUnarchiver unarchiveObjectWithData:item.imageData];
 			[processManager finishWithImage:image error:nil];
+			[items enumerateObjectsUsingBlock:^(_DCTImageCacheItem *item, NSUInteger idx, BOOL *stop) {
+				[_managedObjectContext refreshObject:item mergeChanges:NO];
+			}];
 		};
 		operation.queuePriority = _DCTImageCacheDiskCachePriorityFetch;
 		[_queue addOperation:operation];
@@ -188,20 +185,8 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
-		[self _setNeedsSave];
-	}];
-}
-
-- (void)_setNeedsSave {
-	if (_saveOperation) return;
-	
-	_DCTImageCacheOperation *saveOperation = [_DCTImageCacheOperation new];
-	saveOperation.block = ^{
 		[_managedObjectContext save:NULL];
-	};
-	saveOperation.queuePriority = _DCTImageCacheDiskCachePrioritySave;
-	[_queue addOperation:saveOperation];
-	_saveOperation = saveOperation;
+	}];
 }
 
 @end

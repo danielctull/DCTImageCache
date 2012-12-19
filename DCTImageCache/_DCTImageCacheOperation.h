@@ -14,7 +14,6 @@ typedef enum : NSInteger {
 	_DCTImageCacheOperationTypeNone,
 	_DCTImageCacheOperationTypeFetch,
 	_DCTImageCacheOperationTypeSet,
-	_DCTImageCacheOperationTypeSave,
 	_DCTImageCacheOperationTypeHasImage,
 	_DCTImageCacheOperationTypeHandler
 } _DCTImageCacheOperationType;
