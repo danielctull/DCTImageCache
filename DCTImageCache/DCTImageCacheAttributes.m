@@ -8,26 +8,32 @@
 
 #import "_DCTImageCacheAttributes.h"
 
+NSString *const DCTImageCacheAttributesKey = @"DCTImageCacheAttributesKey";
+NSString *const DCTImageCacheAttributesSize = @"DCTImageCacheAttributesSize";
+NSString *const DCTImageCacheAttributesCreatedBefore = @"DCTImageCacheAttributesCreatedBefore";
+
 CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 
-@implementation DCTImageCacheAttributes {
-	NSString *_identifier;
-}
+@implementation DCTImageCacheAttributes
 
-- (id)init {
-	self = [super init];
+- (id)initWithDictionary:(NSDictionary *)dictionary {
+	self = [self init];
 	if (!self) return nil;
-	_size = DCTImageCacheAttributesNullSize;
+	_dictionary = [dictionary copy];
 	return self;
 }
 
 - (NSString *)identifier {
-	if (!_identifier) _identifier = [NSString stringWithFormat:@"key:%@.size:%@.createdBefore:%@", self.key, NSStringFromCGSize(self.size), @([self.createdBefore timeIntervalSinceReferenceDate])];
-	return _identifier;
+	return [self.dictionary description];
 }
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"<%@: %p; key = %@; size = %@; createdBefore = %@>", NSStringFromClass([self class]), self, self.key, NSStringFromCGSize(self.size), self.createdBefore];
+	return [NSString stringWithFormat:@"<%@: %p; key = %@; size = %@; createdBefore = %@>",
+			NSStringFromClass([self class]),
+			self,
+			[self _key],
+			[self _sizeString],
+			[self _createdBefore]];
 }
 
 - (NSFetchRequest *)_fetchRequest {
@@ -36,18 +42,21 @@ CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 
 	NSMutableArray *predicates = [[NSMutableArray alloc] initWithCapacity:3];
 
-	if (self.key) {
-		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, self.key];
+	NSString *key = [self _key];
+	if (key.length > 0) {
+		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
 		[predicates addObject:keyPredicate];
 	}
 
-	if (!CGSizeEqualToSize(self.size, DCTImageCacheAttributesNullSize)) {
-		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, NSStringFromCGSize(self.size)];
+	NSString *sizeString = [self _sizeString];
+	if (sizeString.length > 0) {
+		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, sizeString];
 		[predicates addObject:sizePredicate];
 	}
 
-	if (self.createdBefore) {
-		NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"%K < %@", _DCTImageCacheItemAttributes.date, self.createdBefore];
+	NSDate *createdBefore = [self _createdBefore];
+	if (createdBefore) {
+		NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"%K < %@", _DCTImageCacheItemAttributes.date, createdBefore];
 		[predicates addObject:datePredicate];
 	}
 
@@ -56,8 +65,22 @@ CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 }
 
 - (void)_setupCacheItemProperties:(_DCTImageCacheItem *)cacheItem {
-	cacheItem.key = self.key;
-	cacheItem.sizeString = NSStringFromCGSize(self.size);
+	cacheItem.key = [self _key];
+	cacheItem.sizeString = [self _sizeString];
+}
+
+- (NSString *)_sizeString {
+	NSValue *value = [self.dictionary objectForKey:DCTImageCacheAttributesSize];
+	if (!value) return nil;
+	return NSStringFromCGSize([value CGSizeValue]);
+}
+
+- (NSString *)_key {
+	return [self.dictionary objectForKey:DCTImageCacheAttributesKey];
+}
+
+- (NSDate *)_createdBefore {
+	return [self.dictionary objectForKey:DCTImageCacheAttributesCreatedBefore];
 }
 
 @end
