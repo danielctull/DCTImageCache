@@ -18,6 +18,11 @@ extern NSString *const DCTImageCacheAttributesCreatedBefore;
 
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 @property (nonatomic, readonly, copy) NSDictionary *dictionary;
+
+@property (nonatomic, readonly) NSString *key;
+@property (nonatomic, readonly) NSDate *createdBefore;
+@property (nonatomic, readonly) CGSize size;
+
 @property (nonatomic, readonly) NSString *identifier;
 
 @end

@@ -31,9 +31,9 @@ CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 	return [NSString stringWithFormat:@"<%@: %p; key = %@; size = %@; createdBefore = %@>",
 			NSStringFromClass([self class]),
 			self,
-			[self _key],
+			self.key,
 			[self _sizeString],
-			[self _createdBefore]];
+			self.createdBefore];
 }
 
 - (NSFetchRequest *)_fetchRequest {
@@ -42,7 +42,7 @@ CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 
 	NSMutableArray *predicates = [[NSMutableArray alloc] initWithCapacity:3];
 
-	NSString *key = [self _key];
+	NSString *key = self.key;
 	if (key.length > 0) {
 		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
 		[predicates addObject:keyPredicate];
@@ -54,7 +54,7 @@ CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 		[predicates addObject:sizePredicate];
 	}
 
-	NSDate *createdBefore = [self _createdBefore];
+	NSDate *createdBefore = self.createdBefore;
 	if (createdBefore) {
 		NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"%K < %@", _DCTImageCacheItemAttributes.date, createdBefore];
 		[predicates addObject:datePredicate];
@@ -65,21 +65,27 @@ CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 }
 
 - (void)_setupCacheItemProperties:(_DCTImageCacheItem *)cacheItem {
-	cacheItem.key = [self _key];
+	cacheItem.key = self.key;
 	cacheItem.sizeString = [self _sizeString];
 }
 
 - (NSString *)_sizeString {
 	NSValue *value = [self.dictionary objectForKey:DCTImageCacheAttributesSize];
-	if (!value) return nil;
+	if (!value) return @"";
 	return NSStringFromCGSize([value CGSizeValue]);
 }
 
-- (NSString *)_key {
+- (CGSize)size {
+	NSValue *value = [self.dictionary objectForKey:DCTImageCacheAttributesSize];
+	if (!value) return DCTImageCacheAttributesNullSize;
+	return [value CGSizeValue];
+}
+
+- (NSString *)key {
 	return [self.dictionary objectForKey:DCTImageCacheAttributesKey];
 }
 
-- (NSDate *)_createdBefore {
+- (NSDate *)createdBefore {
 	return [self.dictionary objectForKey:DCTImageCacheAttributesCreatedBefore];
 }
 
