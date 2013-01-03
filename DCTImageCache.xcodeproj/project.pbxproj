@@ -12,6 +12,13 @@
 		2406F97E1678B3A900428406 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2406F97D1678B3A900428406 /* ViewController.xib */; };
 		24244609167509D200621FFF /* DCTImageCacheAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 24244608167509D200621FFF /* DCTImageCacheAttributes.m */; };
 		2424460B16750AF000621FFF /* DCTImageCacheAttributes.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24244607167509D200621FFF /* DCTImageCacheAttributes.h */; };
+		242560F91695D4220064D510 /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437B67715B97BA600750117 /* libDCTImageCache.a */; };
+		242560FB1695D43A0064D510 /* DCTImageCache.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */; };
+		242561361695D6AA0064D510 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB6216602B71008F58D5 /* UIKit.framework */; };
+		242561371695D6AF0064D510 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */; };
+		242561381695D6B20064D510 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB5D166029B9008F58D5 /* CoreData.framework */; };
+		242561661695DCAA0064D510 /* DCTImageCacheProcessTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 242561651695DCAA0064D510 /* DCTImageCacheProcessTests.m */; };
+		242561691695DD180064D510 /* DCTImageCacheMockCancel.m in Sources */ = {isa = PBXBuildFile; fileRef = 242561681695DD180064D510 /* DCTImageCacheMockCancel.m */; };
 		242AFA47166BB78F00AC2B9F /* _DCTImageCacheFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */; };
 		2437B67815B97BA600750117 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
@@ -40,7 +47,6 @@
 		24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */; };
 		24F7CB55158A1B9D00B2E33E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		24F7CB5E158A1B9D00B2E33E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 24F7CB5C158A1B9D00B2E33E /* InfoPlist.strings */; };
-		24F7CB61158A1B9D00B2E33E /* DCTImageCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB60158A1B9D00B2E33E /* DCTImageCacheTests.m */; };
 		24FCFA96165FEAB3006208A7 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24FCFA95165FEAB3006208A7 /* CoreFoundation.framework */; };
 		24FCFAA6165FEB25006208A7 /* DCTImageCache.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 24FCFAA4165FEB25006208A7 /* DCTImageCache.xcdatamodeld */; };
 /* End PBXBuildFile section */
@@ -77,6 +83,10 @@
 		2406F97D1678B3A900428406 /* ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
 		24244607167509D200621FFF /* DCTImageCacheAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheAttributes.h; sourceTree = "<group>"; };
 		24244608167509D200621FFF /* DCTImageCacheAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheAttributes.m; sourceTree = "<group>"; };
+		242561641695DCAA0064D510 /* DCTImageCacheProcessTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheProcessTests.h; sourceTree = "<group>"; };
+		242561651695DCAA0064D510 /* DCTImageCacheProcessTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheProcessTests.m; sourceTree = "<group>"; };
+		242561671695DD180064D510 /* DCTImageCacheMockCancel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheMockCancel.h; sourceTree = "<group>"; };
+		242561681695DD180064D510 /* DCTImageCacheMockCancel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheMockCancel.m; sourceTree = "<group>"; };
 		242AFA45166BB78F00AC2B9F /* _DCTImageCacheFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheFetcher.h; sourceTree = "<group>"; };
 		242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheFetcher.m; sourceTree = "<group>"; };
 		2433AA9A1674D57700D76DCF /* _DCTImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCache.h; sourceTree = "<group>"; };
@@ -117,8 +127,6 @@
 		24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		24F7CB5B158A1B9D00B2E33E /* DCTImageCacheTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCacheTests-Info.plist"; sourceTree = "<group>"; };
 		24F7CB5D158A1B9D00B2E33E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		24F7CB5F158A1B9D00B2E33E /* DCTImageCacheTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheTests.h; sourceTree = "<group>"; };
-		24F7CB60158A1B9D00B2E33E /* DCTImageCacheTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheTests.m; sourceTree = "<group>"; };
 		24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCTImageCache.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		24FCFA95165FEAB3006208A7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		24FCFA99165FEAB3006208A7 /* DCTImageCacheBundle-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCacheBundle-Info.plist"; sourceTree = "<group>"; };
@@ -152,7 +160,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				242561361695D6AA0064D510 /* UIKit.framework in Frameworks */,
+				242560F91695D4220064D510 /* libDCTImageCache.a in Frameworks */,
 				24F7CB52158A1B9D00B2E33E /* SenTestingKit.framework in Frameworks */,
+				242561371695D6AF0064D510 /* CoreGraphics.framework in Frameworks */,
+				242561381695D6B20064D510 /* CoreData.framework in Frameworks */,
 				24F7CB55158A1B9D00B2E33E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,8 +278,10 @@
 		24F7CB59158A1B9D00B2E33E /* DCTImageCacheTests */ = {
 			isa = PBXGroup;
 			children = (
-				24F7CB5F158A1B9D00B2E33E /* DCTImageCacheTests.h */,
-				24F7CB60158A1B9D00B2E33E /* DCTImageCacheTests.m */,
+				242561671695DD180064D510 /* DCTImageCacheMockCancel.h */,
+				242561681695DD180064D510 /* DCTImageCacheMockCancel.m */,
+				242561641695DCAA0064D510 /* DCTImageCacheProcessTests.h */,
+				242561651695DCAA0064D510 /* DCTImageCacheProcessTests.m */,
 				24F7CB5A158A1B9D00B2E33E /* Supporting Files */,
 			);
 			path = DCTImageCacheTests;
@@ -418,6 +432,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24F7CB5E158A1B9D00B2E33E /* InfoPlist.strings in Resources */,
+				242560FB1695D43A0064D510 /* DCTImageCache.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,7 +496,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				24F7CB61158A1B9D00B2E33E /* DCTImageCacheTests.m in Sources */,
+				242561661695DCAA0064D510 /* DCTImageCacheProcessTests.m in Sources */,
+				242561691695DD180064D510 /* DCTImageCacheMockCancel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -634,7 +650,6 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
 				INFOPLIST_FILE = "DCTImageCacheTests/DCTImageCacheTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
@@ -649,7 +664,6 @@
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DCTImageCache/DCTImageCache-Prefix.pch";
 				INFOPLIST_FILE = "DCTImageCacheTests/DCTImageCacheTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
