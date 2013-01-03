@@ -158,8 +158,8 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 			_DCTImageCacheItem *item = [items lastObject];
 			UIImage *image = [NSKeyedUnarchiver unarchiveObjectWithData:item.imageData];
 			[processManager finishWithImage:image error:nil];
-			[items enumerateObjectsUsingBlock:^(_DCTImageCacheItem *item, NSUInteger idx, BOOL *stop) {
-				[_managedObjectContext refreshObject:item mergeChanges:NO];
+			[items enumerateObjectsUsingBlock:^(_DCTImageCacheItem *cacheItem, NSUInteger idx, BOOL *stop) {
+				[_managedObjectContext refreshObject:cacheItem mergeChanges:NO];
 			}];
 		};
 		operation.queuePriority = _DCTImageCacheDiskCachePriorityFetch;

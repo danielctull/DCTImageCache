@@ -92,15 +92,15 @@ NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager new];
 	[processManager addCancelProxy:cancelProxy];
 
-	processManager.process = [_diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *error) {
+	processManager.process = [_diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *diskError) {
 
 		if (hasImage) {
-			[processManager finishWithHasImage:hasImage error:error];
+			[processManager finishWithHasImage:hasImage error:diskError];
 			return;
 		}
 
-		processManager.process = [_fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
-			[processManager finishWithImage:image error:error];
+		processManager.process = [_fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *fetchError) {
+			[processManager finishWithImage:image error:fetchError];
 			if (!image) return;
 			[_diskCache setImage:image forAttributes:attributes];
 		}];
@@ -133,19 +133,19 @@ NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager new];
 	[processManager addCancelProxy:cancelProxy];
 	
-	processManager.process = [_diskCache fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+	processManager.process = [_diskCache fetchImageWithAttributes:attributes handler:^(UIImage *diskImage, NSError *diskError) {
 
-		if (image) {
-			[_memoryCache setImage:image forAttributes:attributes];
-			[processManager finishWithImage:image error:error];
+		if (diskImage) {
+			[_memoryCache setImage:diskImage forAttributes:attributes];
+			[processManager finishWithImage:diskImage error:diskError];
 			return;
 		}
 
-		processManager.process = [_fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
-			[processManager finishWithImage:image error:error];
-			if (!image) return;
-			[_memoryCache setImage:image forAttributes:attributes];
-			[_diskCache setImage:image forAttributes:attributes];
+		processManager.process = [_fetcher fetchImageWithAttributes:attributes handler:^(UIImage *fetchImage, NSError *fetchError) {
+			[processManager finishWithImage:fetchImage error:fetchError];
+			if (!fetchImage) return;
+			[_memoryCache setImage:fetchImage forAttributes:attributes];
+			[_diskCache setImage:fetchImage forAttributes:attributes];
 		}];
 	}];
 
