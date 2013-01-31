@@ -8,14 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
+extern NSString *const DCTImageCacheAttributesKey;
+extern NSString *const DCTImageCacheAttributesSize;
+extern NSString *const DCTImageCacheAttributesCreatedBefore;
+
 /**
  */
 @interface DCTImageCacheAttributes : NSObject
 
-@property (nonatomic, copy) NSString *key;
-@property (nonatomic, assign) CGSize size;
-@property (nonatomic, copy) NSDate *createdBefore;
+- (id)initWithDictionary:(NSDictionary *)dictionary;
+@property (nonatomic, readonly, copy) NSDictionary *dictionary;
 
-- (NSString *)identifier;
+@property (nonatomic, readonly) NSString *key;
+@property (nonatomic, readonly) NSDate *createdBefore;
+@property (nonatomic, readonly) CGSize size;
+
+@property (nonatomic, readonly) NSString *identifier;
 
 @end
