@@ -7,15 +7,15 @@
 //
 
 #import "_DCTImageCacheFetcher.h"
-#import "_DCTImageCacheOperation.h"
 #import "_DCTImageCacheCancelProxy.h"
-#import "_DCTImageCacheWeakMutableDictionary.h"
-#import "_DCTImageCacheProcessManager.h"
+#import "_DCTImageCacheCompletion.h"
 
-@implementation _DCTImageCacheFetcher {
-	NSOperationQueue *_queue;
-	_DCTImageCacheWeakMutableDictionary *_processManagers;
-}
+@interface _DCTImageCacheFetcher ()
+@property (nonatomic, strong) NSOperationQueue *queue;
+@property (nonatomic, strong) NSMutableDictionary *handlers;
+@end
+
+@implementation _DCTImageCacheFetcher
 
 - (id)init {
 	self = [super init];
@@ -23,33 +23,46 @@
 	_queue = [[NSOperationQueue alloc] init];
 	_queue.name = NSStringFromClass([self class]);
 	_queue.maxConcurrentOperationCount = 1;
-	[_queue addOperationWithBlock:^{
-		_processManagers = [_DCTImageCacheWeakMutableDictionary new];
-	}];
+	_handlers = [NSMutableDictionary new];
 	return self;
 }
 
 - (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
+	NSParameterAssert(attributes);
+	NSParameterAssert(handler);
+
 	if (self.imageFetcher == NULL) return nil;
 
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
-	cancelProxy.imageHandler = handler;
 
-	[_queue addOperationWithBlock:^{
+	[self.queue addOperationWithBlock:^{
 
-		_DCTImageCacheProcessManager *manager = [_processManagers objectForKey:attributes.identifier];
+		NSMutableArray *handlers = [self handlersForAttributes:attributes];
+		[handlers addObject:handler];
+		if (handlers.count > 1) return;
 
-		if (!manager) {
-			manager = [_DCTImageCacheProcessManager new];
-			manager.process = self.imageFetcher(attributes, manager);
-			[_processManagers setObject:manager forKey:attributes.identifier];
-		}
+		self.imageFetcher(attributes, [[_DCTImageCacheCompletion alloc] initWithHandler:^(UIImage *image, NSError *error) {
+			[self.queue addOperationWithBlock:^{
 
-		[manager addCancelProxy:cancelProxy];
+				NSMutableArray *handlers = [self handlersForAttributes:attributes];
+				[handlers enumerateObjectsUsingBlock:^(DCTImageCacheImageHandler handler, NSUInteger i, BOOL *stop) {
+					handler(image, error);
+				}];
+			}];
+		}]);
 	}];
-
+	
 	return cancelProxy;
+}
+
+- (NSMutableArray *)handlersForAttributes:(DCTImageCacheAttributes *)attributes {
+	NSMutableArray *handlers = [self.handlers objectForKey:attributes.identifier];
+	if (!handlers) {
+		handlers = [NSMutableArray new];
+		[self.handlers setObject:handlers forKey:attributes.identifier];
+	}
+	return handlers;
 }
 
 @end

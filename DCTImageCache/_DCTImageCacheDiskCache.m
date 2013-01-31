@@ -9,23 +9,17 @@
 #import <CoreData/CoreData.h>
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheItem.h"
-#import "_DCTImageCacheOperation.h"
-
-typedef enum : NSInteger {
-	_DCTImageCacheDiskCachePrioritySet = NSOperationQueuePriorityVeryLow,
-	_DCTImageCacheDiskCachePriorityHasImage = NSOperationQueuePriorityLow,
-	_DCTImageCacheDiskCachePriorityFetch = NSOperationQueuePriorityNormal,
-	_DCTImageCacheDiskCachePrioritySetMemoryWarning = NSOperationQueuePriorityVeryHigh
-} _DCTImageCacheDiskCachePriority;
 
 NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
 NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 
-@implementation _DCTImageCacheDiskCache {
-	NSManagedObjectContext *_managedObjectContext;
-	NSOperationQueue *_queue;
-	__weak _DCTImageCacheOperation *_saveOperation;
-}
+@interface _DCTImageCacheDiskCache ()
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) NSOperationQueue *queue;
+@property (nonatomic, weak) NSOperation *saveOperation;
+@end
+
+@implementation _DCTImageCacheDiskCache
 
 - (id)initWithStoreURL:(NSURL *)storeURL {
 	if (!(self = [super init])) return nil;
@@ -34,29 +28,13 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	_queue.name = NSStringFromClass([self class]);
 	_queue.maxConcurrentOperationCount = 1;
 	[_queue addOperationWithBlock:^{
-		[self _createStack];
+		[self createStack];
 	}];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_didReceiveMemoryWarningNotification:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 	return self;
 }
 
-- (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-}
-
-- (void)_didReceiveMemoryWarningNotification:(NSNotification *)notification {
-	[_queue.operations enumerateObjectsUsingBlock:^(_DCTImageCacheOperation *operation, NSUInteger i, BOOL *stop) {
-
-		if (![operation isKindOfClass:[_DCTImageCacheOperation class]]) return;
-
-		if (operation.type == _DCTImageCacheOperationTypeSet)
-			operation.queuePriority = _DCTImageCacheDiskCachePrioritySetMemoryWarning;
-	}];
-}
-
-- (void)_createStack {
-	NSURL *modelURL = [[DCTImageCache _bundle] URLForResource:_DCTImageCacheDiskCacheModelName
-												withExtension:_DCTImageCacheDiskCacheModelExtension];
+- (void)createStack {
+	NSURL *modelURL = [[DCTImageCache _bundle] URLForResource:_DCTImageCacheDiskCacheModelName withExtension:_DCTImageCacheDiskCacheModelExtension];
 	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 
@@ -68,125 +46,84 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL];
 	}
 
-	_managedObjectContext = [NSManagedObjectContext new];
-	_managedObjectContext.persistentStoreCoordinator = coordinator;
-}
-
-- (UIImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes {
-	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet attributes:attributes onQueue:_queue];
-	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
-	return processManager.image;
+	self.managedObjectContext = [NSManagedObjectContext new];
+	self.managedObjectContext.persistentStoreCoordinator = coordinator;
 }
 
 - (id<DCTImageCacheProcess>)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler {
 
-	if (handler == NULL) return nil;
+	NSParameterAssert(attributes);
+	NSParameterAssert(handler);
 
-	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet attributes:attributes onQueue:_queue];
-	if (operation) {
-		handler(YES, nil);
-		return nil;
-	}
-	
-	operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeHasImage attributes:attributes onQueue:_queue];
-	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
-
-	if (!processManager) {
-		operation = [_DCTImageCacheOperation new];
-		processManager = [_DCTImageCacheProcessManager new];
-		processManager.process = operation;
-		operation.uniqueIdentifier = attributes.identifier;
-		operation.queuePriority = _DCTImageCacheDiskCachePriorityHasImage;
-		operation.block = ^{
-			NSFetchRequest *fetchRequest = [attributes _fetchRequest];
-			NSUInteger count = [_managedObjectContext countForFetchRequest:fetchRequest error:NULL];
-			[processManager finishWithHasImage:(count > 0) error:nil];
-		};
-		[_queue addOperation:operation];
-	}
-
-	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
-	cancelProxy.hasImageHandler = handler;
-	[processManager addCancelProxy:cancelProxy];
-
-	return cancelProxy;
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
+		NSError *error;
+		NSUInteger count = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
+		handler(count > 0, error);
+	}];
+	[self.queue addOperation:operation];
+	return operation;
 }
 
 - (id<DCTImageCacheProcess>)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
 
-	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeSet attributes:attributes onQueue:_queue];
-	[operation cancel];
+	NSParameterAssert(image);
+	NSParameterAssert(attributes);
 
-	operation = [_DCTImageCacheOperation new];
-	operation.uniqueIdentifier = attributes.identifier;
-	operation.block = ^{
-		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:_managedObjectContext];
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:self.managedObjectContext];
 		[attributes _setupCacheItemProperties:item];
 		item.imageData = [NSKeyedArchiver archivedDataWithRootObject:image];
 		item.date = [NSDate new];
-		[_managedObjectContext save:NULL];
-		[_managedObjectContext refreshObject:item mergeChanges:NO];
-	};
-
-	operation.queuePriority = _DCTImageCacheDiskCachePrioritySet;
-
-	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
-	[processManager finishWithImage:image error:nil];
-
-	[_queue addOperation:operation];
+		[self.managedObjectContext save:NULL];
+		[self.managedObjectContext refreshObject:item mergeChanges:NO];
+	}];
+	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
+	[self.queue addOperation:operation];
 	return operation;
 }
 
 - (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
-	_DCTImageCacheOperation *operation = [_DCTImageCacheOperation operationWithType:_DCTImageCacheOperationTypeFetch attributes:attributes onQueue:_queue];
-	_DCTImageCacheProcessManager *processManager = [_DCTImageCacheProcessManager processManagerForProcess:operation];
+	NSParameterAssert(attributes);
+	NSParameterAssert(handler);
 
-	if (!processManager) {
-		processManager = [_DCTImageCacheProcessManager new];
-		operation = [_DCTImageCacheOperation new];
-		processManager.process = operation;
-		operation.uniqueIdentifier = attributes.identifier;
-		operation.block = ^{
-			NSFetchRequest *fetchRequest = [attributes _fetchRequest];
-			fetchRequest.fetchLimit = 1;
-			NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-			if (items.count == 0) {
-				[processManager finishWithError:nil];
-				return;
-			}
-			_DCTImageCacheItem *item = [items lastObject];
-			UIImage *image = [NSKeyedUnarchiver unarchiveObjectWithData:item.imageData];
-			[processManager finishWithImage:image error:nil];
-			[items enumerateObjectsUsingBlock:^(_DCTImageCacheItem *item, NSUInteger idx, BOOL *stop) {
-				[_managedObjectContext refreshObject:item mergeChanges:NO];
-			}];
-		};
-		operation.queuePriority = _DCTImageCacheDiskCachePriorityFetch;
-		[_queue addOperation:operation];
-	}
-
-	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
-	cancelProxy.imageHandler = handler;
-	[processManager addCancelProxy:cancelProxy];
-
-	return cancelProxy;
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
+		fetchRequest.fetchLimit = 1;
+		NSError *error;
+		UIImage *image;
+		NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+		_DCTImageCacheItem *item = [items lastObject];
+		if (item) {
+			image = [NSKeyedUnarchiver unarchiveObjectWithData:item.imageData];
+			[self.managedObjectContext refreshObject:item mergeChanges:NO];
+		}
+		handler(image, error);
+	}];
+	[self.queue addOperation:operation];
+	return operation;
 }
 
 - (void)removeAllImages {
-	[_queue addOperationWithBlock:^{
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
 		[[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:NULL];
-		[self _createStack];
+		[self createStack];
 	}];
+	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
+	[self.queue addOperation:operation];
 }
 
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes {
-	[_queue addOperationWithBlock:^{
+
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
 		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
-		NSArray *items = [_managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-		for (_DCTImageCacheItem *item in items) [_managedObjectContext deleteObject:item];
-		[_managedObjectContext save:NULL];
+		NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:NULL];
+		for (_DCTImageCacheItem *item in items) [self.managedObjectContext deleteObject:item];
+		[self.managedObjectContext save:NULL];
 	}];
+	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
+	[self.queue addOperation:operation];
 }
 
 @end

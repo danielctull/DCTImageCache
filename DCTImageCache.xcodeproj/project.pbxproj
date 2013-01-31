@@ -18,18 +18,14 @@
 		2437B68415B97BD700750117 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
 		2437B68515B97BD700750117 /* _DCTImageCacheDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */; };
 		2437B68615B97BD700750117 /* _DCTImageCacheMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* _DCTImageCacheMemoryCache.m */; };
-		2477E48A1673916200FA9A23 /* _DCTImageCacheProcessManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2477E4891673916200FA9A23 /* _DCTImageCacheProcessManager.m */; };
 		2477E48E1673917700FA9A23 /* _DCTImageCacheCancelProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2477E48D1673917700FA9A23 /* _DCTImageCacheCancelProxy.m */; };
-		2477E4C61674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 2477E4C51674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m */; };
-		2477E4CC1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 2477E4CB1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m */; };
-		2477E4CF1674B44200FA9A23 /* _DCTImageCacheWeakMutableDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 2477E4CE1674B44200FA9A23 /* _DCTImageCacheWeakMutableDictionary.m */; };
+		247843DE16BAD65300D5B1C6 /* _DCTImageCacheCompletion.m in Sources */ = {isa = PBXBuildFile; fileRef = 247843DD16BAD65300D5B1C6 /* _DCTImageCacheCompletion.m */; };
 		24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */; };
 		24B3EEC315A2EB1F00D5E63C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 24B3EEC115A2EB1F00D5E63C /* InfoPlist.strings */; };
 		24B3EEC515A2EB1F00D5E63C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEC415A2EB1F00D5E63C /* main.m */; };
 		24B3EEC915A2EB1F00D5E63C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEC815A2EB1F00D5E63C /* AppDelegate.m */; };
 		24B3EECC15A2EB1F00D5E63C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EECB15A2EB1F00D5E63C /* ViewController.m */; };
-		24DBE2721661283000687358 /* _DCTImageCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DBE2711661283000687358 /* _DCTImageCacheOperation.m */; };
 		24F2DB27165FEDDC008F58D5 /* _DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */; };
 		24F2DB5C166029B9008F58D5 /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437B67715B97BA600750117 /* libDCTImageCache.a */; };
 		24F2DB5E166029B9008F58D5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB5D166029B9008F58D5 /* CoreData.framework */; };
@@ -81,16 +77,10 @@
 		242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheFetcher.m; sourceTree = "<group>"; };
 		2433AA9A1674D57700D76DCF /* _DCTImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCache.h; sourceTree = "<group>"; };
 		2437B67715B97BA600750117 /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		2477E4881673916200FA9A23 /* _DCTImageCacheProcessManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheProcessManager.h; sourceTree = "<group>"; };
-		2477E4891673916200FA9A23 /* _DCTImageCacheProcessManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheProcessManager.m; sourceTree = "<group>"; };
 		2477E48C1673917700FA9A23 /* _DCTImageCacheCancelProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheCancelProxy.h; sourceTree = "<group>"; };
 		2477E48D1673917700FA9A23 /* _DCTImageCacheCancelProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheCancelProxy.m; sourceTree = "<group>"; };
-		2477E4C41674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheWeakMutableArray.h; sourceTree = "<group>"; };
-		2477E4C51674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheWeakMutableArray.m; sourceTree = "<group>"; };
-		2477E4CA1674AD5700FA9A23 /* _DCTImageCacheWeakObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheWeakObject.h; sourceTree = "<group>"; };
-		2477E4CB1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheWeakObject.m; sourceTree = "<group>"; };
-		2477E4CD1674B44200FA9A23 /* _DCTImageCacheWeakMutableDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheWeakMutableDictionary.h; sourceTree = "<group>"; };
-		2477E4CE1674B44200FA9A23 /* _DCTImageCacheWeakMutableDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheWeakMutableDictionary.m; sourceTree = "<group>"; };
+		247843DC16BAD65300D5B1C6 /* _DCTImageCacheCompletion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheCompletion.h; sourceTree = "<group>"; };
+		247843DD16BAD65300D5B1C6 /* _DCTImageCacheCompletion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheCompletion.m; sourceTree = "<group>"; };
 		24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTImageCacheDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		24B3EEC015A2EB1F00D5E63C /* DCTImageCacheDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCacheDemo-Info.plist"; sourceTree = "<group>"; };
@@ -104,8 +94,6 @@
 		24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheDiskCache.m; sourceTree = "<group>"; };
 		24B3EEDD15A311D400D5E63C /* _DCTImageCacheMemoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheMemoryCache.h; sourceTree = "<group>"; };
 		24B3EEDE15A311D400D5E63C /* _DCTImageCacheMemoryCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheMemoryCache.m; sourceTree = "<group>"; };
-		24DBE2701661282F00687358 /* _DCTImageCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheOperation.h; sourceTree = "<group>"; };
-		24DBE2711661283000687358 /* _DCTImageCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheOperation.m; sourceTree = "<group>"; };
 		24F2DB25165FEDDC008F58D5 /* _DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheItem.h; sourceTree = "<group>"; };
 		24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheItem.m; sourceTree = "<group>"; };
 		24F2DB5D166029B9008F58D5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -245,20 +233,12 @@
 				24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */,
 				24B3EEDD15A311D400D5E63C /* _DCTImageCacheMemoryCache.h */,
 				24B3EEDE15A311D400D5E63C /* _DCTImageCacheMemoryCache.m */,
-				24DBE2701661282F00687358 /* _DCTImageCacheOperation.h */,
-				24DBE2711661283000687358 /* _DCTImageCacheOperation.m */,
 				242AFA45166BB78F00AC2B9F /* _DCTImageCacheFetcher.h */,
 				242AFA46166BB78F00AC2B9F /* _DCTImageCacheFetcher.m */,
+				247843DC16BAD65300D5B1C6 /* _DCTImageCacheCompletion.h */,
+				247843DD16BAD65300D5B1C6 /* _DCTImageCacheCompletion.m */,
 				2477E48C1673917700FA9A23 /* _DCTImageCacheCancelProxy.h */,
 				2477E48D1673917700FA9A23 /* _DCTImageCacheCancelProxy.m */,
-				2477E4881673916200FA9A23 /* _DCTImageCacheProcessManager.h */,
-				2477E4891673916200FA9A23 /* _DCTImageCacheProcessManager.m */,
-				2477E4C41674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.h */,
-				2477E4C51674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m */,
-				2477E4CD1674B44200FA9A23 /* _DCTImageCacheWeakMutableDictionary.h */,
-				2477E4CE1674B44200FA9A23 /* _DCTImageCacheWeakMutableDictionary.m */,
-				2477E4CA1674AD5700FA9A23 /* _DCTImageCacheWeakObject.h */,
-				2477E4CB1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m */,
 			);
 			path = DCTImageCache;
 			sourceTree = "<group>";
@@ -455,14 +435,10 @@
 				2437B68515B97BD700750117 /* _DCTImageCacheDiskCache.m in Sources */,
 				2437B68615B97BD700750117 /* _DCTImageCacheMemoryCache.m in Sources */,
 				24F2DB27165FEDDC008F58D5 /* _DCTImageCacheItem.m in Sources */,
-				24DBE2721661283000687358 /* _DCTImageCacheOperation.m in Sources */,
 				242AFA47166BB78F00AC2B9F /* _DCTImageCacheFetcher.m in Sources */,
-				2477E48A1673916200FA9A23 /* _DCTImageCacheProcessManager.m in Sources */,
 				2477E48E1673917700FA9A23 /* _DCTImageCacheCancelProxy.m in Sources */,
-				2477E4C61674AC5B00FA9A23 /* _DCTImageCacheWeakMutableArray.m in Sources */,
-				2477E4CC1674AD5800FA9A23 /* _DCTImageCacheWeakObject.m in Sources */,
-				2477E4CF1674B44200FA9A23 /* _DCTImageCacheWeakMutableDictionary.m in Sources */,
 				24244609167509D200621FFF /* DCTImageCacheAttributes.m in Sources */,
+				247843DE16BAD65300D5B1C6 /* _DCTImageCacheCompletion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -608,6 +584,8 @@
 				WARNING_CFLAGS = (
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-gnu",
+					"-Wno-c++-compat",
 				);
 			};
 			name = Debug;
@@ -630,6 +608,8 @@
 				WARNING_CFLAGS = (
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-gnu",
+					"-Wno-c++-compat",
 				);
 			};
 			name = Release;

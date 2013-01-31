@@ -11,5 +11,5 @@
 
 @interface _DCTImageCacheFetcher : NSObject
 @property (nonatomic, copy) DCTImageCacheFetcher imageFetcher;
-- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
+- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler __attribute__((nonnull(1,2)));
 @end

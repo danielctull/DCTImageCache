@@ -8,9 +8,11 @@
 
 #import "_DCTImageCacheMemoryCache.h"
 
-@implementation _DCTImageCacheMemoryCache {
-	NSCache *_cache;
-}
+@interface _DCTImageCacheMemoryCache ()
+@property (nonatomic, strong) NSCache *cache;
+@end
+
+@implementation _DCTImageCacheMemoryCache
 
 - (id)init {
     self = [super init];
@@ -20,23 +22,23 @@
 }
 
 - (void)removeAllImages {
-	[_cache removeAllObjects];
+	[self.cache removeAllObjects];
 }
 
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes {
-	[_cache removeObjectForKey:attributes.identifier];
+	[self.cache removeObjectForKey:attributes.identifier];
 }
 
 - (void)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
-	[_cache setObject:image forKey:attributes.identifier];
+	[self.cache setObject:image forKey:attributes.identifier];
 }
 
 - (UIImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes {
-	return [_cache objectForKey:attributes.identifier];
+	return [self.cache objectForKey:attributes.identifier];
 }
 
 - (BOOL)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes {
-	return ([_cache objectForKey:attributes.identifier] != nil);
+	return ([self.cache objectForKey:attributes.identifier] != nil);
 }
 
 @end

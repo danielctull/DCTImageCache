@@ -7,28 +7,31 @@
 //
 
 #import "_DCTImageCacheCancelProxy.h"
-#import "_DCTImageCacheProcessManager.h"
-#import "_DCTImageCacheWeakMutableArray.h"
 
-@implementation _DCTImageCacheCancelProxy {
-	_DCTImageCacheWeakMutableArray *_processManagers;
-}
+@interface _DCTImageCacheCancelProxy ()
+@property (nonatomic, readwrite, getter = isCancelled) BOOL cancelled;
+@property (nonatomic, strong) NSMutableArray *processes;
+@end
+
+@implementation _DCTImageCacheCancelProxy
 
 - (id)init {
 	self = [super init];
 	if (!self) return nil;
-	_processManagers = [_DCTImageCacheWeakMutableArray new];
+	_processes = [NSMutableArray new];
 	return self;
 }
 
-- (void)addProcessManager:(_DCTImageCacheProcessManager *)processManager {
-	[_processManagers addObject:processManager];
+- (void)cancel {
+	self.cancelled = YES;
+	[self.processes makeObjectsPerformSelector:@selector(cancel)];
 }
 
-- (void)cancel {
-	self.imageHandler = NULL;
-	self.hasImageHandler = NULL;
-	[_processManagers makeObjectsPerformSelector:@selector(removeCancelProxy:) withObject:self];
+- (void)addProcess:(id<DCTImageCacheProcess>)process {
+	if (self.cancelled)
+		[process cancel];
+	else
+		[self.processes addObject:process];
 }
 
 @end

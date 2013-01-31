@@ -12,13 +12,12 @@
 @interface _DCTImageCacheDiskCache : NSObject
 
 - (id)initWithStoreURL:(NSURL *)storeURL;
-@property (nonatomic, copy, readonly) NSURL *storeURL;
+@property (nonatomic, readonly) NSURL *storeURL;
 
-- (UIImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes;
-- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
-- (id<DCTImageCacheProcess>)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler;
+- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler __attribute__((nonnull(1,2)));
+- (id<DCTImageCacheProcess>)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler __attribute__((nonnull(1,2)));
 
-- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes;
+- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes __attribute__((nonnull(1,2)));
 
 - (void)removeAllImages;
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes;

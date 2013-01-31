@@ -77,7 +77,7 @@ typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(DCTImageCacheAttributes
  the last path component of the URL is taken to be the name.
  @return The name of the cache.
  */
-@property (nonatomic, copy, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *name;
 
 
 /** This is a fetcher for images that should be set to download images from the Internet.

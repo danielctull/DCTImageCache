@@ -22,8 +22,11 @@ CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 }
 
 - (NSString *)identifier {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
 	if (!_identifier) _identifier = [NSString stringWithFormat:@"key:%@.size:%@.createdBefore:%@", self.key, NSStringFromCGSize(self.size), @([self.createdBefore timeIntervalSinceReferenceDate])];
 	return _identifier;
+#pragma clang diagnostic pop
 }
 
 - (NSString *)description {
