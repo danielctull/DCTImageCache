@@ -17,7 +17,7 @@ extern NSString *const DCTImageCacheAttributesCreatedBefore;
 @interface DCTImageCacheAttributes : NSObject
 
 - (id)initWithDictionary:(NSDictionary *)dictionary;
-@property (nonatomic, readonly, copy) NSDictionary *dictionary;
+@property (nonatomic, readonly) NSDictionary *dictionary;
 
 @property (nonatomic, readonly) NSString *key;
 @property (nonatomic, readonly) NSDate *createdBefore;
