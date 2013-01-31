@@ -87,9 +87,15 @@ NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 - (id<DCTImageCacheProcess>)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(void(^)(NSError *error))handler {
 
-	if (handler == NULL) handler = ^(NSError *error){};
-
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
+
+	if (handler == NULL)						// Safe gaurd against a NULL handler
+		handler = ^(NSError *error){};
+	else										// Make sure we don't call the handler if the process is cancelled
+		handler = ^(NSError *error){
+			if (!cancelProxy.cancelled) handler(error);
+		};
+
 	id<DCTImageCacheProcess> diskProcess = [self.diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *error) {
 
 		if (hasImage) {
@@ -122,6 +128,12 @@ NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	}
 
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
+
+	// Make sure we don't call the handler if the process is cancelled
+	handler = ^(UIImage *image, NSError *error){
+		if (!cancelProxy.cancelled) handler(image, error);
+	};
+
 	id<DCTImageCacheProcess> diskProcess = [self.diskCache fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 
 		if (image) {
