@@ -17,7 +17,7 @@
 - (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler __attribute__((nonnull(1,2)));
 - (id<DCTImageCacheProcess>)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler __attribute__((nonnull(1,2)));
 
-- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes __attribute__((nonnull(1,2)));
+- (void)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes __attribute__((nonnull(1,2)));
 
 - (void)removeAllImages;
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes;
