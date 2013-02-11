@@ -9,13 +9,14 @@
 #import <CoreData/CoreData.h>
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheItem.h"
-#import "_DCTImageCacheCancelProxy.h"
 
 NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
 NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 
 @interface _DCTImageCacheDiskCache ()
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) NSOperationQueue *queue;
+@property (nonatomic, weak) NSOperation *saveOperation;
 @end
 
 @implementation _DCTImageCacheDiskCache
@@ -23,7 +24,12 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 - (id)initWithStoreURL:(NSURL *)storeURL {
 	if (!(self = [super init])) return nil;
 	_storeURL = [storeURL copy];
-	[self createStack];
+	_queue = [[NSOperationQueue alloc] init];
+	_queue.name = NSStringFromClass([self class]);
+	_queue.maxConcurrentOperationCount = 1;
+	[_queue addOperationWithBlock:^{
+		[self createStack];
+	}];
 	return self;
 }
 
@@ -35,13 +41,12 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSURL *storeDirectoryURL = [self.storeURL URLByDeletingLastPathComponent];
 	[fileManager createDirectoryAtURL:storeDirectoryURL withIntermediateDirectories:YES attributes:nil error:NULL];
-	NSDictionary *storeOptions = @{ NSSQLitePragmasOption : @{ @"journal_mode" : @"WAL" } };
-	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:storeOptions error:NULL]) {
+	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL]) {
 		[fileManager removeItemAtURL:self.storeURL error:NULL];
-		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:storeOptions error:NULL];
+		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL];
 	}
 
-	self.managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+	self.managedObjectContext = [NSManagedObjectContext new];
 	self.managedObjectContext.persistentStoreCoordinator = coordinator;
 }
 
@@ -50,22 +55,22 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
 
-	_DCTImageCacheCancelProxy *proxy = [_DCTImageCacheCancelProxy new];
-	[self.managedObjectContext performBlock:^{
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
 		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 		NSError *error;
 		NSUInteger count = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
-		if (!proxy.cancelled) handler(count > 0, error);
+		handler(count > 0, error);
 	}];
-	return proxy;
+	[self.queue addOperation:operation];
+	return operation;
 }
 
-- (void)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
+- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
 
 	NSParameterAssert(image);
 	NSParameterAssert(attributes);
 
-	[self.managedObjectContext performBlock:^{
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
 		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:self.managedObjectContext];
 		[attributes _setupCacheItemProperties:item];
 		item.imageData = [NSKeyedArchiver archivedDataWithRootObject:image];
@@ -73,6 +78,9 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		[self.managedObjectContext save:NULL];
 		[self.managedObjectContext refreshObject:item mergeChanges:NO];
 	}];
+	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
+	[self.queue addOperation:operation];
+	return operation;
 }
 
 - (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
@@ -80,8 +88,7 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
 
-	_DCTImageCacheCancelProxy *proxy = [_DCTImageCacheCancelProxy new];
-	[self.managedObjectContext performBlock:^{
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
 		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 		fetchRequest.fetchLimit = 1;
 		NSError *error;
@@ -92,27 +99,31 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 			image = [NSKeyedUnarchiver unarchiveObjectWithData:item.imageData];
 			[self.managedObjectContext refreshObject:item mergeChanges:NO];
 		}
-		if (!proxy.cancelled) handler(image, error);
+		handler(image, error);
 	}];
-	return proxy;
+	[self.queue addOperation:operation];
+	return operation;
 }
 
 - (void)removeAllImages {
-	NSManagedObjectContext *context = self.managedObjectContext;
-	[context performBlock:^{
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
 		[[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:NULL];
 		[self createStack];
 	}];
+	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
+	[self.queue addOperation:operation];
 }
 
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes {
 
-	[self.managedObjectContext performBlock:^{
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
 		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 		NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items) [self.managedObjectContext deleteObject:item];
 		[self.managedObjectContext save:NULL];
 	}];
+	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
+	[self.queue addOperation:operation];
 }
 
 @end
