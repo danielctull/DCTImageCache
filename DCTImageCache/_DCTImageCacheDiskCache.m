@@ -41,9 +41,10 @@ NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSURL *storeDirectoryURL = [self.storeURL URLByDeletingLastPathComponent];
 	[fileManager createDirectoryAtURL:storeDirectoryURL withIntermediateDirectories:YES attributes:nil error:NULL];
-	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL]) {
+	NSDictionary *storeOptions = @{ NSSQLitePragmasOption : @{ @"journal_mode" : @"WAL" } };
+	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:storeOptions error:NULL]) {
 		[fileManager removeItemAtURL:self.storeURL error:NULL];
-		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL];
+		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:storeOptions error:NULL];
 	}
 
 	self.managedObjectContext = [NSManagedObjectContext new];
