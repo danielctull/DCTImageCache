@@ -12,7 +12,7 @@ NSString *const DCTImageCacheAttributesKey = @"DCTImageCacheAttributesKey";
 NSString *const DCTImageCacheAttributesSize = @"DCTImageCacheAttributesSize";
 NSString *const DCTImageCacheAttributesCreatedBefore = @"DCTImageCacheAttributesCreatedBefore";
 
-CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
+static CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 
 @implementation DCTImageCacheAttributes
 

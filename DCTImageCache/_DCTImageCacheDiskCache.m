@@ -10,8 +10,8 @@
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheItem.h"
 
-NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
-NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
+static NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
+static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 
 @interface _DCTImageCacheDiskCache ()
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;

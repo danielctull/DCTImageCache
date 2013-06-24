@@ -12,8 +12,8 @@
 #import "_DCTImageCacheFetcher.h"
 #import "_DCTImageCacheCancelProxy.h"
 
-NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
-NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
+static NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
+static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 @interface DCTImageCache ()
 @property (nonatomic, strong) _DCTImageCacheMemoryCache *memoryCache;
