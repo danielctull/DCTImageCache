@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
+#import "_DCTImageCache.h"
 #import "_DCTImageCacheFetcher.h"
 #import "_DCTImageCacheCancelProxy.h"
 #import "_DCTImageCacheCompletion.h"
@@ -42,7 +43,7 @@
 		[handlers addObject:handler];
 		if (handlers.count > 1) return;
 
-		self.imageFetcher(attributes, [[_DCTImageCacheCompletion alloc] initWithHandler:^(UIImage *image, NSError *error) {
+		self.imageFetcher(attributes, [[_DCTImageCacheCompletion alloc] initWithHandler:^(DCTImageCacheImage *image, NSError *error) {
 			[self.queue addOperationWithBlock:^{
 
 				NSMutableArray *handlers = [self handlersForAttributes:attributes];

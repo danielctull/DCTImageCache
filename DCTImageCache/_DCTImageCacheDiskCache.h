@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "_DCTImageCache.h"
 
 @interface _DCTImageCacheDiskCache : NSObject
@@ -17,7 +16,7 @@
 - (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler __attribute__((nonnull(1,2)));
 - (id<DCTImageCacheProcess>)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler __attribute__((nonnull(1,2)));
 
-- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes __attribute__((nonnull(1,2)));
+- (id<DCTImageCacheProcess>)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes __attribute__((nonnull(1,2)));
 
 - (void)removeAllImages;
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes;

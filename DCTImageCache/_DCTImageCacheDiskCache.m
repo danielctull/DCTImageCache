@@ -66,7 +66,7 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	return operation;
 }
 
-- (id<DCTImageCacheProcess>)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
+- (id<DCTImageCacheProcess>)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
 
 	NSParameterAssert(image);
 	NSParameterAssert(attributes);
@@ -93,7 +93,7 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 		fetchRequest.fetchLimit = 1;
 		NSError *error;
-		UIImage *image;
+		DCTImageCacheImage *image;
 		NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
 		_DCTImageCacheItem *item = [items lastObject];
 		if (item) {

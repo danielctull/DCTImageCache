@@ -29,11 +29,11 @@
 	[self.cache removeObjectForKey:attributes.identifier];
 }
 
-- (void)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
+- (void)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
 	[self.cache setObject:image forKey:attributes.identifier];
 }
 
-- (UIImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes {
+- (DCTImageCacheImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes {
 	return [self.cache objectForKey:attributes.identifier];
 }
 

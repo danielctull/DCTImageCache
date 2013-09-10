@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "DCTImageCache.h"
+#import "_DCTImageCache.h"
 
 @interface _DCTImageCacheCompletion : NSObject <DCTImageCacheCompletion>
 - (id)initWithHandler:(DCTImageCacheImageHandler)handler;
