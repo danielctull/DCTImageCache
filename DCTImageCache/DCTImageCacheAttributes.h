@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 extern NSString *const DCTImageCacheAttributesKey;
 extern NSString *const DCTImageCacheAttributesSize;
