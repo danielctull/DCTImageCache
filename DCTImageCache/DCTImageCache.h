@@ -7,7 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#else
+#import <Cocoa/Cocoa.h>
+#endif
+
 #import "DCTImageCacheAttributes.h"
 
 #ifndef dctimagecache
@@ -35,12 +41,22 @@
 /** Set the image.
  @param image The image to save.
  */
+#if TARGET_OS_IPHONE
 - (void)finishWithImage:(UIImage *)image error:(NSError *)error;
+#else
+- (void)finishWithImage:(NSImage *)image error:(NSError *)error;
+#endif
+
 @end
 
 
 typedef void (^DCTImageCacheHandler)(NSError *);
-typedef void (^DCTImageCacheImageHandler)(UIImage *, NSError *);
+
+#if TARGET_OS_IPHONE
+typedef void (^DCTImageCacheImageHandler)(UIImage *image, NSError *error);
+#else
+typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
+#endif
 
 typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(DCTImageCacheAttributes *attributes, id<DCTImageCacheCompletion> completion);
 

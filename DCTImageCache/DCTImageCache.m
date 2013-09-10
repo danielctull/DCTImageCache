@@ -103,7 +103,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		id<DCTImageCacheProcess> fetchProcess = [self.fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+		id<DCTImageCacheProcess> fetchProcess = [self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 			handler(error);
 			if (!image) return;
 			[self.diskCache setImage:image forAttributes:attributes];
@@ -134,7 +134,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 		if (!cancelProxy.cancelled) handler(image, error);
 	};
 
-	id<DCTImageCacheProcess> diskProcess = [self.diskCache fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+	id<DCTImageCacheProcess> diskProcess = [self.diskCache fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 
 		if (image) {
 			[self.memoryCache setImage:image forAttributes:attributes];
@@ -142,7 +142,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		id<DCTImageCacheProcess> fetchProcess = [self.fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+		id<DCTImageCacheProcess> fetchProcess = [self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 			handler(image, error);
 			if (!image) return;
 			[self.memoryCache setImage:image forAttributes:attributes];

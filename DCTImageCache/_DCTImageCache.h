@@ -9,6 +9,12 @@
 #import "DCTImageCache.h"
 #import "_DCTImageCacheAttributes.h"
 
+#if TARGET_OS_IPHONE
+typedef UIImage DCTImageCacheImage;
+#else
+typedef NSImage DCTImageCacheImage;
+#endif
+
 typedef void (^_DCTImageCacheHasImageHandler)(BOOL, NSError *);
 
 @interface DCTImageCache (Private)

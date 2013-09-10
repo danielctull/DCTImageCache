@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 extern NSString *const DCTImageCacheAttributesKey;
 extern NSString *const DCTImageCacheAttributesSize;
