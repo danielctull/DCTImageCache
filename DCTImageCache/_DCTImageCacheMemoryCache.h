@@ -6,15 +6,14 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-@import Foundation;
-#import "DCTImageCache.h"
+#import "_DCTImageCache.h"
 
 @interface _DCTImageCacheMemoryCache : NSObject
 
-- (void)setImage:(UIImage *)image forAttributes:(DCTImageCacheAttributes *)attributes;
+- (void)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes;
 - (void)removeAllImages;
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes;
 - (BOOL)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes;
-- (UIImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes;
+- (DCTImageCacheImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes;
 
 @end

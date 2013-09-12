@@ -18,7 +18,7 @@
 	return self;
 }
 
-- (void)finishWithImage:(UIImage *)image error:(NSError *)error {
+- (void)finishWithImage:(DCTImageCacheImage *)image error:(NSError *)error {
 	self.handler(image, error);
 }
 

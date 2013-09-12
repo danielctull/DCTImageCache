@@ -121,7 +121,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	if (handler == NULL) return [self prefetchImageWithAttributes:attributes handler:NULL];
 	
 	// If the image exists in the memory cache, use it!
-	UIImage *image = [self.memoryCache imageWithAttributes:attributes];
+	DCTImageCacheImage *image = [self.memoryCache imageWithAttributes:attributes];
 	if (image) {
 		handler(image, nil);
 		return nil;
@@ -130,7 +130,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
 
 	// Make sure we don't call the handler if the process is cancelled
-	handler = ^(UIImage *image, NSError *error){
+	handler = ^(DCTImageCacheImage *image, NSError *error){
 		if (!cancelProxy.cancelled) handler(image, error);
 	};
 

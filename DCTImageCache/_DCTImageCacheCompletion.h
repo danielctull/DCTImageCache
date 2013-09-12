@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Daniel Tull. All rights reserved.
 //
 
-#import "DCTImageCache.h"
+#import "_DCTImageCache.h"
 
 @interface _DCTImageCacheCompletion : NSObject <DCTImageCacheCompletion>
 - (id)initWithHandler:(DCTImageCacheImageHandler)handler;
