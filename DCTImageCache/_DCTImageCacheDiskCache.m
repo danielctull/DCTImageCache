@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import <CoreData/CoreData.h>
+@import CoreData;
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheItem.h"
 

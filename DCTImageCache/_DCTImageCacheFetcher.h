@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "DCTImageCache.h"
 
 @interface _DCTImageCacheFetcher : NSObject

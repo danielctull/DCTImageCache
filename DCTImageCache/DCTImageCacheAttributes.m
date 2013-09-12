@@ -71,15 +71,14 @@ static CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MA
 
 - (NSString *)_sizeString {
 	CGSize size = self.size;
-	if (!value) return @"";
-	return @"";//NSStringFromCGSize([value CGSizeValue]);
+	return [NSString stringWithFormat:@"%@ %@", @(size.width), @(size.height)];
 }
 
 - (CGSize)size {
 	NSDictionary *value = [self.dictionary objectForKey:DCTImageCacheAttributesSize];
 	if (!value) return DCTImageCacheAttributesNullSize;
 	CGSize size;
-	CGSizeMakeWithDictionaryRepresentation(value, &size);
+	CGSizeMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)(value), &size);
 	return size;
 }
 

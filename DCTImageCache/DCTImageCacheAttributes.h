@@ -6,7 +6,8 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+@import CoreGraphics;
 
 extern NSString *const DCTImageCacheAttributesKey;
 extern NSString *const DCTImageCacheAttributesSize;

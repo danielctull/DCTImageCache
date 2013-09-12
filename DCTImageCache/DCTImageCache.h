@@ -6,12 +6,12 @@
 //  Copyright (c) 2012 Daniel Tull Limited. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
 #if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
+@import UIKit;
 #else
-#import <Cocoa/Cocoa.h>
+@import Cocoa;
 #endif
 
 #import "DCTImageCacheAttributes.h"
