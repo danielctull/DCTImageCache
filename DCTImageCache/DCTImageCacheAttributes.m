@@ -14,6 +14,11 @@ NSString *const DCTImageCacheAttributesCreatedBefore = @"DCTImageCacheAttributes
 
 static CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 
+id DCTImageCacheAttributesObjectForSize(CGSize size) {
+	NSDictionary *dictionary = (__bridge NSDictionary *)CGSizeCreateDictionaryRepresentation(size);
+	return dictionary;
+}
+
 @implementation DCTImageCacheAttributes
 
 - (id)initWithDictionary:(NSDictionary *)dictionary {

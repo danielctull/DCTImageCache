@@ -13,6 +13,8 @@ extern NSString *const DCTImageCacheAttributesKey;
 extern NSString *const DCTImageCacheAttributesSize;
 extern NSString *const DCTImageCacheAttributesCreatedBefore;
 
+id DCTImageCacheAttributesObjectForSize(CGSize);
+
 /**
  */
 @interface DCTImageCacheAttributes : NSObject
