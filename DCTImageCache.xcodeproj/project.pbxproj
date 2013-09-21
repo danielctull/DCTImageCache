@@ -72,6 +72,7 @@
 		2406F9781678B38600428406 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
 		2406F97B1678B39600428406 /* TableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		2406F97D1678B3A900428406 /* ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
+		240BE44517ED8040007AB802 /* Universal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Universal.xcconfig; sourceTree = "<group>"; };
 		24244607167509D200621FFF /* DCTImageCacheAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheAttributes.h; sourceTree = "<group>"; };
 		24244608167509D200621FFF /* DCTImageCacheAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheAttributes.m; sourceTree = "<group>"; };
 		242AFA45166BB78F00AC2B9F /* _DCTImageCacheFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheFetcher.h; sourceTree = "<group>"; };
@@ -188,6 +189,7 @@
 		24F7CB34158A1B9D00B2E33E = {
 			isa = PBXGroup;
 			children = (
+				240BE44517ED8040007AB802 /* Universal.xcconfig */,
 				24F7CB44158A1B9D00B2E33E /* DCTImageCache */,
 				24FCFA97165FEAB3006208A7 /* DCTImageCacheBundle */,
 				24F7CB59158A1B9D00B2E33E /* DCTImageCacheTests */,
@@ -505,27 +507,25 @@
 /* Begin XCBuildConfiguration section */
 		2437B68115B97BA600750117 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 240BE44517ED8040007AB802 /* Universal.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/DCTImageCache.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
-				VALID_ARCHS = "armv7 armv7s i386 x86_64";
 			};
 			name = Debug;
 		};
 		2437B68215B97BA600750117 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 240BE44517ED8040007AB802 /* Universal.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/DCTImageCache.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx";
-				VALID_ARCHS = "armv7 armv7s i386 x86_64";
 			};
 			name = Release;
 		};
@@ -585,7 +585,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (
 					"-Weverything",
@@ -653,6 +652,7 @@
 		};
 		24FCFA9E165FEAB3006208A7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 240BE44517ED8040007AB802 /* Universal.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -674,6 +674,7 @@
 		};
 		24FCFA9F165FEAB3006208A7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 240BE44517ED8040007AB802 /* Universal.xcconfig */;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_EMPTY_BODY = YES;
