@@ -5,9 +5,18 @@
 //  Copyright (c) 2013 Daniel Tull. All rights reserved.
 //
 
-ARCHS[sdk=iphoneos*] = $(ARCHS_STANDARD);
-ARCHS[sdk=iphonesimulator*] = $(ARCHS_STANDARD);
+ARCHS[sdk=iphoneos*] = $(ARCHS_STANDARD_INCLUDING_64_BIT);
+ARCHS[sdk=iphonesimulator*] = $(ARCHS_STANDARD_INCLUDING_64_BIT);
 ARCHS[sdk=macosx*] = $(ARCHS_STANDARD_64_BIT);
 
 SUPPORTED_PLATFORMS = iphonesimulator iphoneos macosx;
-VALID_ARCHS = armv7 armv7s x86_64 i386;
+
+VALID_ARCHS[sdk=iphoneos*] = $(ARCHS_STANDARD_INCLUDING_64_BIT);
+VALID_ARCHS[sdk=iphonesimulator*] = $(ARCHS_STANDARD_INCLUDING_64_BIT);
+VALID_ARCHS[sdk=macosx*] = $(ARCHS_STANDARD_64_BIT);
+
+// This is to allow building the library for arm64 devices.
+// When building for an arm64 device and the app does not support
+// arm64, the library will build for arm64 causing an error as
+// the library architecture isn't compatible with the app architecture.
+ONLY_ACTIVE_ARCH = NO;
