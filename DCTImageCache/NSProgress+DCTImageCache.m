@@ -12,6 +12,7 @@
 
 + (instancetype)dctImageCache_progressWithParentProgress:(NSProgress *)parentProgress operation:(NSOperation *)operation {
 
+	[parentProgress becomeCurrentWithPendingUnitCount:1];
 	NSProgress *progress = [[NSProgress alloc] initWithParent:parentProgress userInfo:nil];
 
 	progress.cancellationHandler = ^{
