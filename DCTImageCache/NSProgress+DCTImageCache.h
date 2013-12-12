@@ -10,6 +10,6 @@
 
 @interface NSProgress (DCTImageCache)
 
-- (instancetype)dctImageCache_progressWithOperation:(NSOperation *)operation;
++ (instancetype)dctImageCache_progressWithParentProgress:(NSProgress *)progress operation:(NSOperation *)operation;
 
 @end

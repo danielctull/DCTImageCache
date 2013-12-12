@@ -13,10 +13,10 @@
 - (id)initWithStoreURL:(NSURL *)storeURL;
 @property (nonatomic, readonly) NSURL *storeURL;
 
-- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler __attribute__((nonnull(1,2)));
-- (NSProgress *)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler __attribute__((nonnull(1,2)));
+- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(DCTImageCacheImageHandler)handler __attribute__((nonnull(1,3)));
+- (NSProgress *)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(_DCTImageCacheHasImageHandler)handler __attribute__((nonnull(1,3)));
 
-- (NSProgress *)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes __attribute__((nonnull(1,2)));
+- (NSProgress *)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress __attribute__((nonnull(1,2)));
 
 - (void)removeAllImages;
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes;

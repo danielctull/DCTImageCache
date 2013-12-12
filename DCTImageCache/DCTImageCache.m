@@ -95,7 +95,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			if (!progress.cancelled) handler(error);
 		};
 
-	NSProgress *diskProgress = [self.diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *error) {
+	[self.diskCache hasImageWithAttributes:attributes parentProgress:progress handler:^(BOOL hasImage, NSError *error) {
 
 		if (hasImage) {
 			handler(nil);
@@ -105,13 +105,12 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 		NSProgress *fetchProgress = [self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 			handler(error);
 			if (!image) return;
-			[self.diskCache setImage:image forAttributes:attributes];
+			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
 		}];
 		//[cancelProxy addProcess:fetchProcess];
 		
 	}];
 
-	//[cancelProxy addProcess:diskProcess];
 	return progress;
 }
 
@@ -133,7 +132,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 		if (!progress.cancelled) handler(image, error);
 	};
 
-	NSProgress *diskProgress = [self.diskCache fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
+	[self.diskCache fetchImageWithAttributes:attributes parentProgress:progress handler:^(DCTImageCacheImage *image, NSError *error) {
 
 		if (image) {
 			[self.memoryCache setImage:image forAttributes:attributes];
@@ -141,17 +140,16 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		NSProgress *fetchProgress = [self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
+		[self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 			handler(image, error);
 			if (!image) return;
 			[self.memoryCache setImage:image forAttributes:attributes];
-			[self.diskCache setImage:image forAttributes:attributes];
+			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
 		}];
 		//[cancelProxy addProcess:fetchProcess];
 
 	}];
-	
-	//[cancelProxy addProcess:diskProcess];
+
 	return progress;
 }
 

@@ -9,6 +9,7 @@
 @import CoreData;
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheItem.h"
+#import "NSProgress+DCTImageCache.h"
 
 static NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
 static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
@@ -51,7 +52,7 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	self.managedObjectContext.persistentStoreCoordinator = coordinator;
 }
 
-- (NSProgress *)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler {
+- (NSProgress *)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(_DCTImageCacheHasImageHandler)handler {
 
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
@@ -64,11 +65,10 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	}];
 	[self.queue addOperation:operation];
 
-	NSProgress *progress = [NSProgress new];
-	return progress;
+	return [NSProgress dctImageCache_progressWithParentProgress:parentProgress operation:operation];
 }
 
-- (NSProgress *)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
+- (NSProgress *)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress {
 
 	NSParameterAssert(image);
 	NSParameterAssert(attributes);
@@ -84,13 +84,10 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
 	[self.queue addOperation:operation];
 
-	NSProgress *progress = [NSProgress new];
-
-
-	return operation;
+	return [NSProgress dctImageCache_progressWithParentProgress:parentProgress operation:operation];
 }
 
-- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
+- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(DCTImageCacheImageHandler)handler {
 
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
@@ -109,7 +106,8 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		handler(image, error);
 	}];
 	[self.queue addOperation:operation];
-	return operation;
+
+	return [NSProgress dctImageCache_progressWithParentProgress:parentProgress operation:operation];
 }
 
 - (void)removeAllImages {

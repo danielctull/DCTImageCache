@@ -10,9 +10,10 @@
 
 @implementation NSProgress (DCTImageCache)
 
-- (instancetype)dctImageCache_progressWithOperation:(NSOperation *)operation {
++ (instancetype)dctImageCache_progressWithParentProgress:(NSProgress *)parentProgress operation:(NSOperation *)operation {
 
-	NSProgress *progress = [NSProgress new];
+	NSProgress *progress = [[NSProgress alloc] initWithParent:parentProgress userInfo:nil];
+
 	progress.cancellationHandler = ^{
 		[operation cancel];
 	};
