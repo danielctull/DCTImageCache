@@ -22,20 +22,6 @@
 #endif
 
 
-/** Generally used for an opaque object that forwards cancellation. */
-@protocol DCTImageCacheProcess <NSObject>
-/** Call this to cancel. */
-- (void)cancel;
-@end
-
-@interface NSURLConnection (DCTImageCache) <DCTImageCacheProcess>
-@end
-
-@interface NSOperation (DCTImageCache) <DCTImageCacheProcess>
-@end
-
-
-
 /** Used for an opaque object that handles the saving of images to disk. */
 @protocol DCTImageCacheCompletion <NSObject>
 /** Set the image.
@@ -58,7 +44,7 @@ typedef void (^DCTImageCacheImageHandler)(UIImage *image, NSError *error);
 typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
 #endif
 
-typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(DCTImageCacheAttributes *attributes, id<DCTImageCacheCompletion> completion);
+typedef NSProgress *(^DCTImageCacheFetcher)(DCTImageCacheAttributes *attributes, id<DCTImageCacheCompletion> completion);
 
 
 
@@ -106,7 +92,7 @@ typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(DCTImageCacheAttributes
 
 /** Checks whether an image is found on disk with the given attributes, 
  if not the imageFetcher is executed to fetch the image. */
-- (id<DCTImageCacheProcess>)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheHandler)handler;
+- (NSProgress *)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheHandler)handler;
 
 /** Retrieves an image with the given attributes, looking in the memory cache, 
  disk cache and finally calling the imageFetcher. 
@@ -136,6 +122,6 @@ typedef id<DCTImageCacheProcess> (^DCTImageCacheFetcher)(DCTImageCacheAttributes
  @param handler The handler that should be executed with the fetched image.
  @return A process object that can be cancelled, preventing the handler from being executed.
  */
-- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
+- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
 
 @end

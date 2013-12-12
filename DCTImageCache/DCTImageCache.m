@@ -10,7 +10,6 @@
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheMemoryCache.h"
 #import "_DCTImageCacheFetcher.h"
-#import "_DCTImageCacheCancelProxy.h"
 
 static NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
 static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
@@ -85,38 +84,38 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	[self.diskCache removeImagesWithAttributes:attributes];
 }
 
-- (id<DCTImageCacheProcess>)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(void(^)(NSError *error))handler {
+- (NSProgress *)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(void(^)(NSError *error))handler {
 
-	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
+	NSProgress *progress = [NSProgress new];
 
 	if (handler == NULL)						// Safe gaurd against a NULL handler
 		handler = ^(NSError *error){};
 	else										// Make sure we don't call the handler if the process is cancelled
 		handler = ^(NSError *error){
-			if (!cancelProxy.cancelled) handler(error);
+			if (!progress.cancelled) handler(error);
 		};
 
-	id<DCTImageCacheProcess> diskProcess = [self.diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *error) {
+	NSProgress *diskProgress = [self.diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *error) {
 
 		if (hasImage) {
 			handler(nil);
 			return;
 		}
 
-		id<DCTImageCacheProcess> fetchProcess = [self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
+		NSProgress *fetchProgress = [self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 			handler(error);
 			if (!image) return;
 			[self.diskCache setImage:image forAttributes:attributes];
 		}];
-		[cancelProxy addProcess:fetchProcess];
+		//[cancelProxy addProcess:fetchProcess];
 		
 	}];
 
-	[cancelProxy addProcess:diskProcess];
-	return cancelProxy;
+	//[cancelProxy addProcess:diskProcess];
+	return progress;
 }
 
-- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
+- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
 	if (handler == NULL) return [self prefetchImageWithAttributes:attributes handler:NULL];
 	
@@ -127,14 +126,14 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 		return nil;
 	}
 
-	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
+	NSProgress *progress = [NSProgress new];
 
 	// Make sure we don't call the handler if the process is cancelled
 	handler = ^(DCTImageCacheImage *image, NSError *error){
-		if (!cancelProxy.cancelled) handler(image, error);
+		if (!progress.cancelled) handler(image, error);
 	};
 
-	id<DCTImageCacheProcess> diskProcess = [self.diskCache fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
+	NSProgress *diskProgress = [self.diskCache fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 
 		if (image) {
 			[self.memoryCache setImage:image forAttributes:attributes];
@@ -142,18 +141,18 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		id<DCTImageCacheProcess> fetchProcess = [self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
+		NSProgress *fetchProgress = [self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 			handler(image, error);
 			if (!image) return;
 			[self.memoryCache setImage:image forAttributes:attributes];
 			[self.diskCache setImage:image forAttributes:attributes];
 		}];
-		[cancelProxy addProcess:fetchProcess];
+		//[cancelProxy addProcess:fetchProcess];
 
 	}];
 	
-	[cancelProxy addProcess:diskProcess];
-	return cancelProxy;
+	//[cancelProxy addProcess:diskProcess];
+	return progress;
 }
 
 + (NSURL *)cacheDirectoryURL {

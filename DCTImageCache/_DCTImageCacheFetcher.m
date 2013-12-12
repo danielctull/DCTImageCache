@@ -8,7 +8,6 @@
 
 #import "_DCTImageCache.h"
 #import "_DCTImageCacheFetcher.h"
-#import "_DCTImageCacheCancelProxy.h"
 #import "_DCTImageCacheCompletion.h"
 
 @interface _DCTImageCacheFetcher ()
@@ -28,14 +27,14 @@
 	return self;
 }
 
-- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
+- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
 
 	if (self.imageFetcher == NULL) return nil;
 
-	_DCTImageCacheCancelProxy *cancelProxy = [_DCTImageCacheCancelProxy new];
+	NSProgress *progress = [NSProgress new];
 
 	[self.queue addOperationWithBlock:^{
 
@@ -54,7 +53,7 @@
 		}]);
 	}];
 	
-	return cancelProxy;
+	return progress;
 }
 
 - (NSMutableArray *)handlersForAttributes:(DCTImageCacheAttributes *)attributes {

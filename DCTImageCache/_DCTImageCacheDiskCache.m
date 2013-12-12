@@ -51,7 +51,7 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	self.managedObjectContext.persistentStoreCoordinator = coordinator;
 }
 
-- (id<DCTImageCacheProcess>)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler {
+- (NSProgress *)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(_DCTImageCacheHasImageHandler)handler {
 
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
@@ -63,10 +63,12 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		handler(count > 0, error);
 	}];
 	[self.queue addOperation:operation];
-	return operation;
+
+	NSProgress *progress = [NSProgress new];
+	return progress;
 }
 
-- (id<DCTImageCacheProcess>)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
+- (NSProgress *)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
 
 	NSParameterAssert(image);
 	NSParameterAssert(attributes);
@@ -81,10 +83,14 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	}];
 	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
 	[self.queue addOperation:operation];
+
+	NSProgress *progress = [NSProgress new];
+
+
 	return operation;
 }
 
-- (id<DCTImageCacheProcess>)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
+- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
