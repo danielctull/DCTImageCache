@@ -9,7 +9,6 @@
 #import "DCTImageCache.h"
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheMemoryCache.h"
-#import "_DCTImageCacheFetcher.h"
 
 static NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
 static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
@@ -17,7 +16,6 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 @interface DCTImageCache ()
 @property (nonatomic, strong) _DCTImageCacheMemoryCache *memoryCache;
 @property (nonatomic, strong) _DCTImageCacheDiskCache *diskCache;
-@property (nonatomic, strong) _DCTImageCacheFetcher *fetcher;
 @end
 
 @implementation DCTImageCache
@@ -56,7 +54,6 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	self = [self init];
 	if (!self) return nil;
 	_diskCache = [[_DCTImageCacheDiskCache alloc] initWithStoreURL:storeURL];
-	_fetcher = [_DCTImageCacheFetcher new];
 	_name = [[storeURL lastPathComponent] copy];
 	_memoryCache = [_DCTImageCacheMemoryCache new];
 	return self;
@@ -64,14 +61,6 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 - (NSURL *)storeURL {
 	return self.diskCache.storeURL;
-}
-
-- (void)setImageFetcher:(DCTImageCacheFetcher)imageFetcher {
-	self.fetcher.imageFetcher = imageFetcher;
-}
-
-- (DCTImageCacheFetcher)imageFetcher {
-	return self.fetcher.imageFetcher;
 }
 
 - (void)removeAllImages {
@@ -102,7 +91,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		[self.fetcher fetchImageWithAttributes:attributes parentProgress:progress handler:^(DCTImageCacheImage *image, NSError *error) {
+		[self.delegate imageCache:self fetchImageWithAttributes:attributes parentProgress:progress handler:^(UIImage *image, NSError *error) {
 			handler(error);
 			if (!image) return;
 			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
@@ -138,7 +127,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		[self.fetcher fetchImageWithAttributes:attributes parentProgress:progress handler:^(DCTImageCacheImage *image, NSError *error) {
+		[self.delegate imageCache:self fetchImageWithAttributes:attributes parentProgress:progress handler:^(UIImage *image, NSError *error) {
 			handler(image, error);
 			if (!image) return;
 			[self.memoryCache setImage:image forAttributes:attributes];

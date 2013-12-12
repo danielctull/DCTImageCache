@@ -22,20 +22,6 @@
 #endif
 
 
-/** Used for an opaque object that handles the saving of images to disk. */
-@protocol DCTImageCacheCompletion <NSObject>
-/** Set the image.
- @param image The image to save.
- */
-#if TARGET_OS_IPHONE
-- (void)finishWithImage:(UIImage *)image error:(NSError *)error;
-#else
-- (void)finishWithImage:(NSImage *)image error:(NSError *)error;
-#endif
-
-@end
-
-
 typedef void (^DCTImageCacheHandler)(NSError *);
 
 #if TARGET_OS_IPHONE
@@ -44,8 +30,8 @@ typedef void (^DCTImageCacheImageHandler)(UIImage *image, NSError *error);
 typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
 #endif
 
-typedef NSProgress *(^DCTImageCacheFetcher)(DCTImageCacheAttributes *attributes, id<DCTImageCacheCompletion> completion);
 
+@protocol DCTImageCacheDelegate;
 
 
 @interface DCTImageCache : NSObject
@@ -79,10 +65,8 @@ typedef NSProgress *(^DCTImageCacheFetcher)(DCTImageCacheAttributes *attributes,
  */
 @property (nonatomic, readonly) NSString *name;
 
+@property (nonatomic, weak) id<DCTImageCacheDelegate> delegate;
 
-/** This is a fetcher for images that should be set to download images from the Internet.
- */
-@property (nonatomic, copy) DCTImageCacheFetcher imageFetcher;
 
 /** Removes all images in the memory and disk caches. */
 - (void)removeAllImages;
@@ -125,3 +109,11 @@ typedef NSProgress *(^DCTImageCacheFetcher)(DCTImageCacheAttributes *attributes,
 - (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
 
 @end
+
+
+
+
+@protocol DCTImageCacheDelegate <NSObject>
+- (NSProgress *)imageCache:(DCTImageCache *)imageCache fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(DCTImageCacheImageHandler)handler;
+@end
+
