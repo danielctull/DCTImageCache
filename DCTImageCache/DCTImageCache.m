@@ -102,13 +102,11 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		NSProgress *fetchProgress = [self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
+		[self.fetcher fetchImageWithAttributes:attributes parentProgress:progress handler:^(DCTImageCacheImage *image, NSError *error) {
 			handler(error);
 			if (!image) return;
 			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
 		}];
-		//[cancelProxy addProcess:fetchProcess];
-		
 	}];
 
 	return progress;
@@ -140,14 +138,12 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		[self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
+		[self.fetcher fetchImageWithAttributes:attributes parentProgress:progress handler:^(DCTImageCacheImage *image, NSError *error) {
 			handler(image, error);
 			if (!image) return;
 			[self.memoryCache setImage:image forAttributes:attributes];
 			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
 		}];
-		//[cancelProxy addProcess:fetchProcess];
-
 	}];
 
 	return progress;

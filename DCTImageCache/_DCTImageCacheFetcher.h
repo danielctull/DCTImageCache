@@ -10,5 +10,5 @@
 
 @interface _DCTImageCacheFetcher : NSObject
 @property (nonatomic, copy) DCTImageCacheFetcher imageFetcher;
-- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler __attribute__((nonnull(1,2)));
+- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(DCTImageCacheImageHandler)handler __attribute__((nonnull(1,2)));
 @end

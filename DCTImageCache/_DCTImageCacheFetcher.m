@@ -9,6 +9,7 @@
 #import "_DCTImageCache.h"
 #import "_DCTImageCacheFetcher.h"
 #import "_DCTImageCacheCompletion.h"
+#import "NSProgress+DCTImageCache.h"
 
 @interface _DCTImageCacheFetcher ()
 @property (nonatomic, strong) NSOperationQueue *queue;
@@ -27,16 +28,14 @@
 	return self;
 }
 
-- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
+- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(DCTImageCacheImageHandler)handler {
 
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
 
 	if (self.imageFetcher == NULL) return nil;
 
-	NSProgress *progress = [NSProgress new];
-
-	[self.queue addOperationWithBlock:^{
+	NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
 
 		NSMutableArray *handlers = [self handlersForAttributes:attributes];
 		[handlers addObject:handler];
@@ -52,8 +51,8 @@
 			}];
 		}]);
 	}];
-	
-	return progress;
+
+	return [NSProgress dctImageCache_progressWithParentProgress:parentProgress operation:operation];
 }
 
 - (NSMutableArray *)handlersForAttributes:(DCTImageCacheAttributes *)attributes {
