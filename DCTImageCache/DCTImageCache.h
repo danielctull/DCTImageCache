@@ -14,14 +14,6 @@
 @import Cocoa;
 #endif
 
-#import "DCTImageCacheAttributes.h"
-
-#ifndef dctimagecache
-#define dctimagecache_1_0     10000
-#define dctimagecache         dctimagecache_1_0
-#endif
-
-
 typedef void (^DCTImageCacheHandler)(NSError *);
 
 #if TARGET_OS_IPHONE
@@ -30,9 +22,9 @@ typedef void (^DCTImageCacheImageHandler)(UIImage *image, NSError *error);
 typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
 #endif
 
-
-@protocol DCTImageCacheDelegate;
-
+#import "DCTImageCacheAttributes.h"
+#import "DCTImageCacheCancellation.h"
+#import "DCTImageCacheDelegate.h"
 
 @interface DCTImageCache : NSObject
 
@@ -109,11 +101,3 @@ typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
 - (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
 
 @end
-
-
-
-
-@protocol DCTImageCacheDelegate <NSObject>
-- (NSProgress *)imageCache:(DCTImageCache *)imageCache fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(DCTImageCacheImageHandler)handler;
-@end
-

@@ -91,11 +91,16 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		[self.delegate imageCache:self fetchImageWithAttributes:attributes parentProgress:progress handler:^(UIImage *image, NSError *error) {
+		id<DCTImageCacheCancellation> fetch = [self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 			handler(error);
 			if (!image) return;
 			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
 		}];
+
+		NSProgress *fetchProgress = [[NSProgress alloc] initWithParent:progress userInfo:nil];
+		fetchProgress.cancellationHandler = ^{
+			[fetch cancel];
+		};
 	}];
 
 	return progress;
@@ -127,12 +132,18 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			return;
 		}
 
-		[self.delegate imageCache:self fetchImageWithAttributes:attributes parentProgress:progress handler:^(UIImage *image, NSError *error) {
+		id<DCTImageCacheCancellation> fetch = [self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 			handler(image, error);
 			if (!image) return;
 			[self.memoryCache setImage:image forAttributes:attributes];
 			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
 		}];
+
+		[progress becomeCurrentWithPendingUnitCount:0];
+		NSProgress *fetchProgress = [[NSProgress alloc] initWithParent:progress userInfo:nil];
+		fetchProgress.cancellationHandler = ^{
+			[fetch cancel];
+		};
 	}];
 
 	return progress;
