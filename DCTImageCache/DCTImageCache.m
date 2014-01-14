@@ -97,6 +97,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
 		}];
 
+		[progress becomeCurrentWithPendingUnitCount:0];
 		NSProgress *fetchProgress = [[NSProgress alloc] initWithParent:progress userInfo:nil];
 		fetchProgress.cancellationHandler = ^{
 			[fetch cancel];
