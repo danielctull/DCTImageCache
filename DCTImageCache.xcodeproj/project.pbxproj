@@ -10,7 +10,6 @@
 		2406F9791678B38600428406 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2406F9781678B38600428406 /* TableViewCell.m */; };
 		2406F97C1678B39600428406 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2406F97B1678B39600428406 /* TableViewCell.xib */; };
 		2406F97E1678B3A900428406 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2406F97D1678B3A900428406 /* ViewController.xib */; };
-		2423E7D118675DD400927EBA /* DCTImageCacheCancellation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2423E7CC18675C3700927EBA /* DCTImageCacheCancellation.h */; };
 		2423E7D218675DD400927EBA /* DCTImageCacheDelegate.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2423E7CF18675CF300927EBA /* DCTImageCacheDelegate.h */; };
 		24244609167509D200621FFF /* DCTImageCacheAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 24244608167509D200621FFF /* DCTImageCacheAttributes.m */; };
 		2424460B16750AF000621FFF /* DCTImageCacheAttributes.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24244607167509D200621FFF /* DCTImageCacheAttributes.h */; };
@@ -56,7 +55,6 @@
 			dstPath = "include/${PRODUCT_NAME}";
 			dstSubfolderSpec = 16;
 			files = (
-				2423E7D118675DD400927EBA /* DCTImageCacheCancellation.h in CopyFiles */,
 				2423E7D218675DD400927EBA /* DCTImageCacheDelegate.h in CopyFiles */,
 				2424460B16750AF000621FFF /* DCTImageCacheAttributes.h in CopyFiles */,
 				2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */,
@@ -73,7 +71,6 @@
 		2406F97B1678B39600428406 /* TableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		2406F97D1678B3A900428406 /* ViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ViewController.xib; sourceTree = "<group>"; };
 		240BE44517ED8040007AB802 /* Universal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Universal.xcconfig; sourceTree = "<group>"; };
-		2423E7CC18675C3700927EBA /* DCTImageCacheCancellation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheCancellation.h; sourceTree = "<group>"; };
 		2423E7CF18675CF300927EBA /* DCTImageCacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheDelegate.h; sourceTree = "<group>"; };
 		24244607167509D200621FFF /* DCTImageCacheAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheAttributes.h; sourceTree = "<group>"; };
 		24244608167509D200621FFF /* DCTImageCacheAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheAttributes.m; sourceTree = "<group>"; };
@@ -227,7 +224,6 @@
 				24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */,
 				24244607167509D200621FFF /* DCTImageCacheAttributes.h */,
 				24244608167509D200621FFF /* DCTImageCacheAttributes.m */,
-				2423E7CC18675C3700927EBA /* DCTImageCacheCancellation.h */,
 				2423E7CF18675CF300927EBA /* DCTImageCacheDelegate.h */,
 				24B2FC691859D06800369AE2 /* NSProgress+DCTImageCache.h */,
 				24B2FC6A1859D06800369AE2 /* NSProgress+DCTImageCache.m */,

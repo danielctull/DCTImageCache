@@ -23,7 +23,6 @@ typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
 #endif
 
 #import "DCTImageCacheAttributes.h"
-#import "DCTImageCacheCancellation.h"
 #import "DCTImageCacheDelegate.h"
 
 @interface DCTImageCache : NSObject
