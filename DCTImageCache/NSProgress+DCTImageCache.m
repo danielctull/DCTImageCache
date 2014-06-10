@@ -10,16 +10,11 @@
 
 @implementation NSProgress (DCTImageCache)
 
-+ (instancetype)dctImageCache_progressWithParentProgress:(NSProgress *)parentProgress operation:(NSOperation *)operation {
-
-	[parentProgress becomeCurrentWithPendingUnitCount:1];
-	NSProgress *progress = [[NSProgress alloc] initWithParent:parentProgress userInfo:nil];
-
-	progress.cancellationHandler = ^{
-		[operation cancel];
-	};
-	
-	return progress;
+- (void)dctImageCache_addWrappedBlock:(void(^)())block {
+	self.totalUnitCount++;
+	[self becomeCurrentWithPendingUnitCount:1];
+	block();
+	[self resignCurrent];
 }
 
 @end

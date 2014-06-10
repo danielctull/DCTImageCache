@@ -9,6 +9,7 @@
 #import "DCTImageCache.h"
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheMemoryCache.h"
+#import "NSProgress+DCTImageCache.h"
 
 static NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
 static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";

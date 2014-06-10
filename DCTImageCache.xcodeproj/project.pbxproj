@@ -13,7 +13,6 @@
 		2423E7D218675DD400927EBA /* DCTImageCacheDelegate.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2423E7CF18675CF300927EBA /* DCTImageCacheDelegate.h */; };
 		24244609167509D200621FFF /* DCTImageCacheAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 24244608167509D200621FFF /* DCTImageCacheAttributes.m */; };
 		2424460B16750AF000621FFF /* DCTImageCacheAttributes.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24244607167509D200621FFF /* DCTImageCacheAttributes.h */; };
-		242EF8EB1859D93600ED0622 /* NSProgress+DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24B2FC691859D06800369AE2 /* NSProgress+DCTImageCache.h */; };
 		2437B67815B97BA600750117 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
 		2437B68415B97BD700750117 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
@@ -58,7 +57,6 @@
 				2423E7D218675DD400927EBA /* DCTImageCacheDelegate.h in CopyFiles */,
 				2424460B16750AF000621FFF /* DCTImageCacheAttributes.h in CopyFiles */,
 				2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */,
-				242EF8EB1859D93600ED0622 /* NSProgress+DCTImageCache.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +141,8 @@
 		242EF8EA1859D74200ED0622 /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				24B2FC691859D06800369AE2 /* NSProgress+DCTImageCache.h */,
+				24B2FC6A1859D06800369AE2 /* NSProgress+DCTImageCache.m */,
 				2433AA9A1674D57700D76DCF /* _DCTImageCache.h */,
 				2406F8F716788FCF00428406 /* _DCTImageCacheAttributes.h */,
 				24B3EED515A30EEB00D5E63C /* _DCTImageCacheDiskCache.h */,
@@ -225,8 +225,6 @@
 				24244607167509D200621FFF /* DCTImageCacheAttributes.h */,
 				24244608167509D200621FFF /* DCTImageCacheAttributes.m */,
 				2423E7CF18675CF300927EBA /* DCTImageCacheDelegate.h */,
-				24B2FC691859D06800369AE2 /* NSProgress+DCTImageCache.h */,
-				24B2FC6A1859D06800369AE2 /* NSProgress+DCTImageCache.m */,
 				242EF8EA1859D74200ED0622 /* Private */,
 			);
 			path = DCTImageCache;
