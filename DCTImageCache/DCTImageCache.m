@@ -76,7 +76,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 - (void)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(void(^)(NSError *error))handler {
 
-	NSProgress *progress = [NSProgress progressWithTotalUnitCount:1];
+	NSProgress *progress = [NSProgress progressWithTotalUnitCount:0];
 
 	if (handler == NULL)						// Safe gaurd against a NULL handler
 		handler = ^(NSError *error){};
@@ -85,26 +85,26 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			if (!progress.cancelled) handler(error);
 		};
 
-	[progress becomeCurrentWithPendingUnitCount:1];
-	[self.diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *error) {
+	[progress dctImageCache_addWrappedBlock:^{
+		[self.diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *error) {
 
-		if (hasImage) {
-			handler(nil);
-			return;
-		}
+			if (hasImage) {
+				handler(nil);
+				return;
+			}
 
-		[progress becomeCurrentWithPendingUnitCount:1];
-		[self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
-			handler(error);
-			if (!image) return;
+			[progress dctImageCache_addWrappedBlock:^{
+				[self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+					handler(error);
+					if (!image) return;
 
-			[progress becomeCurrentWithPendingUnitCount:1];
-			[self.diskCache setImage:image forAttributes:attributes];
-			[progress resignCurrent];
+					[progress dctImageCache_addWrappedBlock:^{
+						[self.diskCache setImage:image forAttributes:attributes];
+					}];
+				}];
+			}];
 		}];
-		[progress resignCurrent];
 	}];
-	[progress resignCurrent];
 }
 
 - (void)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
@@ -133,29 +133,29 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 		}
 	};
 
-	[progress becomeCurrentWithPendingUnitCount:1];
-	[self.diskCache fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
+	[progress dctImageCache_addWrappedBlock:^{
+		[self.diskCache fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 
-		if (image) {
-			[progress becomeCurrentWithPendingUnitCount:1];
-			[self.memoryCache setImage:image forAttributes:attributes];
-			[progress resignCurrent];
-			handler(image, error);
-			return;
-		}
+			if (image) {
+				[progress dctImageCache_addWrappedBlock:^{
+					[self.memoryCache setImage:image forAttributes:attributes];
+				}];
+				handler(image, error);
+				return;
+			}
 
-		[progress becomeCurrentWithPendingUnitCount:1];
-		[self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
-			handler(image, error);
-			if (!image) return;
-			[progress becomeCurrentWithPendingUnitCount:2];
-			[self.memoryCache setImage:image forAttributes:attributes];
-			[self.diskCache setImage:image forAttributes:attributes];
-			[progress resignCurrent];
+			[progress dctImageCache_addWrappedBlock:^{
+				[self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+					handler(image, error);
+					if (!image) return;
+					[progress dctImageCache_addWrappedBlock:^{
+						[self.memoryCache setImage:image forAttributes:attributes];
+						[self.diskCache setImage:image forAttributes:attributes];
+					}];
+				}];
+			}];
 		}];
-		[progress resignCurrent];
 	}];
-	[progress resignCurrent];
 }
 
 + (NSURL *)cacheDirectoryURL {

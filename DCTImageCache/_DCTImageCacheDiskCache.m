@@ -9,7 +9,6 @@
 @import CoreData;
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheItem.h"
-#import "NSProgress+DCTImageCache.h"
 
 static NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
 static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
@@ -122,7 +121,11 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 - (void)performOperationWithPriority:(NSOperationQueuePriority)priority cancellable:(BOOL)cancellable block:(void(^)())block {
 
 	NSProgress *progress = [NSProgress progressWithTotalUnitCount:1];
-	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:block];
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+		[progress becomeCurrentWithPendingUnitCount:1];
+		block();
+		[progress resignCurrent];
+	}];
 
 	if (cancellable) {
 		progress.cancellationHandler = ^{
