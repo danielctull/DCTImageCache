@@ -73,9 +73,9 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	[self.diskCache removeImagesWithAttributes:attributes];
 }
 
-- (NSProgress *)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(void(^)(NSError *error))handler {
+- (void)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(void(^)(NSError *error))handler {
 
-	NSProgress *progress = [NSProgress new];
+	NSProgress *progress = [NSProgress progressWithTotalUnitCount:1];
 
 	if (handler == NULL)						// Safe gaurd against a NULL handler
 		handler = ^(NSError *error){};
@@ -84,70 +84,75 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			if (!progress.cancelled) handler(error);
 		};
 
-	[self.diskCache hasImageWithAttributes:attributes parentProgress:progress handler:^(BOOL hasImage, NSError *error) {
+	[progress becomeCurrentWithPendingUnitCount:1];
+	[self.diskCache hasImageWithAttributes:attributes handler:^(BOOL hasImage, NSError *error) {
 
 		if (hasImage) {
 			handler(nil);
 			return;
 		}
 
-		id<DCTImageCacheCancellation> fetch = [self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+		[progress becomeCurrentWithPendingUnitCount:1];
+		[self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 			handler(error);
 			if (!image) return;
-			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
-		}];
 
-		[progress becomeCurrentWithPendingUnitCount:0];
-		NSProgress *fetchProgress = [[NSProgress alloc] initWithParent:progress userInfo:nil];
-		fetchProgress.cancellationHandler = ^{
-			[fetch cancel];
-		};
+			[progress becomeCurrentWithPendingUnitCount:1];
+			[self.diskCache setImage:image forAttributes:attributes];
+			[progress resignCurrent];
 	}];
-
-	return progress;
+		[progress resignCurrent];
+	}];
+	[progress resignCurrent];
 }
 
-- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
+- (void)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
-	if (handler == NULL) return [self prefetchImageWithAttributes:attributes handler:NULL];
+	if (!handler) {
+		[self prefetchImageWithAttributes:attributes handler:nil];
+		return;
+	}
 	
 	// If the image exists in the memory cache, use it!
 	DCTImageCacheImage *image = [self.memoryCache imageWithAttributes:attributes];
 	if (image) {
 		handler(image, nil);
-		return nil;
+		return;
 	}
 
-	NSProgress *progress = [NSProgress new];
+	NSProgress *progress = [NSProgress progressWithTotalUnitCount:1];
 
 	// Make sure we don't call the handler if the process is cancelled
 	handler = ^(DCTImageCacheImage *image, NSError *error){
+		progress.completedUnitCount = progress.totalUnitCount;
+		if (!progress.cancelled) {
 		if (!progress.cancelled) handler(image, error);
+		}
 	};
 
-	[self.diskCache fetchImageWithAttributes:attributes parentProgress:progress handler:^(DCTImageCacheImage *image, NSError *error) {
+	[progress becomeCurrentWithPendingUnitCount:1];
+	[self.diskCache fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 
 		if (image) {
+			[progress becomeCurrentWithPendingUnitCount:1];
 			[self.memoryCache setImage:image forAttributes:attributes];
+			[progress resignCurrent];
 			handler(image, error);
 			return;
 		}
 
-		id<DCTImageCacheCancellation> fetch = [self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+		[progress becomeCurrentWithPendingUnitCount:1];
+		[self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 			handler(image, error);
 			if (!image) return;
+			[progress becomeCurrentWithPendingUnitCount:2];
 			[self.memoryCache setImage:image forAttributes:attributes];
-			[self.diskCache setImage:image forAttributes:attributes parentProgress:nil];
+			[self.diskCache setImage:image forAttributes:attributes];
+			[progress resignCurrent];
 		}];
-
-		[progress becomeCurrentWithPendingUnitCount:0];
-		NSProgress *fetchProgress = [[NSProgress alloc] initWithParent:progress userInfo:nil];
-		fetchProgress.cancellationHandler = ^{
-			[fetch cancel];
-		};
+		[progress resignCurrent];
 	}];
-
-	return progress;
+	[progress resignCurrent];
 }
 
 + (NSURL *)cacheDirectoryURL {

@@ -68,7 +68,7 @@ typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
 
 /** Checks whether an image is found on disk with the given attributes, 
  if not the imageFetcher is executed to fetch the image. */
-- (NSProgress *)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheHandler)handler;
+- (void)prefetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheHandler)handler;
 
 /** Retrieves an image with the given attributes, looking in the memory cache, 
  disk cache and finally calling the imageFetcher. 
@@ -96,8 +96,7 @@ typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
  
  @param attributes The attributes for the image.
  @param handler The handler that should be executed with the fetched image.
- @return A process object that can be cancelled, preventing the handler from being executed.
  */
-- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
+- (void)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler;
 
 @end

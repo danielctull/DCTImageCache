@@ -52,28 +52,27 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	self.managedObjectContext.persistentStoreCoordinator = coordinator;
 }
 
-- (NSProgress *)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(_DCTImageCacheHasImageHandler)handler {
+- (void)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes
+					   handler:(_DCTImageCacheHasImageHandler)handler {
 
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
 
-	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:YES block:^{
 		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 		NSError *error;
 		NSUInteger count = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
 		handler(count > 0, error);
 	}];
-	[self.queue addOperation:operation];
-
-	return [NSProgress dctImageCache_progressWithParentProgress:parentProgress operation:operation];
 }
 
-- (NSProgress *)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress {
+- (void)setImage:(DCTImageCacheImage *)image
+   forAttributes:(DCTImageCacheAttributes *)attributes {
 
 	NSParameterAssert(image);
 	NSParameterAssert(attributes);
 
-	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:NO block:^{
 		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:self.managedObjectContext];
 		[attributes _setupCacheItemProperties:item];
 		item.imageData = [NSKeyedArchiver archivedDataWithRootObject:image];
@@ -81,18 +80,15 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		[self.managedObjectContext save:NULL];
 		[self.managedObjectContext refreshObject:item mergeChanges:NO];
 	}];
-	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
-	[self.queue addOperation:operation];
-
-	return [NSProgress dctImageCache_progressWithParentProgress:parentProgress operation:operation];
 }
 
-- (NSProgress *)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes parentProgress:(NSProgress *)parentProgress handler:(DCTImageCacheImageHandler)handler {
+- (void)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes
+						 handler:(DCTImageCacheImageHandler)handler {
 
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);
 
-	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:YES block:^{
 		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 		fetchRequest.fetchLimit = 1;
 		NSError *error;
@@ -105,29 +101,36 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 		}
 		handler(image, error);
 	}];
-	[self.queue addOperation:operation];
-
-	return [NSProgress dctImageCache_progressWithParentProgress:parentProgress operation:operation];
 }
 
 - (void)removeAllImages {
-	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:NO block:^{
 		[[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:NULL];
 		[self createStack];
 	}];
-	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
-	[self.queue addOperation:operation];
 }
 
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes {
-
-	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:NO block:^{
 		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
 		NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items) [self.managedObjectContext deleteObject:item];
 		[self.managedObjectContext save:NULL];
 	}];
-	operation.queuePriority = NSOperationQueuePriorityVeryHigh;
+}
+
+- (void)performOperationWithPriority:(NSOperationQueuePriority)priority cancellable:(BOOL)cancellable block:(void(^)())block {
+
+	NSProgress *progress = [NSProgress progressWithTotalUnitCount:1];
+	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:block];
+
+	if (cancellable) {
+		progress.cancellationHandler = ^{
+			[operation cancel];
+		};
+	}
+
+	operation.queuePriority = priority;
 	[self.queue addOperation:operation];
 }
 
