@@ -100,7 +100,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 			[progress becomeCurrentWithPendingUnitCount:1];
 			[self.diskCache setImage:image forAttributes:attributes];
 			[progress resignCurrent];
-	}];
+		}];
 		[progress resignCurrent];
 	}];
 	[progress resignCurrent];
@@ -126,7 +126,9 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	handler = ^(DCTImageCacheImage *image, NSError *error){
 		progress.completedUnitCount = progress.totalUnitCount;
 		if (!progress.cancelled) {
-		if (!progress.cancelled) handler(image, error);
+			dispatch_async(dispatch_get_main_queue(), ^{
+				if (!progress.cancelled) handler(image, error);
+			});
 		}
 	};
 
