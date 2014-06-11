@@ -12,12 +12,6 @@ const struct DCTImageCacheItemAttributes DCTImageCacheItemAttributes = {
 	.sizeString = @"sizeString",
 };
 
-const struct DCTImageCacheItemRelationships DCTImageCacheItemRelationships = {
-};
-
-const struct DCTImageCacheItemFetchedProperties DCTImageCacheItemFetchedProperties = {
-};
-
 @implementation DCTImageCacheItemID
 @end
 
@@ -43,7 +37,7 @@ const struct DCTImageCacheItemFetchedProperties DCTImageCacheItemFetchedProperti
 
 + (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
-	
+
 	if ([key isEqualToString:@"scaleValue"]) {
 		NSSet *affectingKey = [NSSet setWithObject:@"scale"];
 		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
@@ -53,40 +47,15 @@ const struct DCTImageCacheItemFetchedProperties DCTImageCacheItemFetchedProperti
 	return keyPaths;
 }
 
-
-
-
 @dynamic creationDate;
-
-
-
-
-
 
 @dynamic imageData;
 
-
-
-
-
-
 @dynamic key;
-
-
-
-
-
 
 @dynamic lastAccessedDate;
 
-
-
-
-
-
 @dynamic scale;
-
-
 
 - (float)scaleValue {
 	NSNumber *result = [self scale];
@@ -94,7 +63,7 @@ const struct DCTImageCacheItemFetchedProperties DCTImageCacheItemFetchedProperti
 }
 
 - (void)setScaleValue:(float)value_ {
-	[self setScale:[NSNumber numberWithFloat:value_]];
+	[self setScale:@(value_)];
 }
 
 - (float)primitiveScaleValue {
@@ -103,23 +72,10 @@ const struct DCTImageCacheItemFetchedProperties DCTImageCacheItemFetchedProperti
 }
 
 - (void)setPrimitiveScaleValue:(float)value_ {
-	[self setPrimitiveScale:[NSNumber numberWithFloat:value_]];
+	[self setPrimitiveScale:@(value_)];
 }
-
-
-
-
 
 @dynamic sizeString;
 
-
-
-
-
-
-
-
-
-
-
 @end
+

@@ -1,8 +1,7 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
 // Make changes to DCTImageCacheItem.h instead.
 
-#import <CoreData/CoreData.h>
-
+@import CoreData;
 
 extern const struct DCTImageCacheItemAttributes {
 	__unsafe_unretained NSString *creationDate;
@@ -13,20 +12,6 @@ extern const struct DCTImageCacheItemAttributes {
 	__unsafe_unretained NSString *sizeString;
 } DCTImageCacheItemAttributes;
 
-extern const struct DCTImageCacheItemRelationships {
-} DCTImageCacheItemRelationships;
-
-extern const struct DCTImageCacheItemFetchedProperties {
-} DCTImageCacheItemFetchedProperties;
-
-
-
-
-
-
-
-
-
 @interface DCTImageCacheItemID : NSManagedObjectID {}
 @end
 
@@ -36,107 +21,49 @@ extern const struct DCTImageCacheItemFetchedProperties {
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
 - (DCTImageCacheItemID*)objectID;
 
-
-
-
-
 @property (nonatomic, strong) NSDate* creationDate;
-
-
 
 //- (BOOL)validateCreationDate:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSData* imageData;
-
-
 
 //- (BOOL)validateImageData:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSString* key;
-
-
 
 //- (BOOL)validateKey:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSDate* lastAccessedDate;
-
-
 
 //- (BOOL)validateLastAccessedDate:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSNumber* scale;
 
-
-
-@property float scaleValue;
+@property (atomic) float scaleValue;
 - (float)scaleValue;
 - (void)setScaleValue:(float)value_;
 
 //- (BOOL)validateScale:(id*)value_ error:(NSError**)error_;
 
-
-
-
-
 @property (nonatomic, strong) NSString* sizeString;
 
-
-
 //- (BOOL)validateSizeString:(id*)value_ error:(NSError**)error_;
-
-
-
-
-
-
-@end
-
-@interface _DCTImageCacheItem (CoreDataGeneratedAccessors)
 
 @end
 
 @interface _DCTImageCacheItem (CoreDataGeneratedPrimitiveAccessors)
 
-
 - (NSDate*)primitiveCreationDate;
 - (void)setPrimitiveCreationDate:(NSDate*)value;
-
-
-
 
 - (NSData*)primitiveImageData;
 - (void)setPrimitiveImageData:(NSData*)value;
 
-
-
-
 - (NSString*)primitiveKey;
 - (void)setPrimitiveKey:(NSString*)value;
 
-
-
-
 - (NSDate*)primitiveLastAccessedDate;
 - (void)setPrimitiveLastAccessedDate:(NSDate*)value;
-
-
-
 
 - (NSNumber*)primitiveScale;
 - (void)setPrimitiveScale:(NSNumber*)value;
@@ -144,13 +71,7 @@ extern const struct DCTImageCacheItemFetchedProperties {
 - (float)primitiveScaleValue;
 - (void)setPrimitiveScaleValue:(float)value_;
 
-
-
-
 - (NSString*)primitiveSizeString;
 - (void)setPrimitiveSizeString:(NSString*)value;
-
-
-
 
 @end
