@@ -5,7 +5,7 @@
 
 const struct DCTImageCacheItemAttributes DCTImageCacheItemAttributes = {
 	.creationDate = @"creationDate",
-	.imageData = @"imageData",
+	.identifier = @"identifier",
 	.key = @"key",
 	.lastAccessedDate = @"lastAccessedDate",
 	.scale = @"scale",
@@ -49,7 +49,7 @@ const struct DCTImageCacheItemAttributes DCTImageCacheItemAttributes = {
 
 @dynamic creationDate;
 
-@dynamic imageData;
+@dynamic identifier;
 
 @dynamic key;
 

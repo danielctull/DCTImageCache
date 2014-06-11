@@ -2,7 +2,7 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="DCTImageCacheItem" representedClassName="DCTImageCacheItem" syncable="YES">
         <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="key" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastAccessedDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="scale" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>

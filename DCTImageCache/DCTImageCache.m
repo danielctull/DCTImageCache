@@ -61,7 +61,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 }
 
 - (NSURL *)storeURL {
-	return self.diskCache.storeURL;
+	return self.diskCache.URL;
 }
 
 - (void)removeAllImages {

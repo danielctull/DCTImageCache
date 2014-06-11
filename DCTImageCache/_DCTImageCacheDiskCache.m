@@ -12,19 +12,24 @@
 
 static NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
 static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
+static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 
 @interface _DCTImageCacheDiskCache ()
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSOperationQueue *queue;
 @property (nonatomic, weak) NSOperation *saveOperation;
+@property (nonatomic, readonly) NSURL *storeURL;
+@property (nonatomic) NSFileManager *fileManager;
 @end
 
 @implementation _DCTImageCacheDiskCache
 
 - (id)initWithStoreURL:(NSURL *)storeURL {
 	if (!(self = [super init])) return nil;
-	_storeURL = [storeURL copy];
-	_queue = [[NSOperationQueue alloc] init];
+	_URL = [storeURL copy];
+	_storeURL = [storeURL URLByAppendingPathComponent:DCTImageCacheDiskCacheStoreName];
+	_fileManager = [NSFileManager new];
+	_queue = [NSOperationQueue new];
 	_queue.name = NSStringFromClass([self class]);
 	_queue.maxConcurrentOperationCount = 1;
 	[_queue addOperationWithBlock:^{
@@ -38,12 +43,10 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSURL *storeDirectoryURL = [self.storeURL URLByDeletingLastPathComponent];
-	[fileManager createDirectoryAtURL:storeDirectoryURL withIntermediateDirectories:YES attributes:nil error:NULL];
+	[self.fileManager createDirectoryAtURL:self.URL withIntermediateDirectories:YES attributes:nil error:NULL];
 	NSDictionary *storeOptions = @{ NSSQLitePragmasOption : @{ @"journal_mode" : @"WAL" } };
 	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:storeOptions error:NULL]) {
-		[fileManager removeItemAtURL:self.storeURL error:NULL];
+		[self.fileManager removeItemAtURL:self.storeURL error:NULL];
 		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:storeOptions error:NULL];
 	}
 
@@ -72,15 +75,23 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSParameterAssert(attributes);
 
 	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:NO block:^{
+
 		NSDate *date = [NSDate new];
-		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:self.managedObjectContext];
+		NSString *identifier = [[NSUUID UUID] UUIDString];
+
+		DCTImageCacheItem *item = [DCTImageCacheItem insertInManagedObjectContext:self.managedObjectContext];
 		item.key = attributes.key;
 		item.sizeString = attributes.sizeString;
-		item.imageData = [NSKeyedArchiver archivedDataWithRootObject:image];
+		item.scale = @(attributes.scale);
 		item.creationDate = date;
 		item.lastAccessedDate = date;
+		item.identifier = identifier;
+
+		NSURL *URL = [self.URL URLByAppendingPathComponent:identifier];
+		NSData *data = [NSKeyedArchiver archivedDataWithRootObject:image];
+		[self.fileManager createFileAtPath:URL.path contents:data attributes:nil];
+
 		[self.managedObjectContext save:NULL];
-		[self.managedObjectContext refreshObject:item mergeChanges:NO];
 	}];
 }
 
@@ -91,24 +102,34 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSParameterAssert(handler);
 
 	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:YES block:^{
+
 		NSFetchRequest *fetchRequest = [self fetchRequestFromAttributes:attributes];
 		fetchRequest.fetchLimit = 1;
 		NSError *error;
 		DCTImageCacheImage *image;
 		NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-		_DCTImageCacheItem *item = [items lastObject];
+		DCTImageCacheItem *item = [items lastObject];
 		item.lastAccessedDate = [NSDate new];
+
 		if (item) {
-			image = [NSKeyedUnarchiver unarchiveObjectWithData:item.imageData];
-			[self.managedObjectContext refreshObject:item mergeChanges:NO];
+			NSString *identifier = item.identifier;
+			NSURL *URL = [self.URL URLByAppendingPathComponent:identifier];
+			NSData *data = [self.fileManager contentsAtPath:URL.path];
+			if (data) {
+				image = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+			} else {
+				[self.managedObjectContext deleteObject:item];
+			}
+			[self.managedObjectContext save:NULL];
 		}
+
 		handler(image, error);
 	}];
 }
 
 - (void)removeAllImages {
 	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:NO block:^{
-		[[NSFileManager defaultManager] removeItemAtURL:self.storeURL error:NULL];
+		[[NSFileManager defaultManager] removeItemAtURL:self.URL error:NULL];
 		[self createStack];
 	}];
 }
@@ -117,7 +138,11 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:NO block:^{
 		NSFetchRequest *fetchRequest = [self fetchRequestFromAttributes:attributes];
 		NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:NULL];
-		for (_DCTImageCacheItem *item in items) [self.managedObjectContext deleteObject:item];
+		for (DCTImageCacheItem *item in items) {
+			NSURL *URL = [self.URL URLByAppendingPathComponent:item.identifier];
+			[self.fileManager removeItemAtURL:URL error:NULL];
+			[self.managedObjectContext deleteObject:item];
+		}
 		[self.managedObjectContext save:NULL];
 	}];
 }

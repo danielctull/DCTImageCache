@@ -5,7 +5,7 @@
 
 extern const struct DCTImageCacheItemAttributes {
 	__unsafe_unretained NSString *creationDate;
-	__unsafe_unretained NSString *imageData;
+	__unsafe_unretained NSString *identifier;
 	__unsafe_unretained NSString *key;
 	__unsafe_unretained NSString *lastAccessedDate;
 	__unsafe_unretained NSString *scale;
@@ -25,9 +25,9 @@ extern const struct DCTImageCacheItemAttributes {
 
 //- (BOOL)validateCreationDate:(id*)value_ error:(NSError**)error_;
 
-@property (nonatomic, strong) NSData* imageData;
+@property (nonatomic, strong) NSString* identifier;
 
-//- (BOOL)validateImageData:(id*)value_ error:(NSError**)error_;
+//- (BOOL)validateIdentifier:(id*)value_ error:(NSError**)error_;
 
 @property (nonatomic, strong) NSString* key;
 
@@ -56,8 +56,8 @@ extern const struct DCTImageCacheItemAttributes {
 - (NSDate*)primitiveCreationDate;
 - (void)setPrimitiveCreationDate:(NSDate*)value;
 
-- (NSData*)primitiveImageData;
-- (void)setPrimitiveImageData:(NSData*)value;
+- (NSString*)primitiveIdentifier;
+- (void)setPrimitiveIdentifier:(NSString*)value;
 
 - (NSString*)primitiveKey;
 - (void)setPrimitiveKey:(NSString*)value;
