@@ -11,20 +11,28 @@
 #import <DCTImageCache/DCTImageCache.h>
 
 @interface AppDelegate () <DCTImageCacheDelegate>
-@property (nonatomic) ViewController *viewController;
+@property (nonatomic) DCTImageCache *imageCache;
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	
-	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
-	imageCache.delegate = self;
-	
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-	self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-	self.window.rootViewController = self.viewController;
-    [self.window makeKeyAndVisible];
+
+	NSURL *cacheDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
+	NSURL *URL = [cacheDirectory URLByAppendingPathComponent:@"Image Cache Test"];
+	self.imageCache = [DCTImageCache imageCacheWithURL:URL];
+	self.imageCache.delegate = self;
+
+	id rootViewController = self.window.rootViewController;
+	NSAssert([rootViewController isKindOfClass:[UINavigationController class]], @"Root view controller should be a UINavigationController, %@", rootViewController);
+	UINavigationController *navigationController = rootViewController;
+
+	id topViewController = navigationController.topViewController;
+	NSAssert([topViewController isKindOfClass:[ViewController class]], @"Top view controller should be a ViewController, %@", topViewController);
+	ViewController *viewController = topViewController;
+
+	viewController.imageCache = self.imageCache;
+
     return YES;
 }
 

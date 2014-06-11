@@ -16,21 +16,7 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-	self.progresses = [NSMutableDictionary new];
-	NSString *name = NSStringFromClass([TableViewCell class]);
-	UINib *nib = [UINib nibWithNibName:name bundle:nil];
-	[self.tableView registerNib:nib forCellReuseIdentifier:name];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 10;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([TableViewCell class])];
-}
+#pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)tableViewCell forRowAtIndexPath:(NSIndexPath *)indexPath {
 
@@ -45,9 +31,15 @@
 	NSProgress *progress = [NSProgress progressWithTotalUnitCount:1];
 	self.progresses[indexPath] = progress;
 	[progress becomeCurrentWithPendingUnitCount:1];
-	[[DCTImageCache defaultImageCache] fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+	[self.imageCache fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
 
-		NSTimeInterval duration = 0.0f;//duration ? 1.0f/3.0f : 0.0f;
+		NSAssert(!progress.cancelled, @"The image cache should never call back if the progress is cancelled. %@", progress);
+
+		// If the progress is still the current progress, then this method has returned instantly
+		// meaning we shouldn't animate the image onscreen.
+		BOOL shouldAnimate = ![progress isEqual:[NSProgress currentProgress]];
+
+		NSTimeInterval duration = shouldAnimate ? 1.0f/3.0f : 0.0f;
 		[UIView transitionWithView:imageView
 						  duration:duration
 						   options:UIViewAnimationOptionTransitionCrossDissolve
@@ -64,7 +56,18 @@
 	NSProgress *progress = self.progresses[indexPath];
 	[progress cancel];
 	[self.progresses removeObjectForKey:indexPath];
+	[cell.theImageView.layer removeAllAnimations];
 	cell.theImageView.image = nil;
+}
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	return 10;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	return [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([TableViewCell class])];
 }
 
 @end

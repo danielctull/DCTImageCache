@@ -7,6 +7,8 @@
 //
 
 @import UIKit;
+@class DCTImageCache;
 
 @interface ViewController : UITableViewController
+@property (nonatomic) DCTImageCache *imageCache;
 @end

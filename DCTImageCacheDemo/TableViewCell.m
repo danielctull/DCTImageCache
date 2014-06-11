@@ -10,6 +10,9 @@
 
 @implementation TableViewCell
 
-
+- (void)prepareForReuse {
+	[super prepareForReuse];
+	self.theImageView.image = nil;
+}
 
 @end
