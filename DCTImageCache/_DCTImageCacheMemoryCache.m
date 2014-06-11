@@ -26,19 +26,19 @@
 }
 
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes {
-	[self.cache removeObjectForKey:attributes.identifier];
+	[self.cache removeObjectForKey:attributes];
 }
 
 - (void)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes {
-	[self.cache setObject:image forKey:attributes.identifier];
+	[self.cache setObject:image forKey:attributes];
 }
 
 - (DCTImageCacheImage *)imageWithAttributes:(DCTImageCacheAttributes *)attributes {
-	return [self.cache objectForKey:attributes.identifier];
+	return [self.cache objectForKey:attributes];
 }
 
 - (BOOL)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes {
-	return ([self.cache objectForKey:attributes.identifier] != nil);
+	return ([self.cache objectForKey:attributes] != nil);
 }
 
 @end

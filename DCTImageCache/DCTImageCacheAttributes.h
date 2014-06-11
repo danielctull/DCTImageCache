@@ -9,23 +9,25 @@
 @import Foundation;
 @import CoreGraphics;
 
-extern NSString *const DCTImageCacheAttributesKey;
-extern NSString *const DCTImageCacheAttributesSize;
-extern NSString *const DCTImageCacheAttributesCreatedBefore;
+
+
+typedef NS_ENUM(NSInteger, DCTImageCacheAttributesContentMode) {
+    DCTImageCacheAttributesContentModeOriginal,
+    DCTImageCacheAttributesContentModeAspectFit,
+    DCTImageCacheAttributesContentModeAspectFill
+};
+
 
 id DCTImageCacheAttributesObjectForSize(CGSize);
 
 /**
  */
-@interface DCTImageCacheAttributes : NSObject
+@interface DCTImageCacheAttributes : NSObject <NSCopying>
 
-- (id)initWithDictionary:(NSDictionary *)dictionary;
-@property (nonatomic, readonly) NSDictionary *dictionary;
-
-@property (nonatomic, readonly) NSString *key;
-@property (nonatomic, readonly) NSDate *createdBefore;
-@property (nonatomic, readonly) CGSize size;
-
-@property (nonatomic, readonly) NSString *identifier;
+@property (nonatomic, copy) NSString *key;
+@property (nonatomic, copy) NSDate *createdBefore;
+@property (nonatomic) CGSize size;
+@property (nonatomic) CGFloat scale;
+@property (nonatomic) DCTImageCacheAttributesContentMode contentMode;
 
 @end
