@@ -7,7 +7,6 @@
 //
 
 #import "DCTImageCache.h"
-#import "_DCTImageCacheAttributes.h"
 
 #if TARGET_OS_IPHONE
 typedef UIImage DCTImageCacheImage;

@@ -1,22 +1,24 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to _DCTImageCacheItem.m instead.
+// Make changes to DCTImageCacheItem.m instead.
 
 #import "_DCTImageCacheItem.h"
 
-const struct _DCTImageCacheItemAttributes _DCTImageCacheItemAttributes = {
-	.date = @"date",
+const struct DCTImageCacheItemAttributes DCTImageCacheItemAttributes = {
+	.creationDate = @"creationDate",
 	.imageData = @"imageData",
 	.key = @"key",
+	.lastAccessedDate = @"lastAccessedDate",
+	.scale = @"scale",
 	.sizeString = @"sizeString",
 };
 
-const struct _DCTImageCacheItemRelationships _DCTImageCacheItemRelationships = {
+const struct DCTImageCacheItemRelationships DCTImageCacheItemRelationships = {
 };
 
-const struct _DCTImageCacheItemFetchedProperties _DCTImageCacheItemFetchedProperties = {
+const struct DCTImageCacheItemFetchedProperties DCTImageCacheItemFetchedProperties = {
 };
 
-@implementation _DCTImageCacheItemID
+@implementation DCTImageCacheItemID
 @end
 
 @implementation _DCTImageCacheItem
@@ -35,13 +37,18 @@ const struct _DCTImageCacheItemFetchedProperties _DCTImageCacheItemFetchedProper
 	return [NSEntityDescription entityForName:@"DCTImageCacheItem" inManagedObjectContext:moc_];
 }
 
-- (_DCTImageCacheItemID*)objectID {
-	return (_DCTImageCacheItemID*)[super objectID];
+- (DCTImageCacheItemID*)objectID {
+	return (DCTImageCacheItemID*)[super objectID];
 }
 
-+ (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
++ (NSSet*)keyPathsForValuesAffectingValueForKey:(NSString*)key {
 	NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
 	
+	if ([key isEqualToString:@"scaleValue"]) {
+		NSSet *affectingKey = [NSSet setWithObject:@"scale"];
+		keyPaths = [keyPaths setByAddingObjectsFromSet:affectingKey];
+		return keyPaths;
+	}
 
 	return keyPaths;
 }
@@ -49,7 +56,7 @@ const struct _DCTImageCacheItemFetchedProperties _DCTImageCacheItemFetchedProper
 
 
 
-@dynamic date;
+@dynamic creationDate;
 
 
 
@@ -65,6 +72,39 @@ const struct _DCTImageCacheItemFetchedProperties _DCTImageCacheItemFetchedProper
 
 @dynamic key;
 
+
+
+
+
+
+@dynamic lastAccessedDate;
+
+
+
+
+
+
+@dynamic scale;
+
+
+
+- (float)scaleValue {
+	NSNumber *result = [self scale];
+	return [result floatValue];
+}
+
+- (void)setScaleValue:(float)value_ {
+	[self setScale:[NSNumber numberWithFloat:value_]];
+}
+
+- (float)primitiveScaleValue {
+	NSNumber *result = [self primitiveScale];
+	return [result floatValue];
+}
+
+- (void)setPrimitiveScaleValue:(float)value_ {
+	[self setPrimitiveScale:[NSNumber numberWithFloat:value_]];
+}
 
 
 

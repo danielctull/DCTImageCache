@@ -8,7 +8,7 @@
 
 @import CoreData;
 #import "_DCTImageCacheDiskCache.h"
-#import "_DCTImageCacheItem.h"
+#import "DCTImageCacheItem.h"
 
 static NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
 static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
@@ -58,7 +58,7 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSParameterAssert(handler);
 
 	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:YES block:^{
-		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
+		NSFetchRequest *fetchRequest = [self fetchRequestFromAttributes:attributes];
 		NSError *error;
 		NSUInteger count = [self.managedObjectContext countForFetchRequest:fetchRequest error:&error];
 		handler(count > 0, error);
@@ -72,10 +72,13 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSParameterAssert(attributes);
 
 	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:NO block:^{
+		NSDate *date = [NSDate new];
 		_DCTImageCacheItem *item = [_DCTImageCacheItem insertInManagedObjectContext:self.managedObjectContext];
-		[attributes _setupCacheItemProperties:item];
+		item.key = attributes.key;
+		item.sizeString = attributes.sizeString;
 		item.imageData = [NSKeyedArchiver archivedDataWithRootObject:image];
-		item.date = [NSDate new];
+		item.creationDate = date;
+		item.lastAccessedDate = date;
 		[self.managedObjectContext save:NULL];
 		[self.managedObjectContext refreshObject:item mergeChanges:NO];
 	}];
@@ -88,12 +91,13 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 	NSParameterAssert(handler);
 
 	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:YES block:^{
-		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
+		NSFetchRequest *fetchRequest = [self fetchRequestFromAttributes:attributes];
 		fetchRequest.fetchLimit = 1;
 		NSError *error;
 		DCTImageCacheImage *image;
 		NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
 		_DCTImageCacheItem *item = [items lastObject];
+		item.lastAccessedDate = [NSDate new];
 		if (item) {
 			image = [NSKeyedUnarchiver unarchiveObjectWithData:item.imageData];
 			[self.managedObjectContext refreshObject:item mergeChanges:NO];
@@ -111,7 +115,7 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 
 - (void)removeImagesWithAttributes:(DCTImageCacheAttributes *)attributes {
 	[self performOperationWithPriority:NSOperationQueuePriorityVeryHigh cancellable:NO block:^{
-		NSFetchRequest *fetchRequest = [attributes _fetchRequest];
+		NSFetchRequest *fetchRequest = [self fetchRequestFromAttributes:attributes];
 		NSArray *items = [self.managedObjectContext executeFetchRequest:fetchRequest error:NULL];
 		for (_DCTImageCacheItem *item in items) [self.managedObjectContext deleteObject:item];
 		[self.managedObjectContext save:NULL];
@@ -135,6 +139,38 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 
 	operation.queuePriority = priority;
 	[self.queue addOperation:operation];
+}
+
+- (NSFetchRequest *)fetchRequestFromAttributes:(DCTImageCacheAttributes *)attributes {
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[DCTImageCacheItem entityName]];
+
+	NSMutableArray *predicates = [[NSMutableArray alloc] initWithCapacity:3];
+
+	NSString *key = attributes.key;
+	if (key.length > 0) {
+		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", DCTImageCacheItemAttributes.key, key];
+		[predicates addObject:keyPredicate];
+	}
+
+	CGFloat scale = attributes.scale;
+	NSPredicate *scalePredicate = [NSPredicate predicateWithFormat:@"%K == %@", DCTImageCacheItemAttributes.scale, @(scale)];
+	[predicates addObject:scalePredicate];
+
+	NSString *sizeString = attributes.sizeString;
+	if (sizeString.length > 0) {
+		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", DCTImageCacheItemAttributes.sizeString, sizeString];
+		[predicates addObject:sizePredicate];
+	}
+
+	NSDate *createdBefore = attributes.createdBefore;
+	if (createdBefore) {
+		NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"%K < %@", DCTImageCacheItemAttributes.creationDate, createdBefore];
+		[predicates addObject:datePredicate];
+	}
+
+	fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
+	return fetchRequest;
 }
 
 @end

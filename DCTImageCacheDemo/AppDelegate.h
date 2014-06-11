@@ -6,14 +6,10 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
-@class ViewController;
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, NSURLConnectionDataDelegate>
-
-@property (strong, nonatomic) UIWindow *window;
-
-@property (strong, nonatomic) ViewController *viewController;
+@property (nonatomic) UIWindow *window;
 
 @end

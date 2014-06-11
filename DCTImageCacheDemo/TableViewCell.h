@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 @interface TableViewCell : UITableViewCell
 @property (nonatomic, weak) IBOutlet UIImageView *theImageView;

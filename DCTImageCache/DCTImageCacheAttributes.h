@@ -17,8 +17,7 @@ typedef NS_ENUM(NSInteger, DCTImageCacheAttributesContentMode) {
     DCTImageCacheAttributesContentModeAspectFill
 };
 
-
-id DCTImageCacheAttributesObjectForSize(CGSize);
+extern CGSize const DCTImageCacheAttributesSizeNull;
 
 /**
  */
@@ -29,5 +28,7 @@ id DCTImageCacheAttributesObjectForSize(CGSize);
 @property (nonatomic) CGSize size;
 @property (nonatomic) CGFloat scale;
 @property (nonatomic) DCTImageCacheAttributesContentMode contentMode;
+
+@property (nonatomic, readonly) NSString *sizeString;
 
 @end

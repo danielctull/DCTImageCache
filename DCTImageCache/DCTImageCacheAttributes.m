@@ -6,21 +6,16 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import "_DCTImageCacheAttributes.h"
+#import "DCTImageCacheAttributes.h"
 
-static CGSize const DCTImageCacheAttributesNullSize = {-CGFLOAT_MAX, -CGFLOAT_MAX};
-
-id DCTImageCacheAttributesObjectForSize(CGSize size) {
-	NSDictionary *dictionary = (__bridge NSDictionary *)CGSizeCreateDictionaryRepresentation(size);
-	return dictionary;
-}
+CGSize const DCTImageCacheAttributesSizeNull = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 
 @implementation DCTImageCacheAttributes
 
 - (instancetype)init {
 	self = [super init];
 	if (!self) return nil;
-	_size = DCTImageCacheAttributesNullSize;
+	_size = DCTImageCacheAttributesSizeNull;
 	_scale = 1.0f;
 	_contentMode = DCTImageCacheAttributesContentModeAspectFill;
 	return self;
@@ -67,48 +62,14 @@ id DCTImageCacheAttributesObjectForSize(CGSize size) {
 }
 
 - (NSString *)sizeString {
+
+	if (CGSizeEqualToSize(self.size, DCTImageCacheAttributesSizeNull)) {
+		return nil;
+	}
+
 	return [NSString stringWithFormat:@"(%@, %@)",
 			@(self.size.width),
 			@(self.size.height)];
-}
-
-
-
-
-
-
-
-
-
-
-
-
-- (NSFetchRequest *)_fetchRequest {
-
-	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:[_DCTImageCacheItem entityName]];
-
-	NSMutableArray *predicates = [[NSMutableArray alloc] initWithCapacity:3];
-
-	NSString *key = self.key;
-	if (key.length > 0) {
-		NSPredicate *keyPredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.key, key];
-		[predicates addObject:keyPredicate];
-	}
-
-	NSString *sizeString = self.sizeString;
-	if (sizeString.length > 0) {
-		NSPredicate *sizePredicate = [NSPredicate predicateWithFormat:@"%K == %@", _DCTImageCacheItemAttributes.sizeString, sizeString];
-		[predicates addObject:sizePredicate];
-	}
-
-	NSDate *createdBefore = self.createdBefore;
-	if (createdBefore) {
-		NSPredicate *datePredicate = [NSPredicate predicateWithFormat:@"%K < %@", _DCTImageCacheItemAttributes.date, createdBefore];
-		[predicates addObject:datePredicate];
-	}
-
-	fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
-	return fetchRequest;
 }
 
 @end

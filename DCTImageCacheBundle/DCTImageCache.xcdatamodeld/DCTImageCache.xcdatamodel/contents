@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C60" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="DCTImageCacheItem" representedClassName="_DCTImageCacheItem" syncable="YES">
-        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13D65" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="DCTImageCacheItem" representedClassName="DCTImageCacheItem" syncable="YES">
+        <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="key" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastAccessedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="scale" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="sizeString" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="DCTImageCacheItem" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="DCTImageCacheItem" positionX="0" positionY="0" width="128" height="135"/>
     </elements>
 </model>

@@ -10,14 +10,16 @@
 #import "ViewController.h"
 #import <DCTImageCache/DCTImageCache.h>
 
+@interface AppDelegate () <DCTImageCacheDelegate>
+@property (nonatomic) ViewController *viewController;
+@end
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	
 	DCTImageCache *imageCache = [DCTImageCache defaultImageCache];
-	imageCache.imageFetcher = ^(DCTImageCacheAttributes *attributes, id<DCTImageCacheCompletion> completion) {
-		return [self fetchImageForAttributes:attributes completion:completion];
-	};	
+	imageCache.delegate = self;
 	
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
@@ -26,21 +28,22 @@
     return YES;
 }
 
-- (id<DCTImageCacheProcess>)fetchImageForAttributes:(DCTImageCacheAttributes *)attributes completion:(id<DCTImageCacheCompletion>)completion {
+#pragma mark - DCTImageCacheDelegate
 
-	NSString *URLString = [NSString stringWithFormat:@"http://lorempixel.com/%i/%i/city/%@", (NSInteger)attributes.size.width, (NSInteger)attributes.size.height, attributes.key];
-	NSLog(@"%@:%@ %@", self, NSStringFromSelector(_cmd), URLString);
+- (void)imageCache:(DCTImageCache *)imageCache fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
+
+	NSInteger width = (NSInteger)(attributes.size.width * attributes.scale);
+	NSInteger height = (NSInteger)(attributes.size.height * attributes.scale);
+	NSString *URLString = [NSString stringWithFormat:@"http://lorempixel.com/%@/%@/city/%@", @(width), @(height), attributes.key];
+	NSLog(@"FETCHING\n%@\n%@\n\n", attributes, URLString);
 	NSURL *URL = [NSURL URLWithString:URLString];
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:URL];
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 	[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
 		UIImage *image = [UIImage imageWithData:data];
-		[completion finishWithImage:image error:error];
+		handler(image, error);
 		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	}];
-	return nil;
 }
-
-
 
 @end

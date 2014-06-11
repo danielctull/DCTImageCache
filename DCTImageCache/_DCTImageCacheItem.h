@@ -1,44 +1,51 @@
 // DO NOT EDIT. This file is machine-generated and constantly overwritten.
-// Make changes to _DCTImageCacheItem.h instead.
+// Make changes to DCTImageCacheItem.h instead.
 
-@import CoreData;
+#import <CoreData/CoreData.h>
 
 
-extern const struct _DCTImageCacheItemAttributes {
-	__unsafe_unretained NSString *date;
+extern const struct DCTImageCacheItemAttributes {
+	__unsafe_unretained NSString *creationDate;
 	__unsafe_unretained NSString *imageData;
 	__unsafe_unretained NSString *key;
+	__unsafe_unretained NSString *lastAccessedDate;
+	__unsafe_unretained NSString *scale;
 	__unsafe_unretained NSString *sizeString;
-} _DCTImageCacheItemAttributes;
+} DCTImageCacheItemAttributes;
 
-extern const struct _DCTImageCacheItemRelationships {
-} _DCTImageCacheItemRelationships;
+extern const struct DCTImageCacheItemRelationships {
+} DCTImageCacheItemRelationships;
 
-extern const struct _DCTImageCacheItemFetchedProperties {
-} _DCTImageCacheItemFetchedProperties;
-
-
+extern const struct DCTImageCacheItemFetchedProperties {
+} DCTImageCacheItemFetchedProperties;
 
 
 
 
 
-@interface _DCTImageCacheItemID : NSManagedObjectID {}
+
+
+
+
+@interface DCTImageCacheItemID : NSManagedObjectID {}
 @end
 
 @interface _DCTImageCacheItem : NSManagedObject {}
 + (id)insertInManagedObjectContext:(NSManagedObjectContext*)moc_;
 + (NSString*)entityName;
 + (NSEntityDescription*)entityInManagedObjectContext:(NSManagedObjectContext*)moc_;
-- (_DCTImageCacheItemID*)objectID;
+- (DCTImageCacheItemID*)objectID;
 
 
 
 
-@property (nonatomic, strong) NSDate* date;
+
+@property (nonatomic, strong) NSDate* creationDate;
 
 
-//- (BOOL)validateDate:(id*)value_ error:(NSError**)error_;
+
+//- (BOOL)validateCreationDate:(id*)value_ error:(NSError**)error_;
+
 
 
 
@@ -46,7 +53,9 @@ extern const struct _DCTImageCacheItemFetchedProperties {
 @property (nonatomic, strong) NSData* imageData;
 
 
+
 //- (BOOL)validateImageData:(id*)value_ error:(NSError**)error_;
+
 
 
 
@@ -54,12 +63,39 @@ extern const struct _DCTImageCacheItemFetchedProperties {
 @property (nonatomic, strong) NSString* key;
 
 
+
 //- (BOOL)validateKey:(id*)value_ error:(NSError**)error_;
 
 
 
 
+
+@property (nonatomic, strong) NSDate* lastAccessedDate;
+
+
+
+//- (BOOL)validateLastAccessedDate:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
+@property (nonatomic, strong) NSNumber* scale;
+
+
+
+@property float scaleValue;
+- (float)scaleValue;
+- (void)setScaleValue:(float)value_;
+
+//- (BOOL)validateScale:(id*)value_ error:(NSError**)error_;
+
+
+
+
+
 @property (nonatomic, strong) NSString* sizeString;
+
 
 
 //- (BOOL)validateSizeString:(id*)value_ error:(NSError**)error_;
@@ -78,8 +114,8 @@ extern const struct _DCTImageCacheItemFetchedProperties {
 @interface _DCTImageCacheItem (CoreDataGeneratedPrimitiveAccessors)
 
 
-- (NSDate*)primitiveDate;
-- (void)setPrimitiveDate:(NSDate*)value;
+- (NSDate*)primitiveCreationDate;
+- (void)setPrimitiveCreationDate:(NSDate*)value;
 
 
 
@@ -92,6 +128,21 @@ extern const struct _DCTImageCacheItemFetchedProperties {
 
 - (NSString*)primitiveKey;
 - (void)setPrimitiveKey:(NSString*)value;
+
+
+
+
+- (NSDate*)primitiveLastAccessedDate;
+- (void)setPrimitiveLastAccessedDate:(NSDate*)value;
+
+
+
+
+- (NSNumber*)primitiveScale;
+- (void)setPrimitiveScale:(NSNumber*)value;
+
+- (float)primitiveScaleValue;
+- (void)setPrimitiveScaleValue:(float)value_;
 
 
 
