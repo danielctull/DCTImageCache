@@ -37,7 +37,13 @@
                             <outlet property="delegate" destination="1Cd-Ul-n0q" id="yzr-QG-PwH"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="DCTImageCache" id="qGY-RZ-NAK"/>
+                    <navigationItem key="navigationItem" title="DCTImageCache" id="qGY-RZ-NAK">
+                        <barButtonItem key="rightBarButtonItem" title="Clear Cache" id="J4w-aP-C3J">
+                            <connections>
+                                <action selector="clearCache:" destination="1Cd-Ul-n0q" id="eE9-sM-Lm0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v3h-qE-1zt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

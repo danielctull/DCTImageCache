@@ -16,6 +16,10 @@
 
 @implementation ViewController
 
+- (IBAction)clearCache:(id)sender {
+	[self.imageCache removeAllImages];
+}
+
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)tableViewCell forRowAtIndexPath:(NSIndexPath *)indexPath {
