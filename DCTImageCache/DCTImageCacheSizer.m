@@ -12,6 +12,8 @@
 
 - (UIImage *)resizeImage:(DCTImageCacheImage *)image toSize:(CGSize)size contentMode:(DCTImageCacheAttributesContentMode)contentMode {
 
+	if (!image) return nil;
+
 	CGRect imageRect = [self rectForOriginalSize:image.size desiredSize:size contentMode:contentMode];
 
 	CGRect contextRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
