@@ -7,21 +7,21 @@
 //
 
 @import CoreData;
-#import "DCTImageCacheDiskCache.h"
+#import "DCTImageCacheDisk.h"
 #import "DCTImageCacheItem.h"
 
 static NSString *const DCTImageCacheDiskCacheModelName = @"DCTImageCache";
 static NSString *const DCTImageCacheDiskCacheModelExtension = @"momd";
 static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 
-@interface DCTImageCacheDiskCache ()
+@interface DCTImageCacheDisk ()
 @property (nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic) NSOperationQueue *queue;
 @property (nonatomic) NSFileManager *fileManager;
 @property (nonatomic, readonly) NSURL *storeURL;
 @end
 
-@implementation DCTImageCacheDiskCache
+@implementation DCTImageCacheDisk
 
 - (id)initWithURL:(NSURL *)URL {
 	self = [self init];

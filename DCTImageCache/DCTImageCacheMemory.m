@@ -6,13 +6,13 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import "DCTImageCacheMemoryCache.h"
+#import "DCTImageCacheMemory.h"
 
-@interface DCTImageCacheMemoryCache ()
+@interface DCTImageCacheMemory ()
 @property (nonatomic) NSCache *cache;
 @end
 
-@implementation DCTImageCacheMemoryCache
+@implementation DCTImageCacheMemory
 
 - (id)init {
     self = [super init];

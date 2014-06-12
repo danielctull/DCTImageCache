@@ -7,16 +7,16 @@
 //
 
 #import "DCTImageCache.h"
-#import "DCTImageCacheDiskCache.h"
-#import "DCTImageCacheMemoryCache.h"
+#import "DCTImageCacheDisk.h"
+#import "DCTImageCacheMemory.h"
 #import "DCTImageCacheFetcher.h"
 
 static NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
 static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 @interface DCTImageCache ()
-@property (nonatomic) DCTImageCacheMemoryCache *memoryCache;
-@property (nonatomic) DCTImageCacheDiskCache *diskCache;
+@property (nonatomic) DCTImageCacheMemory *memoryCache;
+@property (nonatomic) DCTImageCacheDisk *diskCache;
 @property (nonatomic) DCTImageCacheFetcher *fetcher;
 @end
 
@@ -57,8 +57,8 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	if (!self) return nil;
 	_URL = [URL copy];
 	_name = [[URL lastPathComponent] copy];
-	_diskCache = [[DCTImageCacheDiskCache alloc] initWithURL:URL];
-	_memoryCache = [DCTImageCacheMemoryCache new];
+	_diskCache = [[DCTImageCacheDisk alloc] initWithURL:URL];
+	_memoryCache = [DCTImageCacheMemory new];
 	return self;
 }
 
