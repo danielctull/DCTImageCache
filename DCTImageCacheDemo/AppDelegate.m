@@ -12,6 +12,7 @@
 
 @interface AppDelegate () <DCTImageCacheDelegate>
 @property (nonatomic) DCTImageCache *imageCache;
+@property (nonatomic) NSInteger networkActivity;
 @end
 
 @implementation AppDelegate
@@ -36,6 +37,12 @@
     return YES;
 }
 
+- (void)setNetworkActivity:(NSInteger)networkActivity {
+	_networkActivity = networkActivity;
+
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:networkActivity > 0];
+}
+
 #pragma mark - DCTImageCacheDelegate
 
 - (void)imageCache:(DCTImageCache *)imageCache fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
@@ -43,14 +50,14 @@
 	NSInteger width = (NSInteger)(attributes.size.width * attributes.scale);
 	NSInteger height = (NSInteger)(attributes.size.height * attributes.scale);
 	NSString *URLString = [NSString stringWithFormat:@"http://lorempixel.com/%@/%@/city/%@", @(width), @(height), attributes.key];
-	NSLog(@"FETCHING\n%@\n%@\n\n", attributes, URLString);
+	NSLog(@"FETCHING: %@", attributes.key);
 	NSURL *URL = [NSURL URLWithString:URLString];
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:URL];
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+	self.networkActivity++;
 	[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+		self.networkActivity--;
 		UIImage *image = [UIImage imageWithData:data];
 		handler(image, error);
-		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	}];
 }
 
