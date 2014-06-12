@@ -10,7 +10,7 @@
 
 @interface DCTImageCacheDiskCache : NSObject
 
-- (id)initWithStoreURL:(NSURL *)storeURL;
+- (id)initWithURL:(NSURL *)URL;
 @property (nonatomic, readonly) NSURL *URL;
 
 - (void)fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes

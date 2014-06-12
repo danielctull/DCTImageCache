@@ -23,10 +23,11 @@ static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 
 @implementation DCTImageCacheDiskCache
 
-- (id)initWithStoreURL:(NSURL *)storeURL {
-	if (!(self = [super init])) return nil;
-	_URL = [storeURL copy];
-	_storeURL = [storeURL URLByAppendingPathComponent:DCTImageCacheDiskCacheStoreName];
+- (id)initWithURL:(NSURL *)URL {
+	self = [self init];
+	if (!self) return nil;
+	_URL = [URL copy];
+	_storeURL = [_URL URLByAppendingPathComponent:DCTImageCacheDiskCacheStoreName];
 	_fileManager = [NSFileManager new];
 	_queue = [NSOperationQueue new];
 	_queue.name = NSStringFromClass([self class]);

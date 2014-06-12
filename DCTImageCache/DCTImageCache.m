@@ -9,6 +9,7 @@
 #import "DCTImageCache.h"
 #import "DCTImageCacheDiskCache.h"
 #import "DCTImageCacheMemoryCache.h"
+#import "DCTImageCacheFetcher.h"
 
 static NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
 static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
@@ -16,6 +17,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 @interface DCTImageCache ()
 @property (nonatomic) DCTImageCacheMemoryCache *memoryCache;
 @property (nonatomic) DCTImageCacheDiskCache *diskCache;
+@property (nonatomic) DCTImageCacheFetcher *fetcher;
 @end
 
 @implementation DCTImageCache
@@ -40,27 +42,29 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	return [self imageCacheWithURL:URL];
 }
 
-+ (instancetype)imageCacheWithURL:(NSURL *)storeURL {
++ (instancetype)imageCacheWithURL:(NSURL *)URL {
 	NSMutableDictionary *imageCaches = [self imageCaches];
-	DCTImageCache *imageCache = [imageCaches objectForKey:storeURL];
+	DCTImageCache *imageCache = [imageCaches objectForKey:URL];
 	if (!imageCache) {
-		imageCache = [[self alloc] _initWithStoreURL:storeURL];
-		[imageCaches setObject:imageCache forKey:storeURL];
+		imageCache = [[self alloc] _initWithURL:URL];
+		[imageCaches setObject:imageCache forKey:URL];
 	}
 	return imageCache;
 }
 
-- (id)_initWithStoreURL:(NSURL *)storeURL {
+- (id)_initWithURL:(NSURL *)URL {
 	self = [self init];
 	if (!self) return nil;
-	_diskCache = [[DCTImageCacheDiskCache alloc] initWithStoreURL:storeURL];
-	_name = [[storeURL lastPathComponent] copy];
+	_URL = [URL copy];
+	_name = [[URL lastPathComponent] copy];
+	_diskCache = [[DCTImageCacheDiskCache alloc] initWithURL:URL];
 	_memoryCache = [DCTImageCacheMemoryCache new];
 	return self;
 }
 
-- (NSURL *)storeURL {
-	return self.diskCache.URL;
+- (void)setDelegate:(id<DCTImageCacheDelegate>)delegate {
+	_delegate = delegate;
+	self.fetcher = [[DCTImageCacheFetcher alloc] initWithImageCache:self delegate:delegate];
 }
 
 - (void)removeAllImages {
@@ -167,8 +171,8 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 		}
 
 		[progress becomeCurrentWithPendingUnitCount:1];
-		[self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
-
+		[self.fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+			
 			handler(image, error);
 
 			if (image) {

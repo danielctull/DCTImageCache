@@ -43,13 +43,13 @@ typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
 + (instancetype)imageCacheWithName:(NSString *)name;
 
 /**
- @param storeURL The URL on disk where you want to store the disk image cache.
+ @param URL The URL on disk where you want to put the disk image cache.
  */
-+ (instancetype)imageCacheWithURL:(NSURL *)storeURL;
++ (instancetype)imageCacheWithURL:(NSURL *)URL;
 
 /** The location of the cache on disk.
  */
-@property (nonatomic, copy, readonly) NSURL *storeURL;
+@property (nonatomic, readonly) NSURL *URL;
 
 /** The name of the cache. If imageCacheWithURL: was used, 
  the last path component of the URL is taken to be the name.
