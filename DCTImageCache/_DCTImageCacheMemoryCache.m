@@ -9,7 +9,7 @@
 #import "_DCTImageCacheMemoryCache.h"
 
 @interface _DCTImageCacheMemoryCache ()
-@property (nonatomic, strong) NSCache *cache;
+@property (nonatomic) NSCache *cache;
 @end
 
 @implementation _DCTImageCacheMemoryCache

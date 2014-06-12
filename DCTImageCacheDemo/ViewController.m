@@ -11,7 +11,7 @@
 #import <DCTImageCache/DCTImageCache.h>
 
 @interface ViewController ()
-@property (nonatomic, strong) NSMutableDictionary *progresses;
+@property (nonatomic) NSMutableDictionary *progresses;
 @end
 
 @implementation ViewController

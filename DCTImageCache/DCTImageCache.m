@@ -14,8 +14,8 @@ static NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
 static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 @interface DCTImageCache ()
-@property (nonatomic, strong) _DCTImageCacheMemoryCache *memoryCache;
-@property (nonatomic, strong) _DCTImageCacheDiskCache *diskCache;
+@property (nonatomic) _DCTImageCacheMemoryCache *memoryCache;
+@property (nonatomic) _DCTImageCacheDiskCache *diskCache;
 @end
 
 @implementation DCTImageCache

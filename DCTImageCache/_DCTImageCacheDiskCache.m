@@ -15,11 +15,10 @@ static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
 static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 
 @interface _DCTImageCacheDiskCache ()
-@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, strong) NSOperationQueue *queue;
-@property (nonatomic, weak) NSOperation *saveOperation;
-@property (nonatomic, readonly) NSURL *storeURL;
+@property (nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic) NSOperationQueue *queue;
 @property (nonatomic) NSFileManager *fileManager;
+@property (nonatomic, readonly) NSURL *storeURL;
 @end
 
 @implementation _DCTImageCacheDiskCache
