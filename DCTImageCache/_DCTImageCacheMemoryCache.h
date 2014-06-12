@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import "_DCTImageCache.h"
+#import "DCTImageCache+Private.h"
 
 @interface _DCTImageCacheMemoryCache : NSObject
 

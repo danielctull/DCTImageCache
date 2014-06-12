@@ -69,7 +69,7 @@
 		24244608167509D200621FFF /* DCTImageCacheAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheAttributes.m; sourceTree = "<group>"; };
 		242A90BB194890D40050B8C6 /* iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone.storyboard; sourceTree = "<group>"; };
 		242A90BD1948915A0050B8C6 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		2433AA9A1674D57700D76DCF /* _DCTImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCache.h; sourceTree = "<group>"; };
+		2433AA9A1674D57700D76DCF /* DCTImageCache+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DCTImageCache+Private.h"; sourceTree = "<group>"; };
 		2437B67715B97BA600750117 /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		24568D5919483C03001933EE /* DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheItem.h; sourceTree = "<group>"; };
 		24568D5A19483C03001933EE /* DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheItem.m; sourceTree = "<group>"; };
@@ -136,7 +136,7 @@
 		242EF8EA1859D74200ED0622 /* Private */ = {
 			isa = PBXGroup;
 			children = (
-				2433AA9A1674D57700D76DCF /* _DCTImageCache.h */,
+				2433AA9A1674D57700D76DCF /* DCTImageCache+Private.h */,
 				24B3EED515A30EEB00D5E63C /* _DCTImageCacheDiskCache.h */,
 				24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */,
 				24568D5919483C03001933EE /* DCTImageCacheItem.h */,

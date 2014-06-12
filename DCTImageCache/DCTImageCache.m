@@ -187,7 +187,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 #pragma mark Internal
 
-+ (NSBundle *)_bundle {
++ (NSBundle *)bundle {
 	static NSBundle *bundle;
 	static dispatch_once_t bundleToken;
 	dispatch_once(&bundleToken, ^{

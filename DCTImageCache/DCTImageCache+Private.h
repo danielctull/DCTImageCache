@@ -14,8 +14,8 @@ typedef UIImage DCTImageCacheImage;
 typedef NSImage DCTImageCacheImage;
 #endif
 
-typedef void (^_DCTImageCacheHasImageHandler)(BOOL, NSError *);
+typedef void (^DCTImageCacheHasImageHandler)(BOOL, NSError *);
 
 @interface DCTImageCache (Private)
-+ (NSBundle *)_bundle;
++ (NSBundle *)bundle;
 @end

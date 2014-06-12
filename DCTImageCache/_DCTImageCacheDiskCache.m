@@ -38,7 +38,7 @@ static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 }
 
 - (void)createStack {
-	NSURL *modelURL = [[DCTImageCache _bundle] URLForResource:_DCTImageCacheDiskCacheModelName withExtension:_DCTImageCacheDiskCacheModelExtension];
+	NSURL *modelURL = [[DCTImageCache bundle] URLForResource:_DCTImageCacheDiskCacheModelName withExtension:_DCTImageCacheDiskCacheModelExtension];
 	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 
@@ -54,7 +54,7 @@ static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 }
 
 - (void)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes
-					   handler:(_DCTImageCacheHasImageHandler)handler {
+					   handler:(DCTImageCacheHasImageHandler)handler {
 
 	NSParameterAssert(attributes);
 	NSParameterAssert(handler);

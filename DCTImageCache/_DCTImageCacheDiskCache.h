@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
-#import "_DCTImageCache.h"
+#import "DCTImageCache+Private.h"
 
 @interface _DCTImageCacheDiskCache : NSObject
 
@@ -17,7 +17,7 @@
 						 handler:(DCTImageCacheImageHandler)handler __attribute__((nonnull(1,2)));
 
 - (void)hasImageWithAttributes:(DCTImageCacheAttributes *)attributes
-					   handler:(_DCTImageCacheHasImageHandler)handler __attribute__((nonnull(1,2)));
+					   handler:(DCTImageCacheHasImageHandler)handler __attribute__((nonnull(1,2)));
 
 - (void)setImage:(DCTImageCacheImage *)image
    forAttributes:(DCTImageCacheAttributes *)attributes __attribute__((nonnull(1,2)));
