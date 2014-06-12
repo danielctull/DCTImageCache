@@ -9,7 +9,6 @@
 #import "DCTImageCache.h"
 #import "_DCTImageCacheDiskCache.h"
 #import "_DCTImageCacheMemoryCache.h"
-#import "NSProgress+DCTImageCache.h"
 
 static NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
 static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
@@ -144,11 +143,12 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	// Make sure we don't call the handler if the process is cancelled
 	handler = ^(DCTImageCacheImage *image, NSError *error){
 
-		if (progress.completedUnitCount != progress.totalUnitCount) {
-			progress.completedUnitCount = progress.totalUnitCount;
-		}
-
 		if (!progress.cancelled) {
+
+			if (progress.completedUnitCount != progress.totalUnitCount) {
+				progress.completedUnitCount = progress.totalUnitCount;
+			}
+
 			dispatch_async(dispatch_get_main_queue(), ^{
 				if (!progress.cancelled) {
 					handler(image, error);
