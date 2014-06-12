@@ -7,21 +7,21 @@
 //
 
 @import CoreData;
-#import "_DCTImageCacheDiskCache.h"
+#import "DCTImageCacheDiskCache.h"
 #import "DCTImageCacheItem.h"
 
-static NSString *const _DCTImageCacheDiskCacheModelName = @"DCTImageCache";
-static NSString *const _DCTImageCacheDiskCacheModelExtension = @"momd";
+static NSString *const DCTImageCacheDiskCacheModelName = @"DCTImageCache";
+static NSString *const DCTImageCacheDiskCacheModelExtension = @"momd";
 static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 
-@interface _DCTImageCacheDiskCache ()
+@interface DCTImageCacheDiskCache ()
 @property (nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic) NSOperationQueue *queue;
 @property (nonatomic) NSFileManager *fileManager;
 @property (nonatomic, readonly) NSURL *storeURL;
 @end
 
-@implementation _DCTImageCacheDiskCache
+@implementation DCTImageCacheDiskCache
 
 - (id)initWithStoreURL:(NSURL *)storeURL {
 	if (!(self = [super init])) return nil;
@@ -38,7 +38,7 @@ static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 }
 
 - (void)createStack {
-	NSURL *modelURL = [[DCTImageCache bundle] URLForResource:_DCTImageCacheDiskCacheModelName withExtension:_DCTImageCacheDiskCacheModelExtension];
+	NSURL *modelURL = [[DCTImageCache bundle] URLForResource:DCTImageCacheDiskCacheModelName withExtension:DCTImageCacheDiskCacheModelExtension];
 	NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 

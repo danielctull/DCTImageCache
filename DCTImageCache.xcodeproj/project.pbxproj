@@ -16,8 +16,8 @@
 		2437B67815B97BA600750117 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
 		2437B68415B97BD700750117 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
-		2437B68515B97BD700750117 /* _DCTImageCacheDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */; };
-		2437B68615B97BD700750117 /* _DCTImageCacheMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* _DCTImageCacheMemoryCache.m */; };
+		2437B68515B97BD700750117 /* DCTImageCacheDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EED615A30EEB00D5E63C /* DCTImageCacheDiskCache.m */; };
+		2437B68615B97BD700750117 /* DCTImageCacheMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* DCTImageCacheMemoryCache.m */; };
 		24568D5B19483C03001933EE /* DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24568D5A19483C03001933EE /* DCTImageCacheItem.m */; };
 		24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
 		24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */; };
@@ -81,10 +81,10 @@
 		24B3EEC815A2EB1F00D5E63C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		24B3EECA15A2EB1F00D5E63C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		24B3EECB15A2EB1F00D5E63C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		24B3EED515A30EEB00D5E63C /* _DCTImageCacheDiskCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheDiskCache.h; sourceTree = "<group>"; };
-		24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheDiskCache.m; sourceTree = "<group>"; };
-		24B3EEDD15A311D400D5E63C /* _DCTImageCacheMemoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheMemoryCache.h; sourceTree = "<group>"; };
-		24B3EEDE15A311D400D5E63C /* _DCTImageCacheMemoryCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheMemoryCache.m; sourceTree = "<group>"; };
+		24B3EED515A30EEB00D5E63C /* DCTImageCacheDiskCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheDiskCache.h; sourceTree = "<group>"; };
+		24B3EED615A30EEB00D5E63C /* DCTImageCacheDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheDiskCache.m; sourceTree = "<group>"; };
+		24B3EEDD15A311D400D5E63C /* DCTImageCacheMemoryCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheMemoryCache.h; sourceTree = "<group>"; };
+		24B3EEDE15A311D400D5E63C /* DCTImageCacheMemoryCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheMemoryCache.m; sourceTree = "<group>"; };
 		24F2DB25165FEDDC008F58D5 /* _DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheItem.h; sourceTree = "<group>"; };
 		24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheItem.m; sourceTree = "<group>"; };
 		24F2DB5D166029B9008F58D5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -137,14 +137,14 @@
 			isa = PBXGroup;
 			children = (
 				2433AA9A1674D57700D76DCF /* DCTImageCache+Private.h */,
-				24B3EED515A30EEB00D5E63C /* _DCTImageCacheDiskCache.h */,
-				24B3EED615A30EEB00D5E63C /* _DCTImageCacheDiskCache.m */,
+				24B3EED515A30EEB00D5E63C /* DCTImageCacheDiskCache.h */,
+				24B3EED615A30EEB00D5E63C /* DCTImageCacheDiskCache.m */,
 				24568D5919483C03001933EE /* DCTImageCacheItem.h */,
 				24568D5A19483C03001933EE /* DCTImageCacheItem.m */,
 				24F2DB25165FEDDC008F58D5 /* _DCTImageCacheItem.h */,
 				24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */,
-				24B3EEDD15A311D400D5E63C /* _DCTImageCacheMemoryCache.h */,
-				24B3EEDE15A311D400D5E63C /* _DCTImageCacheMemoryCache.m */,
+				24B3EEDD15A311D400D5E63C /* DCTImageCacheMemoryCache.h */,
+				24B3EEDE15A311D400D5E63C /* DCTImageCacheMemoryCache.m */,
 			);
 			name = Private;
 			sourceTree = "<group>";
@@ -359,8 +359,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				2437B68415B97BD700750117 /* DCTImageCache.m in Sources */,
-				2437B68515B97BD700750117 /* _DCTImageCacheDiskCache.m in Sources */,
-				2437B68615B97BD700750117 /* _DCTImageCacheMemoryCache.m in Sources */,
+				2437B68515B97BD700750117 /* DCTImageCacheDiskCache.m in Sources */,
+				2437B68615B97BD700750117 /* DCTImageCacheMemoryCache.m in Sources */,
 				24F2DB27165FEDDC008F58D5 /* _DCTImageCacheItem.m in Sources */,
 				24244609167509D200621FFF /* DCTImageCacheAttributes.m in Sources */,
 				24568D5B19483C03001933EE /* DCTImageCacheItem.m in Sources */,

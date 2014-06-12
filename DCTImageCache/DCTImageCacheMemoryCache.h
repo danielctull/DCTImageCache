@@ -8,7 +8,7 @@
 
 #import "DCTImageCache+Private.h"
 
-@interface _DCTImageCacheMemoryCache : NSObject
+@interface DCTImageCacheMemoryCache : NSObject
 
 - (void)setImage:(DCTImageCacheImage *)image forAttributes:(DCTImageCacheAttributes *)attributes;
 - (void)removeAllImages;

@@ -8,7 +8,7 @@
 
 #import "DCTImageCache+Private.h"
 
-@interface _DCTImageCacheDiskCache : NSObject
+@interface DCTImageCacheDiskCache : NSObject
 
 - (id)initWithStoreURL:(NSURL *)storeURL;
 @property (nonatomic, readonly) NSURL *URL;

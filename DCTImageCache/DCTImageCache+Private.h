@@ -1,5 +1,5 @@
 //
-//  _DCTImageCache.h
+//  DCTImageCache+Private.h
 //  DCTImageCache
 //
 //  Created by Daniel Tull on 09.12.2012.
