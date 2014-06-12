@@ -10,6 +10,7 @@
 #import "DCTImageCacheDisk.h"
 #import "DCTImageCacheMemory.h"
 #import "DCTImageCacheFetcher.h"
+#import "DCTImageCacheSizer.h"
 
 static NSString *const DCTImageCacheBundleName = @"DCTImageCache.bundle";
 static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
@@ -18,6 +19,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 @property (nonatomic) DCTImageCacheMemory *memoryCache;
 @property (nonatomic) DCTImageCacheDisk *diskCache;
 @property (nonatomic) DCTImageCacheFetcher *fetcher;
+@property (nonatomic) DCTImageCacheSizer *sizer;
 @end
 
 @implementation DCTImageCache
@@ -59,6 +61,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	_name = [[URL lastPathComponent] copy];
 	_diskCache = [[DCTImageCacheDisk alloc] initWithURL:URL];
 	_memoryCache = [DCTImageCacheMemory new];
+	_sizer = [DCTImageCacheSizer new];
 	return self;
 }
 
@@ -172,7 +175,17 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 
 		[progress becomeCurrentWithPendingUnitCount:1];
 		[self.fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
-			
+
+			CGSize size = CGSizeMake(attributes.size.width * attributes.scale, attributes.size.height * attributes.scale);
+			BOOL needsResizing = !CGSizeEqualToSize(image.size, size);
+
+			if (needsResizing) {
+				progress.totalUnitCount++;
+				[progress becomeCurrentWithPendingUnitCount:1];
+				image = [self.sizer resizeImage:image toSize:size contentMode:attributes.contentMode];
+				[progress resignCurrent];
+			}
+
 			handler(image, error);
 
 			if (image) {

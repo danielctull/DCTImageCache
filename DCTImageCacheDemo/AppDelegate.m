@@ -49,7 +49,7 @@
 
 	NSInteger width = (NSInteger)(attributes.size.width * attributes.scale);
 	NSInteger height = (NSInteger)(attributes.size.height * attributes.scale);
-	NSString *URLString = [NSString stringWithFormat:@"http://lorempixel.com/%@/%@/city/%@", @(width), @(height), attributes.key];
+	NSString *URLString = [NSString stringWithFormat:@"http://lorempixel.com/%@/%@/city/%@", @(800), @(400), attributes.key];
 	NSLog(@"FETCHING: %@", attributes.key);
 	NSURL *URL = [NSURL URLWithString:URLString];
 	NSURLRequest *request = [[NSURLRequest alloc] initWithURL:URL];
