@@ -22,10 +22,8 @@ typedef void (^DCTImageCacheImageHandler)(UIImage *image, NSError *error);
 typedef void (^DCTImageCacheImageHandler)(NSImage *image, NSError *error);
 #endif
 
-//! Project version number for DCTAuth.
+//! Project version number and string for DCTImageCache.
 FOUNDATION_EXPORT double DCTImageCacheVersionNumber;
-
-//! Project version string for DCTAuth.
 FOUNDATION_EXPORT const unsigned char DCTImageCacheVersionString[];
 
 #import "DCTImageCacheAttributes.h"
