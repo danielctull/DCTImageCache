@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
+@import DCTImageCache;
 #import "AppDelegate.h"
 #import "ViewController.h"
-#import <DCTImageCache/DCTImageCache.h>
 
 @interface AppDelegate () <DCTImageCacheDelegate>
 @property (nonatomic) DCTImageCache *imageCache;
@@ -47,8 +47,8 @@
 
 - (void)imageCache:(DCTImageCache *)imageCache fetchImageWithAttributes:(DCTImageCacheAttributes *)attributes handler:(DCTImageCacheImageHandler)handler {
 
-	NSInteger width = (NSInteger)(attributes.size.width * attributes.scale);
-	NSInteger height = (NSInteger)(attributes.size.height * attributes.scale);
+//	NSInteger width = (NSInteger)(attributes.size.width * attributes.scale);
+//	NSInteger height = (NSInteger)(attributes.size.height * attributes.scale);
 	NSString *URLString = [NSString stringWithFormat:@"http://lorempixel.com/%@/%@/city/%@", @(800), @(400), attributes.key];
 	NSLog(@"FETCHING: %@", attributes.key);
 	NSURL *URL = [NSURL URLWithString:URLString];

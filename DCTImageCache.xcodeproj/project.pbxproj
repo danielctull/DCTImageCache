@@ -13,27 +13,36 @@
 		2424460B16750AF000621FFF /* DCTImageCacheAttributes.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24244607167509D200621FFF /* DCTImageCacheAttributes.h */; };
 		242A90BC194890D40050B8C6 /* iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 242A90BB194890D40050B8C6 /* iPhone.storyboard */; };
 		242A90BE1948915A0050B8C6 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 242A90BD1948915A0050B8C6 /* Media.xcassets */; };
-		2437B67815B97BA600750117 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
+		242BEEE419A8F2D50063F2F2 /* DCTImageCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 242BEEC519A8F1D10063F2F2 /* DCTImageCache.framework */; };
+		242BEEE519A8F2FE0063F2F2 /* DCTImageCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		242BEEE619A8F3000063F2F2 /* DCTImageCacheAttributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 24244607167509D200621FFF /* DCTImageCacheAttributes.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		242BEEE719A8F3020063F2F2 /* DCTImageCacheDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2423E7CF18675CF300927EBA /* DCTImageCacheDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		242BEEE819A8F30D0063F2F2 /* DCTImageCache+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 2433AA9A1674D57700D76DCF /* DCTImageCache+Private.h */; };
+		242BEEE919A8F30D0063F2F2 /* DCTImageCacheDisk.h in Headers */ = {isa = PBXBuildFile; fileRef = 24B3EED515A30EEB00D5E63C /* DCTImageCacheDisk.h */; };
+		242BEEEA19A8F30D0063F2F2 /* DCTImageCacheItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 24568D5919483C03001933EE /* DCTImageCacheItem.h */; };
+		242BEEEB19A8F30D0063F2F2 /* _DCTImageCacheItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 24F2DB25165FEDDC008F58D5 /* _DCTImageCacheItem.h */; };
+		242BEEEC19A8F30D0063F2F2 /* DCTImageCacheMemory.h in Headers */ = {isa = PBXBuildFile; fileRef = 24B3EEDD15A311D400D5E63C /* DCTImageCacheMemory.h */; };
+		242BEEED19A8F30D0063F2F2 /* DCTImageCacheFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 24C1582A194A178100C475FC /* DCTImageCacheFetcher.h */; };
+		242BEEEE19A8F30D0063F2F2 /* DCTImageCacheSizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 248279FA194A2D4A007D0496 /* DCTImageCacheSizer.h */; };
+		242BEEEF19A8F31A0063F2F2 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
+		242BEEF019A8F31A0063F2F2 /* DCTImageCacheAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 24244608167509D200621FFF /* DCTImageCacheAttributes.m */; };
+		242BEEF119A8F31A0063F2F2 /* DCTImageCacheDisk.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EED615A30EEB00D5E63C /* DCTImageCacheDisk.m */; };
+		242BEEF219A8F31A0063F2F2 /* DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24568D5A19483C03001933EE /* DCTImageCacheItem.m */; };
+		242BEEF319A8F31A0063F2F2 /* _DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */; };
+		242BEEF419A8F31A0063F2F2 /* DCTImageCacheMemory.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* DCTImageCacheMemory.m */; };
+		242BEEF519A8F31A0063F2F2 /* DCTImageCacheFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 24C1582B194A178100C475FC /* DCTImageCacheFetcher.m */; };
+		242BEEF619A8F31A0063F2F2 /* DCTImageCacheSizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 248279FB194A2D4A007D0496 /* DCTImageCacheSizer.m */; };
 		2437B68315B97BCE00750117 /* DCTImageCache.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */; };
 		2437B68415B97BD700750117 /* DCTImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */; };
 		2437B68515B97BD700750117 /* DCTImageCacheDisk.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EED615A30EEB00D5E63C /* DCTImageCacheDisk.m */; };
 		2437B68615B97BD700750117 /* DCTImageCacheMemory.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEDE15A311D400D5E63C /* DCTImageCacheMemory.m */; };
 		24568D5B19483C03001933EE /* DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24568D5A19483C03001933EE /* DCTImageCacheItem.m */; };
 		248279FC194A2D4A007D0496 /* DCTImageCacheSizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 248279FB194A2D4A007D0496 /* DCTImageCacheSizer.m */; };
-		24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F7CB42158A1B9D00B2E33E /* Foundation.framework */; };
-		24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */; };
 		24B3EEC515A2EB1F00D5E63C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEC415A2EB1F00D5E63C /* main.m */; };
 		24B3EEC915A2EB1F00D5E63C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EEC815A2EB1F00D5E63C /* AppDelegate.m */; };
 		24B3EECC15A2EB1F00D5E63C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B3EECB15A2EB1F00D5E63C /* ViewController.m */; };
 		24C1582C194A178100C475FC /* DCTImageCacheFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 24C1582B194A178100C475FC /* DCTImageCacheFetcher.m */; };
 		24F2DB27165FEDDC008F58D5 /* _DCTImageCacheItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */; };
-		24F2DB5C166029B9008F58D5 /* libDCTImageCache.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2437B67715B97BA600750117 /* libDCTImageCache.a */; };
-		24F2DB5E166029B9008F58D5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB5D166029B9008F58D5 /* CoreData.framework */; };
-		24F2DB5F166029CE008F58D5 /* DCTImageCache.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */; };
-		24F2DB6316602B71008F58D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB6216602B71008F58D5 /* UIKit.framework */; };
-		24F2DB6416602D47008F58D5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB6216602B71008F58D5 /* UIKit.framework */; };
-		24F2DB6516602D4D008F58D5 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24F2DB5D166029B9008F58D5 /* CoreData.framework */; };
-		24FCFA96165FEAB3006208A7 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24FCFA95165FEAB3006208A7 /* CoreFoundation.framework */; };
 		24FCFAA6165FEB25006208A7 /* DCTImageCache.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 24FCFAA4165FEB25006208A7 /* DCTImageCache.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
@@ -65,21 +74,28 @@
 /* Begin PBXFileReference section */
 		2406F9771678B38600428406 /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
 		2406F9781678B38600428406 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
-		240BE44517ED8040007AB802 /* Universal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Universal.xcconfig; sourceTree = "<group>"; };
 		2423E7CF18675CF300927EBA /* DCTImageCacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheDelegate.h; sourceTree = "<group>"; };
 		24244607167509D200621FFF /* DCTImageCacheAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheAttributes.h; sourceTree = "<group>"; };
 		24244608167509D200621FFF /* DCTImageCacheAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheAttributes.m; sourceTree = "<group>"; };
 		242A90BB194890D40050B8C6 /* iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone.storyboard; sourceTree = "<group>"; };
 		242A90BD1948915A0050B8C6 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		242BEEC519A8F1D10063F2F2 /* DCTImageCache.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DCTImageCache.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		242BEEDC19A8F2210063F2F2 /* Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Application.xcconfig; sourceTree = "<group>"; };
+		242BEEDD19A8F2210063F2F2 /* Bundle.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Bundle.xcconfig; sourceTree = "<group>"; };
+		242BEEDE19A8F2210063F2F2 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		242BEEDF19A8F2210063F2F2 /* iOS Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS Framework.xcconfig"; sourceTree = "<group>"; };
+		242BEEE019A8F2210063F2F2 /* Library.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Library.xcconfig; sourceTree = "<group>"; };
+		242BEEE119A8F2210063F2F2 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		242BEEE219A8F2210063F2F2 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
+		242BEEE319A8F2210063F2F2 /* Tests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Tests.xcconfig; sourceTree = "<group>"; };
 		2433AA9A1674D57700D76DCF /* DCTImageCache+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DCTImageCache+Private.h"; sourceTree = "<group>"; };
 		2437B67715B97BA600750117 /* libDCTImageCache.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDCTImageCache.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		24568D5919483C03001933EE /* DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheItem.h; sourceTree = "<group>"; };
 		24568D5A19483C03001933EE /* DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheItem.m; sourceTree = "<group>"; };
 		248279FA194A2D4A007D0496 /* DCTImageCacheSizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCTImageCacheSizer.h; sourceTree = "<group>"; };
 		248279FB194A2D4A007D0496 /* DCTImageCacheSizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheSizer.m; sourceTree = "<group>"; };
-		24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTImageCacheDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		24B3EEC015A2EB1F00D5E63C /* DCTImageCacheDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCacheDemo-Info.plist"; sourceTree = "<group>"; };
+		24B3EEB815A2EB1F00D5E63C /* DCTImageCache Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DCTImageCache Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		24B3EEC015A2EB1F00D5E63C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		24B3EEC415A2EB1F00D5E63C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		24B3EEC715A2EB1F00D5E63C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		24B3EEC815A2EB1F00D5E63C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -93,26 +109,25 @@
 		24C1582B194A178100C475FC /* DCTImageCacheFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCTImageCacheFetcher.m; sourceTree = "<group>"; };
 		24F2DB25165FEDDC008F58D5 /* _DCTImageCacheItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _DCTImageCacheItem.h; sourceTree = "<group>"; };
 		24F2DB26165FEDDC008F58D5 /* _DCTImageCacheItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _DCTImageCacheItem.m; sourceTree = "<group>"; };
-		24F2DB5D166029B9008F58D5 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		24F2DB6216602B71008F58D5 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		24F7CB42158A1B9D00B2E33E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		24F7CB47158A1B9D00B2E33E /* DCTImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCTImageCache.h; sourceTree = "<group>"; };
 		24F7CB49158A1B9D00B2E33E /* DCTImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCTImageCache.m; sourceTree = "<group>"; };
-		24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DCTImageCache.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		24FCFA95165FEAB3006208A7 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		24FCFA99165FEAB3006208A7 /* DCTImageCacheBundle-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DCTImageCacheBundle-Info.plist"; sourceTree = "<group>"; };
+		24FCFA99165FEAB3006208A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		24FCFAA5165FEB25006208A7 /* DCTImageCache.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DCTImageCache.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		242BEEC119A8F1D10063F2F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2437B67415B97BA600750117 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				24F2DB6516602D4D008F58D5 /* CoreData.framework in Frameworks */,
-				24F2DB6416602D47008F58D5 /* UIKit.framework in Frameworks */,
-				2437B67815B97BA600750117 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,11 +135,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				24F2DB6316602B71008F58D5 /* UIKit.framework in Frameworks */,
-				24F2DB5E166029B9008F58D5 /* CoreData.framework in Frameworks */,
-				24F2DB5C166029B9008F58D5 /* libDCTImageCache.a in Frameworks */,
-				24B3EEBB15A2EB1F00D5E63C /* Foundation.framework in Frameworks */,
-				24B3EEBD15A2EB1F00D5E63C /* CoreGraphics.framework in Frameworks */,
+				242BEEE419A8F2D50063F2F2 /* DCTImageCache.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,13 +143,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				24FCFA96165FEAB3006208A7 /* CoreFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		242BEEDB19A8F2210063F2F2 /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				242BEEDC19A8F2210063F2F2 /* Application.xcconfig */,
+				242BEEDD19A8F2210063F2F2 /* Bundle.xcconfig */,
+				242BEEDE19A8F2210063F2F2 /* Debug.xcconfig */,
+				242BEEDF19A8F2210063F2F2 /* iOS Framework.xcconfig */,
+				242BEEE019A8F2210063F2F2 /* Library.xcconfig */,
+				242BEEE119A8F2210063F2F2 /* Release.xcconfig */,
+				242BEEE219A8F2210063F2F2 /* Shared.xcconfig */,
+				242BEEE319A8F2210063F2F2 /* Tests.xcconfig */,
+			);
+			path = Configurations;
+			sourceTree = "<group>";
+		};
 		242EF8EA1859D74200ED0622 /* Private */ = {
 			isa = PBXGroup;
 			children = (
@@ -159,7 +184,7 @@
 			name = Private;
 			sourceTree = "<group>";
 		};
-		24B3EEBE15A2EB1F00D5E63C /* DCTImageCacheDemo */ = {
+		24B3EEBE15A2EB1F00D5E63C /* DCTImageCache Demo */ = {
 			isa = PBXGroup;
 			children = (
 				242A90BB194890D40050B8C6 /* iPhone.storyboard */,
@@ -170,20 +195,19 @@
 				24B3EECB15A2EB1F00D5E63C /* ViewController.m */,
 				2406F9771678B38600428406 /* TableViewCell.h */,
 				2406F9781678B38600428406 /* TableViewCell.m */,
-				24B3EEC015A2EB1F00D5E63C /* DCTImageCacheDemo-Info.plist */,
+				24B3EEC015A2EB1F00D5E63C /* Info.plist */,
 				24B3EEC415A2EB1F00D5E63C /* main.m */,
 			);
-			path = DCTImageCacheDemo;
+			path = "DCTImageCache Demo";
 			sourceTree = "<group>";
 		};
 		24F7CB34158A1B9D00B2E33E = {
 			isa = PBXGroup;
 			children = (
-				240BE44517ED8040007AB802 /* Universal.xcconfig */,
 				24F7CB44158A1B9D00B2E33E /* DCTImageCache */,
-				24FCFA97165FEAB3006208A7 /* DCTImageCacheBundle */,
-				24B3EEBE15A2EB1F00D5E63C /* DCTImageCacheDemo */,
-				24F7CB41158A1B9D00B2E33E /* Frameworks */,
+				24FCFA97165FEAB3006208A7 /* DCTImageCache Bundle */,
+				24B3EEBE15A2EB1F00D5E63C /* DCTImageCache Demo */,
+				242BEEDB19A8F2210063F2F2 /* Configurations */,
 				24F7CB40158A1B9D00B2E33E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -191,24 +215,12 @@
 		24F7CB40158A1B9D00B2E33E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */,
+				24B3EEB815A2EB1F00D5E63C /* DCTImageCache Demo.app */,
 				2437B67715B97BA600750117 /* libDCTImageCache.a */,
 				24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */,
+				242BEEC519A8F1D10063F2F2 /* DCTImageCache.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		24F7CB41158A1B9D00B2E33E /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				24F2DB6216602B71008F58D5 /* UIKit.framework */,
-				24F2DB5D166029B9008F58D5 /* CoreData.framework */,
-				24F7CB42158A1B9D00B2E33E /* Foundation.framework */,
-				24F7CB51158A1B9D00B2E33E /* SenTestingKit.framework */,
-				24B3EEBC15A2EB1F00D5E63C /* CoreGraphics.framework */,
-				24FCFA95165FEAB3006208A7 /* CoreFoundation.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		24F7CB44158A1B9D00B2E33E /* DCTImageCache */ = {
@@ -224,26 +236,56 @@
 			path = DCTImageCache;
 			sourceTree = "<group>";
 		};
-		24FCFA97165FEAB3006208A7 /* DCTImageCacheBundle */ = {
+		24FCFA97165FEAB3006208A7 /* DCTImageCache Bundle */ = {
 			isa = PBXGroup;
 			children = (
 				24FCFAA4165FEB25006208A7 /* DCTImageCache.xcdatamodeld */,
-				24FCFA98165FEAB3006208A7 /* Supporting Files */,
+				24FCFA99165FEAB3006208A7 /* Info.plist */,
 			);
-			path = DCTImageCacheBundle;
-			sourceTree = "<group>";
-		};
-		24FCFA98165FEAB3006208A7 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				24FCFA99165FEAB3006208A7 /* DCTImageCacheBundle-Info.plist */,
-			);
-			name = "Supporting Files";
+			path = "DCTImageCache Bundle";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		242BEEC219A8F1D10063F2F2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				242BEEE519A8F2FE0063F2F2 /* DCTImageCache.h in Headers */,
+				242BEEE719A8F3020063F2F2 /* DCTImageCacheDelegate.h in Headers */,
+				242BEEE619A8F3000063F2F2 /* DCTImageCacheAttributes.h in Headers */,
+				242BEEE819A8F30D0063F2F2 /* DCTImageCache+Private.h in Headers */,
+				242BEEE919A8F30D0063F2F2 /* DCTImageCacheDisk.h in Headers */,
+				242BEEEA19A8F30D0063F2F2 /* DCTImageCacheItem.h in Headers */,
+				242BEEEB19A8F30D0063F2F2 /* _DCTImageCacheItem.h in Headers */,
+				242BEEEC19A8F30D0063F2F2 /* DCTImageCacheMemory.h in Headers */,
+				242BEEED19A8F30D0063F2F2 /* DCTImageCacheFetcher.h in Headers */,
+				242BEEEE19A8F30D0063F2F2 /* DCTImageCacheSizer.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		242BEEC419A8F1D10063F2F2 /* DCTImageCache iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 242BEED919A8F1D10063F2F2 /* Build configuration list for PBXNativeTarget "DCTImageCache iOS" */;
+			buildPhases = (
+				242BEEC019A8F1D10063F2F2 /* Sources */,
+				242BEEC119A8F1D10063F2F2 /* Frameworks */,
+				242BEEC219A8F1D10063F2F2 /* Headers */,
+				242BEEC319A8F1D10063F2F2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DCTImageCache iOS";
+			productName = "DCTImageCache iOS";
+			productReference = 242BEEC519A8F1D10063F2F2 /* DCTImageCache.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		2437B67615B97BA600750117 /* DCTImageCache */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2437B68015B97BA600750117 /* Build configuration list for PBXNativeTarget "DCTImageCache" */;
@@ -263,9 +305,9 @@
 			productReference = 2437B67715B97BA600750117 /* libDCTImageCache.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		24B3EEB715A2EB1F00D5E63C /* DCTImageCacheDemo */ = {
+		24B3EEB715A2EB1F00D5E63C /* DCTImageCache Demo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCacheDemo" */;
+			buildConfigurationList = 24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCache Demo" */;
 			buildPhases = (
 				24B3EEB415A2EB1F00D5E63C /* Sources */,
 				24B3EEB515A2EB1F00D5E63C /* Frameworks */,
@@ -275,14 +317,14 @@
 			);
 			dependencies = (
 			);
-			name = DCTImageCacheDemo;
+			name = "DCTImageCache Demo";
 			productName = DCTImageCaccheDemo;
-			productReference = 24B3EEB815A2EB1F00D5E63C /* DCTImageCacheDemo.app */;
+			productReference = 24B3EEB815A2EB1F00D5E63C /* DCTImageCache Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		24FCFA93165FEAB3006208A7 /* DCTImageCacheBundle */ = {
+		24FCFA93165FEAB3006208A7 /* DCTImageCache Bundle */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 24FCFAA0165FEAB3006208A7 /* Build configuration list for PBXNativeTarget "DCTImageCacheBundle" */;
+			buildConfigurationList = 24FCFAA0165FEAB3006208A7 /* Build configuration list for PBXNativeTarget "DCTImageCache Bundle" */;
 			buildPhases = (
 				24FCFA90165FEAB3006208A7 /* Sources */,
 				24FCFA91165FEAB3006208A7 /* Frameworks */,
@@ -292,7 +334,7 @@
 			);
 			dependencies = (
 			);
-			name = DCTImageCacheBundle;
+			name = "DCTImageCache Bundle";
 			productName = DCTImageCacheBundle;
 			productReference = 24FCFA94165FEAB3006208A7 /* DCTImageCache.bundle */;
 			productType = "com.apple.product-type.bundle";
@@ -306,6 +348,11 @@
 				LastTestingUpgradeCheck = 0510;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Daniel Tull";
+				TargetAttributes = {
+					242BEEC419A8F1D10063F2F2 = {
+						CreatedOnToolsVersion = 6.0;
+					};
+				};
 			};
 			buildConfigurationList = 24F7CB39158A1B9D00B2E33E /* Build configuration list for PBXProject "DCTImageCache" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -320,20 +367,27 @@
 			projectRoot = "";
 			targets = (
 				2437B67615B97BA600750117 /* DCTImageCache */,
-				24FCFA93165FEAB3006208A7 /* DCTImageCacheBundle */,
-				24B3EEB715A2EB1F00D5E63C /* DCTImageCacheDemo */,
+				242BEEC419A8F1D10063F2F2 /* DCTImageCache iOS */,
+				24FCFA93165FEAB3006208A7 /* DCTImageCache Bundle */,
+				24B3EEB715A2EB1F00D5E63C /* DCTImageCache Demo */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		242BEEC319A8F1D10063F2F2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		24B3EEB615A2EB1F00D5E63C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				242A90BC194890D40050B8C6 /* iPhone.storyboard in Resources */,
 				242A90BE1948915A0050B8C6 /* Media.xcassets in Resources */,
-				24F2DB5F166029CE008F58D5 /* DCTImageCache.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +418,21 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		242BEEC019A8F1D10063F2F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				242BEEEF19A8F31A0063F2F2 /* DCTImageCache.m in Sources */,
+				242BEEF019A8F31A0063F2F2 /* DCTImageCacheAttributes.m in Sources */,
+				242BEEF119A8F31A0063F2F2 /* DCTImageCacheDisk.m in Sources */,
+				242BEEF219A8F31A0063F2F2 /* DCTImageCacheItem.m in Sources */,
+				242BEEF319A8F31A0063F2F2 /* _DCTImageCacheItem.m in Sources */,
+				242BEEF419A8F31A0063F2F2 /* DCTImageCacheMemory.m in Sources */,
+				242BEEF519A8F31A0063F2F2 /* DCTImageCacheFetcher.m in Sources */,
+				242BEEF619A8F31A0063F2F2 /* DCTImageCacheSizer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2437B67315B97BA600750117 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -403,174 +472,111 @@
 /* Begin PBXTargetDependency section */
 		24FCFAA3165FEAC0006208A7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 24FCFA93165FEAB3006208A7 /* DCTImageCacheBundle */;
+			target = 24FCFA93165FEAB3006208A7 /* DCTImageCache Bundle */;
 			targetProxy = 24FCFAA2165FEAC0006208A7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		242BEED519A8F1D10063F2F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 242BEEDF19A8F2210063F2F2 /* iOS Framework.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = DCTImageCache;
+			};
+			name = Debug;
+		};
+		242BEED619A8F1D10063F2F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 242BEEDF19A8F2210063F2F2 /* iOS Framework.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = DCTImageCache;
+			};
+			name = Release;
+		};
 		2437B68115B97BA600750117 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 240BE44517ED8040007AB802 /* Universal.xcconfig */;
+			baseConfigurationReference = 242BEEE019A8F2210063F2F2 /* Library.xcconfig */;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libc++";
-				DSTROOT = /tmp/DCTImageCache.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		2437B68215B97BA600750117 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 240BE44517ED8040007AB802 /* Universal.xcconfig */;
+			baseConfigurationReference = 242BEEE019A8F2210063F2F2 /* Library.xcconfig */;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libc++";
-				DSTROOT = /tmp/DCTImageCache.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 		24B3EED015A2EB1F00D5E63C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 242BEEDC19A8F2210063F2F2 /* Application.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "DCTImageCacheDemo/DCTImageCacheDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-all_load",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = app;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 			};
 			name = Debug;
 		};
 		24B3EED115A2EB1F00D5E63C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 242BEEDC19A8F2210063F2F2 /* Application.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INFOPLIST_FILE = "DCTImageCacheDemo/DCTImageCacheDemo-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-all_load",
-				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = app;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 			};
 			name = Release;
 		};
 		24F7CB62158A1B9D00B2E33E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 242BEEDE19A8F2210063F2F2 /* Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
-				WARNING_CFLAGS = (
-					"-Weverything",
-					"-Wno-objc-missing-property-synthesis",
-					"-Wno-gnu",
-					"-Wno-c++-compat",
-				);
 			};
 			name = Debug;
 		};
 		24F7CB63158A1B9D00B2E33E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 242BEEE119A8F2210063F2F2 /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				SDKROOT = iphoneos;
-				VALIDATE_PRODUCT = YES;
-				WARNING_CFLAGS = (
-					"-Weverything",
-					"-Wno-objc-missing-property-synthesis",
-					"-Wno-gnu",
-					"-Wno-c++-compat",
-				);
 			};
 			name = Release;
 		};
 		24FCFA9E165FEAB3006208A7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 240BE44517ED8040007AB802 /* Universal.xcconfig */;
+			baseConfigurationReference = 242BEEDD19A8F2210063F2F2 /* Bundle.xcconfig */;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_EMPTY_BODY = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				INFOPLIST_FILE = "DCTImageCacheBundle/DCTImageCacheBundle-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				INFOPLIST_FILE = "$(PRODUCT_NAME) Bundle/Info.plist";
 				PRODUCT_NAME = DCTImageCache;
-				SKIP_INSTALL = YES;
-				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
 		};
 		24FCFA9F165FEAB3006208A7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 240BE44517ED8040007AB802 /* Universal.xcconfig */;
+			baseConfigurationReference = 242BEEDD19A8F2210063F2F2 /* Bundle.xcconfig */;
 			buildSettings = {
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_EMPTY_BODY = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				INFOPLIST_FILE = "DCTImageCacheBundle/DCTImageCacheBundle-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				INFOPLIST_FILE = "$(PRODUCT_NAME) Bundle/Info.plist";
 				PRODUCT_NAME = DCTImageCache;
-				SKIP_INSTALL = YES;
-				WRAPPER_EXTENSION = bundle;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		242BEED919A8F1D10063F2F2 /* Build configuration list for PBXNativeTarget "DCTImageCache iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				242BEED519A8F1D10063F2F2 /* Debug */,
+				242BEED619A8F1D10063F2F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		2437B68015B97BA600750117 /* Build configuration list for PBXNativeTarget "DCTImageCache" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -580,7 +586,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCacheDemo" */ = {
+		24B3EED215A2EB1F00D5E63C /* Build configuration list for PBXNativeTarget "DCTImageCache Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				24B3EED015A2EB1F00D5E63C /* Debug */,
@@ -598,7 +604,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		24FCFAA0165FEAB3006208A7 /* Build configuration list for PBXNativeTarget "DCTImageCacheBundle" */ = {
+		24FCFAA0165FEAB3006208A7 /* Build configuration list for PBXNativeTarget "DCTImageCache Bundle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				24FCFA9E165FEAB3006208A7 /* Debug */,

@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "TableViewCell.h"
-#import <DCTImageCache/DCTImageCache.h>
+@import DCTImageCache;
 
 @interface ViewController ()
 @property (nonatomic) NSMutableDictionary *progresses;
