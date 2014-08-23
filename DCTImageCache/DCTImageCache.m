@@ -208,6 +208,10 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 	static NSBundle *bundle;
 	static dispatch_once_t bundleToken;
 	dispatch_once(&bundleToken, ^{
+
+		bundle = [NSBundle bundleForClass:self];
+		if (bundle) return;
+
 		NSDirectoryEnumerator *enumerator = [[NSFileManager new] enumeratorAtURL:[[NSBundle mainBundle] bundleURL]
 													  includingPropertiesForKeys:nil
 																		 options:NSDirectoryEnumerationSkipsHiddenFiles

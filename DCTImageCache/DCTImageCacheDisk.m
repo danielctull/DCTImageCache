@@ -44,10 +44,9 @@ static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 	NSPersistentStoreCoordinator *coordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 
 	[self.fileManager createDirectoryAtURL:self.URL withIntermediateDirectories:YES attributes:nil error:NULL];
-	NSDictionary *storeOptions = @{ NSSQLitePragmasOption : @{ @"journal_mode" : @"WAL" } };
-	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:storeOptions error:NULL]) {
+	if (![coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL]) {
 		[self.fileManager removeItemAtURL:self.storeURL error:NULL];
-		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:storeOptions error:NULL];
+		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL];
 	}
 
 	self.managedObjectContext = [NSManagedObjectContext new];

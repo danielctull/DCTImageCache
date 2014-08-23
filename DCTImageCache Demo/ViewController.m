@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Daniel Tull. All rights reserved.
 //
 
+@import DCTImageCache;
 #import "ViewController.h"
 #import "TableViewCell.h"
-@import DCTImageCache;
 
 @interface ViewController ()
 @property (nonatomic) NSMutableDictionary *progresses;
