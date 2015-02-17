@@ -120,7 +120,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 		}
 
 		[progress becomeCurrentWithPendingUnitCount:1];
-		[self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+		[self.delegate imageCache:self fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 			handler(error);
 			if (!image) return;
 
@@ -174,7 +174,7 @@ static NSString *const DCTImageCacheDefaultCacheName = @"DCTDefaultImageCache";
 		}
 
 		[progress becomeCurrentWithPendingUnitCount:1];
-		[self.fetcher fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+		[self.fetcher fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 
 			CGSize size = CGSizeMake(attributes.size.width * attributes.scale, attributes.size.height * attributes.scale);
 			BOOL needsResizing = !CGSizeEqualToSize(image.size, size);

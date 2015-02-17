@@ -36,7 +36,7 @@
 
 		if (!shouldRequest) return;
 
-		[self.delegate imageCache:self.imageCache fetchImageWithAttributes:attributes handler:^(UIImage *image, NSError *error) {
+		[self.delegate imageCache:self.imageCache fetchImageWithAttributes:attributes handler:^(DCTImageCacheImage *image, NSError *error) {
 			[self.queue addOperationWithBlock:^{
 				for (DCTImageCacheImageHandler handler in handlers) {
 					handler(image, error);

@@ -6,11 +6,12 @@
 //  Copyright (c) 2014 Daniel Tull. All rights reserved.
 //
 
+@import CoreGraphics;
 #import "DCTImageCacheSizer.h"
 
 @implementation DCTImageCacheSizer
 
-- (UIImage *)resizeImage:(DCTImageCacheImage *)image toSize:(CGSize)size contentMode:(DCTImageCacheAttributesContentMode)contentMode {
+- (DCTImageCacheImage *)resizeImage:(DCTImageCacheImage *)image toSize:(CGSize)size contentMode:(DCTImageCacheAttributesContentMode)contentMode {
 
 	if (!image) return nil;
 
@@ -21,16 +22,58 @@
 	BOOL isOpaque = (CGRectEqualToRect(contextRect, intersectionRect)
 					 && ![self imageContainsAlpha:image]);
 
-	UIGraphicsBeginImageContextWithOptions(size, isOpaque, 0.0);
-	[image drawInRect:imageRect];
-	UIImage *returnImage = UIGraphicsGetImageFromCurrentImageContext();
-	UIGraphicsEndImageContext();
-
-	return returnImage;
+	return [self performGraphicsContextWorkWithSize:size opaque:isOpaque block:^{
+		[image drawInRect:imageRect];
+	}];
 }
 
+#if TARGET_OS_IPHONE
+
+- (CGImageRef)imageRefFromImage:(UIImage *)image {
+	return image.CGImage;
+}
+
+- (UIImage *)performGraphicsContextWorkWithSize:(CGSize)size opaque:(BOOL)opaque block:(void(^)())block {
+	UIGraphicsBeginImageContextWithOptions(size, opaque, 0.0);
+	block();
+	UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	return image;
+}
+
+#else
+
+- (NSImage *)performGraphicsContextWorkWithSize:(CGSize)size opaque:(BOOL)opaque block:(void(^)())block {
+
+	NSImage *image = [[NSImage alloc] initWithSize:size];
+	NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL
+																	pixelsWide:size.width
+																	pixelsHigh:size.height
+																 bitsPerSample:8
+															   samplesPerPixel:4
+																	  hasAlpha:!opaque
+																	  isPlanar:NO
+																colorSpaceName:NSCalibratedRGBColorSpace
+																   bytesPerRow:0
+																  bitsPerPixel:0];
+	[image addRepresentation:rep];
+	[image lockFocus];
+	block();
+	[image unlockFocus];
+	return image;
+}
+
+- (CGImageRef)imageRefFromImage:(DCTImageCacheImage *)image {
+	CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)image.TIFFRepresentation, NULL);
+	CGImageRef maskRef =  CGImageSourceCreateImageAtIndex(source, 0, NULL);
+	return maskRef;
+}
+
+#endif
+
 - (BOOL)imageContainsAlpha:(DCTImageCacheImage *)image {
-	CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(image.CGImage);
+	CGImageRef imageRef = [self imageRefFromImage:image];
+	CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(imageRef);
 	if (alphaInfo == kCGImageAlphaNone
 		|| alphaInfo == kCGImageAlphaNoneSkipFirst
 		||alphaInfo == kCGImageAlphaNoneSkipLast)

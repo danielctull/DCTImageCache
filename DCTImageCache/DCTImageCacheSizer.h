@@ -10,8 +10,8 @@
 
 @interface DCTImageCacheSizer : NSObject
 
-- (UIImage *)resizeImage:(DCTImageCacheImage *)image
-				  toSize:(CGSize)size
-			 contentMode:(DCTImageCacheAttributesContentMode)contentMode;
+- (DCTImageCacheImage *)resizeImage:(DCTImageCacheImage *)image
+							 toSize:(CGSize)size
+						contentMode:(DCTImageCacheAttributesContentMode)contentMode;
 
 @end
