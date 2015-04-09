@@ -560,6 +560,7 @@
 				242BBB101A938AA100CA83B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		242BEED919A8F1D10063F2F2 /* Build configuration list for PBXNativeTarget "DCTImageCache iOS" */ = {
 			isa = XCConfigurationList;
