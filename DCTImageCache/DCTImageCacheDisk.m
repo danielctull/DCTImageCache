@@ -88,7 +88,10 @@ static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 
 		NSURL *URL = [self.URL URLByAppendingPathComponent:identifier];
 		NSData *data = [NSKeyedArchiver archivedDataWithRootObject:image];
-		[self.fileManager createFileAtPath:URL.path contents:data attributes:nil];
+		NSString *path = URL.path;
+		if (path) {
+			[self.fileManager createFileAtPath:path contents:data attributes:nil];
+		}
 
 		[self.managedObjectContext save:NULL];
 	}];
@@ -113,11 +116,14 @@ static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 		if (item) {
 			NSString *identifier = item.identifier;
 			NSURL *URL = [self.URL URLByAppendingPathComponent:identifier];
-			NSData *data = [self.fileManager contentsAtPath:URL.path];
-			if (data) {
-				image = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-			} else {
-				[self.managedObjectContext deleteObject:item];
+			NSString *path = URL.path;
+			if (path) {
+				NSData *data = [self.fileManager contentsAtPath:path];
+				if (data) {
+					image = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+				} else {
+					[self.managedObjectContext deleteObject:item];
+				}
 			}
 			[self.managedObjectContext save:NULL];
 		}
