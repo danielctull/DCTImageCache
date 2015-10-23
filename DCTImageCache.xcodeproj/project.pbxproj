@@ -411,7 +411,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0510;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Daniel Tull";
 				TargetAttributes = {
 					242BBAFB1A938AA100CA83B7 = {
@@ -605,7 +605,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 244DE84119A91D5A00A91DC7 /* iOS Framework.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -617,7 +616,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 244DE84119A91D5A00A91DC7 /* iOS Framework.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -629,7 +627,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2473F21C1BC859120075EA00 /* tvOS Framework.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				PRODUCT_NAME = DCTImageCache;
@@ -640,7 +637,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2473F21C1BC859120075EA00 /* tvOS Framework.xcconfig */;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				PRODUCT_NAME = DCTImageCache;
@@ -669,7 +665,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 244DE83E19A91D5A00A91DC7 /* Debug.xcconfig */;
 			buildSettings = {
-				ONLY_ACTIVE_ARCH = YES;
+				CURRENT_PROJECT_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.danieltull.$(PRODUCT_NAME:rfc1034identifier)";
 			};
 			name = Debug;
@@ -678,6 +674,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 244DE84519A91D5A00A91DC7 /* Release.xcconfig */;
 			buildSettings = {
+				CURRENT_PROJECT_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = "uk.co.danieltull.$(PRODUCT_NAME:rfc1034identifier)";
 			};
 			name = Release;
