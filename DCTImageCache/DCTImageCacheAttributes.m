@@ -24,7 +24,7 @@ CGSize const DCTImageCacheAttributesSizeNull = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 - (NSString *)description {
 	return [NSString stringWithFormat:@"<%@: %p; %@>",
 			NSStringFromClass([self class]),
-			self,
+			(void *)self,
 			[self coreDescription]];
 }
 
