@@ -17,7 +17,7 @@
 
 	CGRect imageRect = [self rectForOriginalSize:image.size desiredSize:size contentMode:contentMode];
 
-	CGRect contextRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+	CGRect contextRect = CGRectMake(0.0, 0.0, size.width, size.height);
 	CGRect intersectionRect = CGRectIntersection(imageRect, contextRect);
 	BOOL isOpaque = (CGRectEqualToRect(contextRect, intersectionRect)
 					 && ![self imageContainsAlpha:image]);
@@ -95,7 +95,7 @@
 			return [self scaleAspectFillRectForOriginalSize:originalSize desiredSize:desiredSize];
 
 		case DCTImageCacheAttributesContentModeOriginal:
-			return CGRectMake(0.0f, 0.0f, 0.0f, 0.0f);
+			return CGRectMake(0.0, 0.0, 0.0, 0.0);
 	}
 }
 
@@ -112,15 +112,15 @@
 	if (originalRatio < desiredRatio) {
 		NSInteger newImageHeight = originalHeight * desiredWidth/originalWidth;
 		NSInteger y = (NSInteger)(desiredHeight-newImageHeight)/2.0f;
-		return CGRectMake(0.0f, y, desiredWidth, newImageHeight);
+		return CGRectMake(0.0, y, desiredWidth, newImageHeight);
 
 	} else if (originalRatio > desiredRatio) {
 		NSInteger newImageWidth = originalWidth * desiredHeight/originalHeight;
 		NSInteger x = (NSInteger)(desiredWidth-newImageWidth)/2.0f;
-		return CGRectMake((CGFloat)x, 0.0f, (CGFloat)newImageWidth, desiredHeight);
+		return CGRectMake((CGFloat)x, 0.0, (CGFloat)newImageWidth, desiredHeight);
 	}
 
-	return CGRectMake(0.0f, 0.0f, desiredWidth, desiredHeight);
+	return CGRectMake(0.0, 0.0, desiredWidth, desiredHeight);
 }
 
 - (CGRect)scaleAspectFillRectForOriginalSize:(CGSize)originalSize desiredSize:(CGSize)desiredSize {
@@ -135,15 +135,15 @@
 	if (originalRatio < desiredRatio) {
 		NSInteger newImageWidth = originalWidth * desiredHeight/originalHeight;
 		NSInteger x = (NSInteger)(desiredWidth-newImageWidth)/2.0f;
-		return CGRectMake((CGFloat)x, 0.0f, (CGFloat)newImageWidth, desiredHeight);
+		return CGRectMake((CGFloat)x, 0.0, (CGFloat)newImageWidth, desiredHeight);
 
 	} else if (originalRatio > desiredRatio) {
 		NSInteger newImageHeight = originalHeight * desiredWidth/originalWidth;
 		NSInteger y = (NSInteger)(desiredHeight-newImageHeight)/2.0f;
-		return CGRectMake(0.0f, y, desiredWidth, newImageHeight);
+		return CGRectMake(0.0, y, desiredWidth, newImageHeight);
 	}
 
-	return CGRectMake(0.0f, 0.0f, desiredWidth, desiredHeight);
+	return CGRectMake(0.0, 0.0, desiredWidth, desiredHeight);
 }
 
 @end

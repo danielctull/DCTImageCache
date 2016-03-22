@@ -16,7 +16,7 @@ CGSize const DCTImageCacheAttributesSizeNull = {-CGFLOAT_MAX, -CGFLOAT_MAX};
 	self = [super init];
 	if (!self) return nil;
 	_size = DCTImageCacheAttributesSizeNull;
-	_scale = 1.0f;
+	_scale = 1.0;
 	_contentMode = DCTImageCacheAttributesContentModeAspectFill;
 	return self;
 }
