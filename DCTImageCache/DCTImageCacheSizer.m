@@ -15,6 +15,10 @@
 
 	if (!image) return nil;
 
+	if (contentMode == DCTImageCacheAttributesContentModeOriginal) {
+		return image;
+	}
+
 	CGRect imageRect = [self rectForOriginalSize:image.size desiredSize:size contentMode:contentMode];
 
 	CGRect contextRect = CGRectMake(0.0, 0.0, size.width, size.height);
@@ -95,7 +99,7 @@
 			return [self scaleAspectFillRectForOriginalSize:originalSize desiredSize:desiredSize];
 
 		case DCTImageCacheAttributesContentModeOriginal:
-			return CGRectMake(0.0, 0.0, 0.0, 0.0);
+			return CGRectMake(0.0, 0.0, originalSize.width, originalSize.height);
 	}
 }
 
