@@ -49,7 +49,11 @@ static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 		[coordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:self.storeURL options:nil error:NULL];
 	}
 
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wdeprecated-declarations"
 	self.managedObjectContext = [NSManagedObjectContext new];
+# pragma clang diagnostic pop
+
 	self.managedObjectContext.persistentStoreCoordinator = coordinator;
 }
 
