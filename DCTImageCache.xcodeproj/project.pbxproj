@@ -389,9 +389,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		242BBAFB1A938AA100CA83B7 /* DCTImageCache OS X */ = {
+		242BBAFB1A938AA100CA83B7 /* DCTImageCache macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 242BBB131A938AA100CA83B7 /* Build configuration list for PBXNativeTarget "DCTImageCache OS X" */;
+			buildConfigurationList = 242BBB131A938AA100CA83B7 /* Build configuration list for PBXNativeTarget "DCTImageCache macOS" */;
 			buildPhases = (
 				242BBAF71A938AA100CA83B7 /* Sources */,
 				242BBAF81A938AA100CA83B7 /* Frameworks */,
@@ -402,7 +402,7 @@
 			);
 			dependencies = (
 			);
-			name = "DCTImageCache OS X";
+			name = "DCTImageCache macOS";
 			productName = "DCTImageCache OS X";
 			productReference = 242BBAFC1A938AA100CA83B7 /* DCTImageCache.framework */;
 			productType = "com.apple.product-type.framework";
@@ -496,7 +496,7 @@
 			projectRoot = "";
 			targets = (
 				242BEEC419A8F1D10063F2F2 /* DCTImageCache iOS */,
-				242BBAFB1A938AA100CA83B7 /* DCTImageCache OS X */,
+				242BBAFB1A938AA100CA83B7 /* DCTImageCache macOS */,
 				2473F1FE1BC858CA0075EA00 /* DCTImageCache tvOS */,
 				24B3EEB715A2EB1F00D5E63C /* DCTImageCache Demo */,
 			);
@@ -745,7 +745,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		242BBB131A938AA100CA83B7 /* Build configuration list for PBXNativeTarget "DCTImageCache OS X" */ = {
+		242BBB131A938AA100CA83B7 /* Build configuration list for PBXNativeTarget "DCTImageCache macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				242BBB0F1A938AA100CA83B7 /* Debug */,

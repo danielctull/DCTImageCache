@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "242BBAFB1A938AA100CA83B7"
                BuildableName = "DCTImageCache.framework"
-               BlueprintName = "DCTImageCache OS X"
+               BlueprintName = "DCTImageCache macOS"
                ReferencedContainer = "container:DCTImageCache.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,7 +47,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "242BBAFB1A938AA100CA83B7"
             BuildableName = "DCTImageCache.framework"
-            BlueprintName = "DCTImageCache OS X"
+            BlueprintName = "DCTImageCache macOS"
             ReferencedContainer = "container:DCTImageCache.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,7 +65,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "242BBAFB1A938AA100CA83B7"
             BuildableName = "DCTImageCache.framework"
-            BlueprintName = "DCTImageCache OS X"
+            BlueprintName = "DCTImageCache macOS"
             ReferencedContainer = "container:DCTImageCache.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
