@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "244A44861D9D0FBB009A622C"
-               BuildableName = "DCTImageCache watchOS.framework"
+               BuildableName = "DCTImageCache.framework"
                BlueprintName = "DCTImageCache watchOS"
                ReferencedContainer = "container:DCTImageCache.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "244A44861D9D0FBB009A622C"
-            BuildableName = "DCTImageCache watchOS.framework"
+            BuildableName = "DCTImageCache.framework"
             BlueprintName = "DCTImageCache watchOS"
             ReferencedContainer = "container:DCTImageCache.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "244A44861D9D0FBB009A622C"
-            BuildableName = "DCTImageCache watchOS.framework"
+            BuildableName = "DCTImageCache.framework"
             BlueprintName = "DCTImageCache watchOS"
             ReferencedContainer = "container:DCTImageCache.xcodeproj">
          </BuildableReference>
