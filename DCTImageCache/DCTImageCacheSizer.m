@@ -37,7 +37,7 @@
 	return image.CGImage;
 }
 
-- (UIImage *)performGraphicsContextWorkWithSize:(CGSize)size opaque:(BOOL)opaque block:(void(^)())block {
+- (UIImage *)performGraphicsContextWorkWithSize:(CGSize)size opaque:(BOOL)opaque block:(void(^)(void))block {
 	UIGraphicsBeginImageContextWithOptions(size, opaque, 0.0);
 	block();
 	UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
