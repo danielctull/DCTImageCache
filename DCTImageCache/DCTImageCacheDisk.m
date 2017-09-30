@@ -156,7 +156,7 @@ static NSString *const DCTImageCacheDiskCacheStoreName = @"metadata";
 	}];
 }
 
-- (void)performOperationWithPriority:(NSOperationQueuePriority)priority cancellable:(BOOL)cancellable block:(void(^)())block {
+- (void)performOperationWithPriority:(NSOperationQueuePriority)priority cancellable:(BOOL)cancellable block:(void(^)(void))block {
 
 	NSProgress *progress = [NSProgress progressWithTotalUnitCount:1];
 	NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
