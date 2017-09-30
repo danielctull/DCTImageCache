@@ -808,6 +808,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 244A44631D9D0EF9009A622C /* iOS Application.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 			};
@@ -817,6 +818,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 244A44631D9D0EF9009A622C /* iOS Application.xcconfig */;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 			};
