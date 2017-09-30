@@ -245,9 +245,9 @@
 			isa = PBXGroup;
 			children = (
 				244A44601D9D0EF9009A622C /* Debug.xcconfig */,
+				244A44721D9D0EF9009A622C /* Release.xcconfig */,
 				244A44621D9D0EF9009A622C /* iOS */,
 				244A446B1D9D0EF9009A622C /* macOS */,
-				244A44721D9D0EF9009A622C /* Release.xcconfig */,
 				244A447A1D9D0EF9009A622C /* tvOS */,
 				244A44811D9D0EF9009A622C /* watchOS */,
 			);
@@ -535,7 +535,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0510;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Daniel Tull";
 				TargetAttributes = {
 					242BBAFB1A938AA100CA83B7 = {
